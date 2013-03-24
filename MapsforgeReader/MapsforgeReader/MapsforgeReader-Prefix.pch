@@ -1,0 +1,7 @@
+//
+// Prefix header for all source files of the 'MapsforgeReader' target in the 'MapsforgeReader' project
+//
+
+#ifdef __OBJC__
+	#import <Foundation/Foundation.h>
+#endif

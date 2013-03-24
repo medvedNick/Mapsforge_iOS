@@ -1,0 +1,461 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		79071990151CB0C30008E07F /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7907198F151CB0C30008E07F /* Foundation.framework */; };
+		79071996151CB0C30008E07F /* MapsforgeReader.m in Sources */ = {isa = PBXBuildFile; fileRef = 79071995151CB0C30008E07F /* MapsforgeReader.m */; };
+		79071A0B151CBB430008E07F /* BoundingBox.h in Headers */ = {isa = PBXBuildFile; fileRef = 790719D9151CBB430008E07F /* BoundingBox.h */; };
+		79071A0C151CBB430008E07F /* BoundingBox.m in Sources */ = {isa = PBXBuildFile; fileRef = 790719DA151CBB430008E07F /* BoundingBox.m */; };
+		79071A0D151CBB430008E07F /* GeoPoint.h in Headers */ = {isa = PBXBuildFile; fileRef = 790719DB151CBB430008E07F /* GeoPoint.h */; };
+		79071A0E151CBB430008E07F /* GeoPoint.m in Sources */ = {isa = PBXBuildFile; fileRef = 790719DC151CBB430008E07F /* GeoPoint.m */; };
+		79071A0F151CBB430008E07F /* IOUtils.h in Headers */ = {isa = PBXBuildFile; fileRef = 790719DD151CBB430008E07F /* IOUtils.h */; };
+		79071A10151CBB430008E07F /* IOUtils.m in Sources */ = {isa = PBXBuildFile; fileRef = 790719DE151CBB430008E07F /* IOUtils.m */; };
+		79071A11151CBB430008E07F /* LRUCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 790719DF151CBB430008E07F /* LRUCache.h */; };
+		79071A12151CBB430008E07F /* LRUCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 790719E0151CBB430008E07F /* LRUCache.m */; };
+		79071A13151CBB430008E07F /* MapPosition.h in Headers */ = {isa = PBXBuildFile; fileRef = 790719E1151CBB430008E07F /* MapPosition.h */; };
+		79071A14151CBB430008E07F /* MapPosition.m in Sources */ = {isa = PBXBuildFile; fileRef = 790719E2151CBB430008E07F /* MapPosition.m */; };
+		79071A15151CBB430008E07F /* MercatorProjection.h in Headers */ = {isa = PBXBuildFile; fileRef = 790719E3151CBB430008E07F /* MercatorProjection.h */; };
+		79071A16151CBB430008E07F /* MercatorProjection.m in Sources */ = {isa = PBXBuildFile; fileRef = 790719E4151CBB430008E07F /* MercatorProjection.m */; };
+		79071A17151CBB430008E07F /* MFTag.h in Headers */ = {isa = PBXBuildFile; fileRef = 790719E5151CBB430008E07F /* MFTag.h */; };
+		79071A18151CBB430008E07F /* MFTag.m in Sources */ = {isa = PBXBuildFile; fileRef = 790719E6151CBB430008E07F /* MFTag.m */; };
+		79071A19151CBB430008E07F /* Tile.h in Headers */ = {isa = PBXBuildFile; fileRef = 790719E7151CBB430008E07F /* Tile.h */; };
+		79071A1A151CBB430008E07F /* Tile.m in Sources */ = {isa = PBXBuildFile; fileRef = 790719E8151CBB430008E07F /* Tile.m */; };
+		79071A1B151CBB430008E07F /* Deserializer.h in Headers */ = {isa = PBXBuildFile; fileRef = 790719EB151CBB430008E07F /* Deserializer.h */; };
+		79071A1C151CBB430008E07F /* Deserializer.m in Sources */ = {isa = PBXBuildFile; fileRef = 790719EC151CBB430008E07F /* Deserializer.m */; };
+		79071A1D151CBB430008E07F /* FileOpenResult.h in Headers */ = {isa = PBXBuildFile; fileRef = 790719EE151CBB430008E07F /* FileOpenResult.h */; };
+		79071A1E151CBB430008E07F /* FileOpenResult.m in Sources */ = {isa = PBXBuildFile; fileRef = 790719EF151CBB430008E07F /* FileOpenResult.m */; };
+		79071A1F151CBB430008E07F /* MapFileHeader.h in Headers */ = {isa = PBXBuildFile; fileRef = 790719F0151CBB430008E07F /* MapFileHeader.h */; };
+		79071A20151CBB430008E07F /* MapFileHeader.m in Sources */ = {isa = PBXBuildFile; fileRef = 790719F1151CBB430008E07F /* MapFileHeader.m */; };
+		79071A21151CBB430008E07F /* MapFileInfo.h in Headers */ = {isa = PBXBuildFile; fileRef = 790719F2151CBB430008E07F /* MapFileInfo.h */; };
+		79071A22151CBB430008E07F /* MapFileInfo.m in Sources */ = {isa = PBXBuildFile; fileRef = 790719F3151CBB430008E07F /* MapFileInfo.m */; };
+		79071A23151CBB430008E07F /* MapFileInfoBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 790719F4151CBB430008E07F /* MapFileInfoBuilder.h */; };
+		79071A24151CBB430008E07F /* MapFileInfoBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 790719F5151CBB430008E07F /* MapFileInfoBuilder.m */; };
+		79071A25151CBB430008E07F /* OptionalFields.h in Headers */ = {isa = PBXBuildFile; fileRef = 790719F6151CBB430008E07F /* OptionalFields.h */; };
+		79071A26151CBB430008E07F /* OptionalFields.m in Sources */ = {isa = PBXBuildFile; fileRef = 790719F7151CBB430008E07F /* OptionalFields.m */; };
+		79071A27151CBB430008E07F /* RequiredFields.h in Headers */ = {isa = PBXBuildFile; fileRef = 790719F8151CBB430008E07F /* RequiredFields.h */; };
+		79071A28151CBB430008E07F /* RequiredFields.m in Sources */ = {isa = PBXBuildFile; fileRef = 790719F9151CBB430008E07F /* RequiredFields.m */; };
+		79071A29151CBB430008E07F /* SubFileParameter.h in Headers */ = {isa = PBXBuildFile; fileRef = 790719FA151CBB430008E07F /* SubFileParameter.h */; };
+		79071A2A151CBB430008E07F /* SubFileParameter.m in Sources */ = {isa = PBXBuildFile; fileRef = 790719FB151CBB430008E07F /* SubFileParameter.m */; };
+		79071A2B151CBB430008E07F /* SubFileParameterBuilder.h in Headers */ = {isa = PBXBuildFile; fileRef = 790719FC151CBB430008E07F /* SubFileParameterBuilder.h */; };
+		79071A2C151CBB430008E07F /* SubFileParameterBuilder.m in Sources */ = {isa = PBXBuildFile; fileRef = 790719FD151CBB430008E07F /* SubFileParameterBuilder.m */; };
+		79071A2D151CBB430008E07F /* IndexCache.h in Headers */ = {isa = PBXBuildFile; fileRef = 790719FE151CBB430008E07F /* IndexCache.h */; };
+		79071A2E151CBB430008E07F /* IndexCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 790719FF151CBB430008E07F /* IndexCache.m */; };
+		79071A2F151CBB430008E07F /* IndexCacheEntryKey.h in Headers */ = {isa = PBXBuildFile; fileRef = 79071A00151CBB430008E07F /* IndexCacheEntryKey.h */; };
+		79071A30151CBB430008E07F /* IndexCacheEntryKey.m in Sources */ = {isa = PBXBuildFile; fileRef = 79071A01151CBB430008E07F /* IndexCacheEntryKey.m */; };
+		79071A31151CBB430008E07F /* MapDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 79071A02151CBB430008E07F /* MapDatabase.h */; };
+		79071A32151CBB430008E07F /* MapDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 79071A03151CBB430008E07F /* MapDatabase.m */; };
+		79071A33151CBB430008E07F /* MapDatabaseCallback.h in Headers */ = {isa = PBXBuildFile; fileRef = 79071A04151CBB430008E07F /* MapDatabaseCallback.h */; };
+		79071A34151CBB430008E07F /* QueryCalculations.h in Headers */ = {isa = PBXBuildFile; fileRef = 79071A05151CBB430008E07F /* QueryCalculations.h */; };
+		79071A35151CBB430008E07F /* QueryCalculations.m in Sources */ = {isa = PBXBuildFile; fileRef = 79071A06151CBB430008E07F /* QueryCalculations.m */; };
+		79071A36151CBB430008E07F /* QueryParameters.h in Headers */ = {isa = PBXBuildFile; fileRef = 79071A07151CBB430008E07F /* QueryParameters.h */; };
+		79071A37151CBB430008E07F /* QueryParameters.m in Sources */ = {isa = PBXBuildFile; fileRef = 79071A08151CBB430008E07F /* QueryParameters.m */; };
+		79071A38151CBB430008E07F /* ReadBuffer.h in Headers */ = {isa = PBXBuildFile; fileRef = 79071A09151CBB430008E07F /* ReadBuffer.h */; };
+		79071A39151CBB430008E07F /* ReadBuffer.m in Sources */ = {isa = PBXBuildFile; fileRef = 79071A0A151CBB430008E07F /* ReadBuffer.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		7907198C151CB0C30008E07F /* libMapsforgeReader.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libMapsforgeReader.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		7907198F151CB0C30008E07F /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
+		79071993151CB0C30008E07F /* MapsforgeReader-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "MapsforgeReader-Prefix.pch"; sourceTree = "<group>"; };
+		79071994151CB0C30008E07F /* MapsforgeReader.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = MapsforgeReader.h; sourceTree = "<group>"; };
+		79071995151CB0C30008E07F /* MapsforgeReader.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = MapsforgeReader.m; sourceTree = "<group>"; };
+		790719D9151CBB430008E07F /* BoundingBox.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BoundingBox.h; sourceTree = "<group>"; };
+		790719DA151CBB430008E07F /* BoundingBox.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BoundingBox.m; sourceTree = "<group>"; };
+		790719DB151CBB430008E07F /* GeoPoint.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GeoPoint.h; sourceTree = "<group>"; };
+		790719DC151CBB430008E07F /* GeoPoint.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = GeoPoint.m; sourceTree = "<group>"; };
+		790719DD151CBB430008E07F /* IOUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IOUtils.h; sourceTree = "<group>"; };
+		790719DE151CBB430008E07F /* IOUtils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IOUtils.m; sourceTree = "<group>"; };
+		790719DF151CBB430008E07F /* LRUCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LRUCache.h; sourceTree = "<group>"; };
+		790719E0151CBB430008E07F /* LRUCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LRUCache.m; sourceTree = "<group>"; };
+		790719E1151CBB430008E07F /* MapPosition.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapPosition.h; sourceTree = "<group>"; };
+		790719E2151CBB430008E07F /* MapPosition.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapPosition.m; sourceTree = "<group>"; };
+		790719E3151CBB430008E07F /* MercatorProjection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MercatorProjection.h; sourceTree = "<group>"; };
+		790719E4151CBB430008E07F /* MercatorProjection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MercatorProjection.m; sourceTree = "<group>"; };
+		790719E5151CBB430008E07F /* MFTag.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MFTag.h; sourceTree = "<group>"; };
+		790719E6151CBB430008E07F /* MFTag.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MFTag.m; sourceTree = "<group>"; };
+		790719E7151CBB430008E07F /* Tile.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Tile.h; sourceTree = "<group>"; };
+		790719E8151CBB430008E07F /* Tile.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Tile.m; sourceTree = "<group>"; };
+		790719EB151CBB430008E07F /* Deserializer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Deserializer.h; sourceTree = "<group>"; };
+		790719EC151CBB430008E07F /* Deserializer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Deserializer.m; sourceTree = "<group>"; };
+		790719EE151CBB430008E07F /* FileOpenResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FileOpenResult.h; sourceTree = "<group>"; };
+		790719EF151CBB430008E07F /* FileOpenResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FileOpenResult.m; sourceTree = "<group>"; };
+		790719F0151CBB430008E07F /* MapFileHeader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapFileHeader.h; sourceTree = "<group>"; };
+		790719F1151CBB430008E07F /* MapFileHeader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapFileHeader.m; sourceTree = "<group>"; };
+		790719F2151CBB430008E07F /* MapFileInfo.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapFileInfo.h; sourceTree = "<group>"; };
+		790719F3151CBB430008E07F /* MapFileInfo.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapFileInfo.m; sourceTree = "<group>"; };
+		790719F4151CBB430008E07F /* MapFileInfoBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapFileInfoBuilder.h; sourceTree = "<group>"; };
+		790719F5151CBB430008E07F /* MapFileInfoBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapFileInfoBuilder.m; sourceTree = "<group>"; };
+		790719F6151CBB430008E07F /* OptionalFields.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = OptionalFields.h; sourceTree = "<group>"; };
+		790719F7151CBB430008E07F /* OptionalFields.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = OptionalFields.m; sourceTree = "<group>"; };
+		790719F8151CBB430008E07F /* RequiredFields.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RequiredFields.h; sourceTree = "<group>"; };
+		790719F9151CBB430008E07F /* RequiredFields.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RequiredFields.m; sourceTree = "<group>"; };
+		790719FA151CBB430008E07F /* SubFileParameter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubFileParameter.h; sourceTree = "<group>"; };
+		790719FB151CBB430008E07F /* SubFileParameter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubFileParameter.m; sourceTree = "<group>"; };
+		790719FC151CBB430008E07F /* SubFileParameterBuilder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SubFileParameterBuilder.h; sourceTree = "<group>"; };
+		790719FD151CBB430008E07F /* SubFileParameterBuilder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = SubFileParameterBuilder.m; sourceTree = "<group>"; };
+		790719FE151CBB430008E07F /* IndexCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IndexCache.h; sourceTree = "<group>"; };
+		790719FF151CBB430008E07F /* IndexCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IndexCache.m; sourceTree = "<group>"; };
+		79071A00151CBB430008E07F /* IndexCacheEntryKey.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = IndexCacheEntryKey.h; sourceTree = "<group>"; };
+		79071A01151CBB430008E07F /* IndexCacheEntryKey.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = IndexCacheEntryKey.m; sourceTree = "<group>"; };
+		79071A02151CBB430008E07F /* MapDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapDatabase.h; sourceTree = "<group>"; };
+		79071A03151CBB430008E07F /* MapDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MapDatabase.m; sourceTree = "<group>"; };
+		79071A04151CBB430008E07F /* MapDatabaseCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MapDatabaseCallback.h; sourceTree = "<group>"; };
+		79071A05151CBB430008E07F /* QueryCalculations.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryCalculations.h; sourceTree = "<group>"; };
+		79071A06151CBB430008E07F /* QueryCalculations.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QueryCalculations.m; sourceTree = "<group>"; };
+		79071A07151CBB430008E07F /* QueryParameters.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = QueryParameters.h; sourceTree = "<group>"; };
+		79071A08151CBB430008E07F /* QueryParameters.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = QueryParameters.m; sourceTree = "<group>"; };
+		79071A09151CBB430008E07F /* ReadBuffer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ReadBuffer.h; sourceTree = "<group>"; };
+		79071A0A151CBB430008E07F /* ReadBuffer.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ReadBuffer.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		79071989151CB0C30008E07F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79071990151CB0C30008E07F /* Foundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		79071981151CB0C30008E07F = {
+			isa = PBXGroup;
+			children = (
+				79071991151CB0C30008E07F /* MapsforgeReader */,
+				7907198E151CB0C30008E07F /* Frameworks */,
+				7907198D151CB0C30008E07F /* Products */,
+			);
+			sourceTree = "<group>";
+			usesTabs = 0;
+		};
+		7907198D151CB0C30008E07F /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				7907198C151CB0C30008E07F /* libMapsforgeReader.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		7907198E151CB0C30008E07F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				7907198F151CB0C30008E07F /* Foundation.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		79071991151CB0C30008E07F /* MapsforgeReader */ = {
+			isa = PBXGroup;
+			children = (
+				790719D8151CBB430008E07F /* core */,
+				790719E9151CBB430008E07F /* map */,
+				79071994151CB0C30008E07F /* MapsforgeReader.h */,
+				79071995151CB0C30008E07F /* MapsforgeReader.m */,
+				79071992151CB0C30008E07F /* Supporting Files */,
+			);
+			path = MapsforgeReader;
+			sourceTree = "<group>";
+		};
+		79071992151CB0C30008E07F /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				79071993151CB0C30008E07F /* MapsforgeReader-Prefix.pch */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		790719D8151CBB430008E07F /* core */ = {
+			isa = PBXGroup;
+			children = (
+				790719D9151CBB430008E07F /* BoundingBox.h */,
+				790719DA151CBB430008E07F /* BoundingBox.m */,
+				790719DB151CBB430008E07F /* GeoPoint.h */,
+				790719DC151CBB430008E07F /* GeoPoint.m */,
+				790719DD151CBB430008E07F /* IOUtils.h */,
+				790719DE151CBB430008E07F /* IOUtils.m */,
+				790719DF151CBB430008E07F /* LRUCache.h */,
+				790719E0151CBB430008E07F /* LRUCache.m */,
+				790719E1151CBB430008E07F /* MapPosition.h */,
+				790719E2151CBB430008E07F /* MapPosition.m */,
+				790719E3151CBB430008E07F /* MercatorProjection.h */,
+				790719E4151CBB430008E07F /* MercatorProjection.m */,
+				790719E5151CBB430008E07F /* MFTag.h */,
+				790719E6151CBB430008E07F /* MFTag.m */,
+				790719E7151CBB430008E07F /* Tile.h */,
+				790719E8151CBB430008E07F /* Tile.m */,
+			);
+			path = core;
+			sourceTree = "<group>";
+		};
+		790719E9151CBB430008E07F /* map */ = {
+			isa = PBXGroup;
+			children = (
+				790719EA151CBB430008E07F /* reader */,
+			);
+			path = map;
+			sourceTree = "<group>";
+		};
+		790719EA151CBB430008E07F /* reader */ = {
+			isa = PBXGroup;
+			children = (
+				790719EB151CBB430008E07F /* Deserializer.h */,
+				790719EC151CBB430008E07F /* Deserializer.m */,
+				790719ED151CBB430008E07F /* header */,
+				790719FE151CBB430008E07F /* IndexCache.h */,
+				790719FF151CBB430008E07F /* IndexCache.m */,
+				79071A00151CBB430008E07F /* IndexCacheEntryKey.h */,
+				79071A01151CBB430008E07F /* IndexCacheEntryKey.m */,
+				79071A02151CBB430008E07F /* MapDatabase.h */,
+				79071A03151CBB430008E07F /* MapDatabase.m */,
+				79071A04151CBB430008E07F /* MapDatabaseCallback.h */,
+				79071A05151CBB430008E07F /* QueryCalculations.h */,
+				79071A06151CBB430008E07F /* QueryCalculations.m */,
+				79071A07151CBB430008E07F /* QueryParameters.h */,
+				79071A08151CBB430008E07F /* QueryParameters.m */,
+				79071A09151CBB430008E07F /* ReadBuffer.h */,
+				79071A0A151CBB430008E07F /* ReadBuffer.m */,
+			);
+			path = reader;
+			sourceTree = "<group>";
+		};
+		790719ED151CBB430008E07F /* header */ = {
+			isa = PBXGroup;
+			children = (
+				790719EE151CBB430008E07F /* FileOpenResult.h */,
+				790719EF151CBB430008E07F /* FileOpenResult.m */,
+				790719F0151CBB430008E07F /* MapFileHeader.h */,
+				790719F1151CBB430008E07F /* MapFileHeader.m */,
+				790719F2151CBB430008E07F /* MapFileInfo.h */,
+				790719F3151CBB430008E07F /* MapFileInfo.m */,
+				790719F4151CBB430008E07F /* MapFileInfoBuilder.h */,
+				790719F5151CBB430008E07F /* MapFileInfoBuilder.m */,
+				790719F6151CBB430008E07F /* OptionalFields.h */,
+				790719F7151CBB430008E07F /* OptionalFields.m */,
+				790719F8151CBB430008E07F /* RequiredFields.h */,
+				790719F9151CBB430008E07F /* RequiredFields.m */,
+				790719FA151CBB430008E07F /* SubFileParameter.h */,
+				790719FB151CBB430008E07F /* SubFileParameter.m */,
+				790719FC151CBB430008E07F /* SubFileParameterBuilder.h */,
+				790719FD151CBB430008E07F /* SubFileParameterBuilder.m */,
+			);
+			path = header;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		7907198A151CB0C30008E07F /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79071A0B151CBB430008E07F /* BoundingBox.h in Headers */,
+				79071A0D151CBB430008E07F /* GeoPoint.h in Headers */,
+				79071A0F151CBB430008E07F /* IOUtils.h in Headers */,
+				79071A11151CBB430008E07F /* LRUCache.h in Headers */,
+				79071A13151CBB430008E07F /* MapPosition.h in Headers */,
+				79071A15151CBB430008E07F /* MercatorProjection.h in Headers */,
+				79071A17151CBB430008E07F /* MFTag.h in Headers */,
+				79071A19151CBB430008E07F /* Tile.h in Headers */,
+				79071A1B151CBB430008E07F /* Deserializer.h in Headers */,
+				79071A1D151CBB430008E07F /* FileOpenResult.h in Headers */,
+				79071A1F151CBB430008E07F /* MapFileHeader.h in Headers */,
+				79071A21151CBB430008E07F /* MapFileInfo.h in Headers */,
+				79071A23151CBB430008E07F /* MapFileInfoBuilder.h in Headers */,
+				79071A25151CBB430008E07F /* OptionalFields.h in Headers */,
+				79071A27151CBB430008E07F /* RequiredFields.h in Headers */,
+				79071A29151CBB430008E07F /* SubFileParameter.h in Headers */,
+				79071A2B151CBB430008E07F /* SubFileParameterBuilder.h in Headers */,
+				79071A2D151CBB430008E07F /* IndexCache.h in Headers */,
+				79071A2F151CBB430008E07F /* IndexCacheEntryKey.h in Headers */,
+				79071A31151CBB430008E07F /* MapDatabase.h in Headers */,
+				79071A33151CBB430008E07F /* MapDatabaseCallback.h in Headers */,
+				79071A34151CBB430008E07F /* QueryCalculations.h in Headers */,
+				79071A36151CBB430008E07F /* QueryParameters.h in Headers */,
+				79071A38151CBB430008E07F /* ReadBuffer.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		7907198B151CB0C30008E07F /* MapsforgeReader */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 79071999151CB0C30008E07F /* Build configuration list for PBXNativeTarget "MapsforgeReader" */;
+			buildPhases = (
+				79071988151CB0C30008E07F /* Sources */,
+				79071989151CB0C30008E07F /* Frameworks */,
+				7907198A151CB0C30008E07F /* Headers */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = MapsforgeReader;
+			productName = MapsforgeReader;
+			productReference = 7907198C151CB0C30008E07F /* libMapsforgeReader.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		79071983151CB0C30008E07F /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0420;
+			};
+			buildConfigurationList = 79071986151CB0C30008E07F /* Build configuration list for PBXProject "MapsforgeReader" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 79071981151CB0C30008E07F;
+			productRefGroup = 7907198D151CB0C30008E07F /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				7907198B151CB0C30008E07F /* MapsforgeReader */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		79071988151CB0C30008E07F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				79071996151CB0C30008E07F /* MapsforgeReader.m in Sources */,
+				79071A0C151CBB430008E07F /* BoundingBox.m in Sources */,
+				79071A0E151CBB430008E07F /* GeoPoint.m in Sources */,
+				79071A10151CBB430008E07F /* IOUtils.m in Sources */,
+				79071A12151CBB430008E07F /* LRUCache.m in Sources */,
+				79071A14151CBB430008E07F /* MapPosition.m in Sources */,
+				79071A16151CBB430008E07F /* MercatorProjection.m in Sources */,
+				79071A18151CBB430008E07F /* MFTag.m in Sources */,
+				79071A1A151CBB430008E07F /* Tile.m in Sources */,
+				79071A1C151CBB430008E07F /* Deserializer.m in Sources */,
+				79071A1E151CBB430008E07F /* FileOpenResult.m in Sources */,
+				79071A20151CBB430008E07F /* MapFileHeader.m in Sources */,
+				79071A22151CBB430008E07F /* MapFileInfo.m in Sources */,
+				79071A24151CBB430008E07F /* MapFileInfoBuilder.m in Sources */,
+				79071A26151CBB430008E07F /* OptionalFields.m in Sources */,
+				79071A28151CBB430008E07F /* RequiredFields.m in Sources */,
+				79071A2A151CBB430008E07F /* SubFileParameter.m in Sources */,
+				79071A2C151CBB430008E07F /* SubFileParameterBuilder.m in Sources */,
+				79071A2E151CBB430008E07F /* IndexCache.m in Sources */,
+				79071A30151CBB430008E07F /* IndexCacheEntryKey.m in Sources */,
+				79071A32151CBB430008E07F /* MapDatabase.m in Sources */,
+				79071A35151CBB430008E07F /* QueryCalculations.m in Sources */,
+				79071A37151CBB430008E07F /* QueryParameters.m in Sources */,
+				79071A39151CBB430008E07F /* ReadBuffer.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		79071997151CB0C30008E07F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = NO;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		79071998151CB0C30008E07F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				COPY_PHASE_STRIP = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
+				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		7907199A151CB0C30008E07F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				DSTROOT = /tmp/MapsforgeReader.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MapsforgeReader/MapsforgeReader-Prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Debug;
+		};
+		7907199B151CB0C30008E07F /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CLANG_ENABLE_OBJC_ARC = YES;
+				DSTROOT = /tmp/MapsforgeReader.dst;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "MapsforgeReader/MapsforgeReader-Prefix.pch";
+				IPHONEOS_DEPLOYMENT_TARGET = 3.0;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		79071986151CB0C30008E07F /* Build configuration list for PBXProject "MapsforgeReader" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				79071997151CB0C30008E07F /* Debug */,
+				79071998151CB0C30008E07F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		79071999151CB0C30008E07F /* Build configuration list for PBXNativeTarget "MapsforgeReader" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				7907199A151CB0C30008E07F /* Debug */,
+				7907199B151CB0C30008E07F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 79071983151CB0C30008E07F /* Project object */;
+}
