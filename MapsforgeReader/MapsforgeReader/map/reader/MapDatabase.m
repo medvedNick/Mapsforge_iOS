@@ -164,6 +164,11 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
 
 //extern int const MAXIMUM_BUFFER_SIZE;
 
+@interface MapDatabase ()
+- (int)createAndReadZoomTable:(int***)zoomTable
+         withSubFileParameter:(SubFileParameter *)subFileParameter;
+- (void)free2DArray:(int**)array withNumberOfRows:(int)rows;
+@end
 
 @implementation MapDatabase
 
@@ -366,14 +371,17 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
   if (![self processBlockSignature]) {
     return;
   }
-  int** zoomTable = [self readZoomTable:subFileParameter];
-  if (zoomTable == nil) {
+    int** zoomTable;
+    int numRowsInZoomTable = [self createAndReadZoomTable:&zoomTable withSubFileParameter:subFileParameter];
+  if (numRowsInZoomTable == 0) {
+      [self free2DArray:zoomTable withNumberOfRows:numRowsInZoomTable];
     return;
   }
   int zoomTableRow = queryParameters->queryZoomLevel - subFileParameter->zoomLevelMin;
   int poisOnQueryZoomLevel = zoomTable[zoomTableRow][0];
   int waysOnQueryZoomLevel = zoomTable[zoomTableRow][1];
-  int firstWayOffset = [readBuffer readUnsignedInt];
+    [self free2DArray:zoomTable withNumberOfRows:numRowsInZoomTable];
+    int firstWayOffset = [readBuffer readUnsignedInt];
   if (firstWayOffset < 0) {
       NSLog(@"warning in -processBlock in MapDatabase.m: invalid firstWayOffset: %d", firstWayOffset);
     if ([mapFileHeader mapFileInfo]->debugFile) {
@@ -739,35 +747,44 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
   return 1;
 }
 
-- (int**) readZoomTable:(SubFileParameter *)subFileParameter {
+- (int)createAndReadZoomTable:(int***)zoomTable withSubFileParameter:(SubFileParameter *)subFileParameter {
   int rows = subFileParameter->zoomLevelMax - subFileParameter->zoomLevelMin + 1;
-  int ** zoomTable = (int**)malloc(rows*sizeof(int*));
+  *zoomTable = (int**)malloc(rows*sizeof(int*));
   int cumulatedNumberOfPois = 0;
   int cumulatedNumberOfWays = 0;
 
   for (int row = 0; row < rows; ++row) {
-    zoomTable[row] = (int*)malloc(2*sizeof(int));
+    (*zoomTable)[row] = (int*)malloc(2*sizeof(int));
     cumulatedNumberOfPois += [readBuffer readUnsignedInt];
     cumulatedNumberOfWays += [readBuffer readUnsignedInt];
     if (cumulatedNumberOfPois < 0 || cumulatedNumberOfPois > MAXIMUM_ZOOM_TABLE_OBJECTS) {
-      NSLog(@"warning in -readZoomTable in MapDatabase.m: invalid cumulated number of POIs in row: %d %d", row, cumulatedNumberOfPois);
+      NSLog(@"warning in -createAndReadZoomTable:withSubFileParameter: in MapDatabase.m: invalid cumulated number of POIs in row: %d %d", row, cumulatedNumberOfPois);
       if ([mapFileHeader mapFileInfo]->debugFile) {
         NSLog(@"warning in -processWays in MapDatabase.m: debug signature block: %@", signatureBlock);
       }
-      return nil;
+        [self free2DArray:*zoomTable withNumberOfRows:row + 1];
+      return 0;
     }
      else if (cumulatedNumberOfWays < 0 || cumulatedNumberOfWays > MAXIMUM_ZOOM_TABLE_OBJECTS) {
-       NSLog(@"warning in -readZoomTable in MapDatabase.m: invalid invalid cumulated number of ways in row: %d %d", row, cumulatedNumberOfWays);
+       NSLog(@"warning in -createAndReadZoomTable:withSubFileParameter: in MapDatabase.m: invalid invalid cumulated number of ways in row: %d %d", row, cumulatedNumberOfWays);
       if ([mapFileHeader mapFileInfo]->debugFile) {
         NSLog(@"warning in -processWays in MapDatabase.m: debug signature block: %@", signatureBlock);
       }
-      return nil;
+         [self free2DArray:*zoomTable withNumberOfRows:row + 1];
+      return 0;
     }
-    zoomTable[row][0] = cumulatedNumberOfPois;
-    zoomTable[row][1] = cumulatedNumberOfWays;
+    (*zoomTable)[row][0] = cumulatedNumberOfPois;
+    (*zoomTable)[row][1] = cumulatedNumberOfWays;
   }
 
-  return zoomTable;
+  return rows;
+}
+
+- (void)free2DArray:(int**)array withNumberOfRows:(int)rows {
+    for (int i = 0; i < rows; i++) {
+        free(array[i]);
+    }
+    free(array);
 }
 
 //- (void) dealloc {
