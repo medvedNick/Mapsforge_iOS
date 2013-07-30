@@ -165,6 +165,9 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
 //extern int const MAXIMUM_BUFFER_SIZE;
 
 @interface MapDatabase ()
+- (void)createWayCoordinates:(int***)wayCoordinates
+      andProcessWayDataBlock:(BOOL)doubleDeltaEncoding
+                   andLength:(int**)length;
 - (int)createAndReadZoomTable:(int***)zoomTable
          withSubFileParameter:(SubFileParameter *)subFileParameter;
 - (void)free2DArray:(int**)array withNumberOfRows:(int)rows;
@@ -529,10 +532,10 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
 //        return NO;
 //      }
     }
-    int latitude = tileLatitude + [readBuffer readSignedInt];
-    int longitude = tileLongitude + [readBuffer readSignedInt];
+    /*int latitude = tileLatitude + */[readBuffer readSignedInt];
+    /*int longitude = tileLongitude + */[readBuffer readSignedInt];
     Byte specialByte = [readBuffer readByte];
-    Byte layer = (Byte)((specialByte & POI_LAYER_BITMASK) >> POI_LAYER_SHIFT);
+    //Byte layer = (Byte)((specialByte & POI_LAYER_BITMASK) >> POI_LAYER_SHIFT);
     Byte numberOfTags = (Byte)(specialByte & POI_NUMBER_OF_TAGS_BITMASK);
 //    [tags removeAllObjects];
 

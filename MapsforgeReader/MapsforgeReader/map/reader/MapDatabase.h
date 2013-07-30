@@ -48,5 +48,4 @@
 - (BOOL) processWays:(QueryParameters *)queryParameters mapDatabaseCallback:(id<MapDatabaseCallback>)mapDatabaseCallback numberOfWays:(int)numberOfWays;
 - (float *) readOptionalLabelPosition:(BOOL)featureLabelPosition;
 - (int) readOptionalWayDataBlocksByte:(BOOL)featureWayDataBlocksByte;
-- (int **) processWayDataBlock:(BOOL)doubleDeltaEncoding andLength:(int**)length;
 @end

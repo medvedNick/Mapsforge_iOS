@@ -78,7 +78,7 @@ extern int const RF_LONGITUDE_MIN;
   if (hasLanguagePreference) {
     NSString * countryCode = [readBuffer readUTF8EncodedString];
     if ([countryCode length] != LANGUAGE_PREFERENCE_LENGTH) {
-        return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid language preference: %d", countryCode]];// autorelease];
+        return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid language preference: %@", countryCode]];// autorelease];
     }
     languagePreference = countryCode;
   }

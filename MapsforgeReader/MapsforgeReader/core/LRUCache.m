@@ -7,7 +7,7 @@ extern long const serialVersionUID;// = 1L;
 
 + (int) calculateInitialCapacity:(int)capacity {
   if (capacity < 0) {
-	  [NSException raise:@"InvalidArgumentException" format:[NSString stringWithFormat:@"capacity must not be negative: %d", capacity]];
+	  [NSException raise:@"InvalidArgumentException" format:@"capacity must not be negative: %d", capacity];
   }
   return (int)(capacity / LOAD_FACTOR) + 2;
 }

@@ -97,7 +97,7 @@ extern long const serialVersionUID;// = 1L;
 }
 
 - (NSString *) description {
-	NSString *desc = [NSString stringWithFormat:@"GeoPoint [latitudeE6=%d, longitudeE6=%d]"];
+	NSString *desc = [NSString stringWithFormat:@"GeoPoint [latitudeE6=%d, longitudeE6=%d]", latitudeE6, longitudeE6];
 	return desc;
 }
 
