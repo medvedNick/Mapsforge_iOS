@@ -148,10 +148,12 @@
                         {
                             result = [[self delegate] parser:self didProduceSyntaxTree:tree];
                         }
+                        [result retain];
                     }
                     
                     NSUInteger newState = [self gotoForState:[(CPShiftReduceState *)[stateStack lastObject] state] rule:reductionRule];
                     [stateStack addObject:[CPShiftReduceState shiftReduceStateWithObject:result state:newState]];
+                    [result release];
                 }
                 else if ([action isAccept])
                 {
