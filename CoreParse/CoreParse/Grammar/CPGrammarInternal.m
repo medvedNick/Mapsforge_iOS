@@ -281,7 +281,7 @@
          
 - (NSArray *)addRHSRules:(NSDictionary *)newRules toRules:(NSArray *)oldRules
 {
-    NSMutableArray *rules = [[NSMutableArray alloc] initWithArray:oldRules];
+    NSMutableArray *rules = [[[NSMutableArray alloc] initWithArray:oldRules] autorelease];
     
     Class rhsItemClass = [CPRHSItemResult class];
     for (CPRHSItem *item in newRules)
