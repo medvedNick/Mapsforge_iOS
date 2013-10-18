@@ -1,0 +1,63 @@
+way[landuse]
+{
+  z-index: -5;
+  fill-color: rgb(0.81, 0.92, 0.65);
+	
+  area[landuse="military"]
+  {
+    fill-image: url("fills/military.png");
+    width: 3pt;
+    color: rgb(1.0, 0.46, 0.47);
+  }
+  
+  area[landuse="residential"]
+  {
+    fill-color: rgba(0.9, 0.9, 0.9, 0.5);
+  }
+  
+  area[landuse="retail"]
+  {
+    fill-color: rgb(0.94, 0.85, 0.85);
+    color: rgb(0.95, 0.7, 0.7);
+    width: 1pt;
+  }
+  
+  area[landuse="forest"]
+  {
+    fill-image: url("fills/forest.png");
+  }
+  
+  area[landuse="cemetery"]
+  {
+    fill-image: url("fills/graveyard.png");
+  }
+  
+  area[landuse="railway"],
+  area[landuse="industrial"]
+  {
+    fill-color: rgb(0.87, 0.82, 0.84);
+    z-index: -4;
+  }
+  
+  area[landuse="landfill"]
+  {
+    fill-color: rgb(0.72, 0.71, 0.58);
+  }
+  
+  area[landuse="construction"]
+  {
+    fill-color: rgb(0.60, 0.62, 0.42);
+  }
+  
+  area[landuse="commercial"]
+  {
+    fill-color: rgb(0.97, 1.0, 0.78);
+  }
+  
+  area[landuse="reservoir"]
+  {
+    fill-color: rgb(0.64, 0.74, 0.86);
+  }
+  
+  exit;
+}

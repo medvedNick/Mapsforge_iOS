@@ -2,8 +2,8 @@
 //  ViewController.h
 //  VectorMap_4_0_test
 //
-//  Created by Nikita Medvedev on 6/15/12.
-//  Copyright (c) 2012 __MyCompanyName__. All rights reserved.
+//  Created by Nikita on 18.10.13.
+//
 //
 
 #import <UIKit/UIKit.h>

@@ -74,7 +74,7 @@ NSString * const RMCloudMadeAccessTokenRequestFailed = @"RMCloudMadeAccessTokenR
 			return;
 	
 	NSString* url = [NSString stringWithFormat:@"%@/token/%@?userid=%u",CMTokenAuthorizationServer,accessKey,
-					[[UIDevice currentDevice].uniqueIdentifier hash]];
+					0/*[[UIDevice currentDevice].uniqueIdentifier hash]*/]; // we do not need hash
 
 	
 	NSData* data = nil;
