@@ -12,8 +12,8 @@
 
 #import <objc/runtime.h>
 
-static char styleRef;
-static char oldZoomRef;
+//static char styleRef;
+//static char oldZoomRef;
 
 @implementation OSPMapCSSStyleSheet
 {

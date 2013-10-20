@@ -54,7 +54,7 @@ void patternCallback(void *info, CGContextRef ctx);
 - (UIColor *)colourWithColourSpecifierList:(OSPMapCSSSpecifierList *)colour opacitySpecifierList:(OSPMapCSSSpecifierList *)opacity;
 - (UIImage *)imageWithSpecifierList:(OSPMapCSSSpecifierList *)spec;
 
-- (CGPathRef)createPathForWay:(OSPWay *)way;
+- (CGPathRef)newPathForWay:(OSPWay *)way;
 - (CTFontRef)createFontWithStyle:(NSDictionary *)style scaledVariant:(CTFontRef *)scaledFont atScale:(CGFloat)scale;
 - (NSString *)applyTextTransform:(NSDictionary *)style toString:(NSString *)str;
 
@@ -300,8 +300,8 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
         NSArray *layerObjects = [layers objectForKey:layerNumber];
         [layers setObject:[layerObjects sortedArrayUsingComparator:^ NSComparisonResult (OSPMapCSSStyledObject *o1, OSPMapCSSStyledObject *o2)
                            {
-							   float z1;
-							   float z2;
+							   float z1 = 0;
+							   float z2 = 0;
 							   if (o1->z == -1)
 							   {
 								   z1 = [[[[[[o1 style] objectForKey:@"z-index"] specifiers] objectAtIndex:0] sizeValue] value];
@@ -416,36 +416,39 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
     
     if (fillValid && way->cLength[0] > 0/*[nodes count] > 1*/)
     {
-        CGPathRef path = [self createPathForWay:way];
-        CGContextAddPath(ctx, path);
-		//CGContextClip(ctx);
-        
-        if (fillColour != nil)
+        CGPathRef path = [self newPathForWay:way];
+        if (path != nil)
         {
-            CGColorSpaceRef rgbSpace = CGColorSpaceCreateDeviceRGB();
-            CGContextSetFillColorSpace(ctx, rgbSpace);
-            CGColorSpaceRelease(rgbSpace);
-            CGContextSetFillColorWithColor(ctx, [fillColour CGColor]);
+            CGContextAddPath(ctx, path);
+            //CGContextClip(ctx);
+            
+            if (fillColour != nil)
+            {
+                CGColorSpaceRef rgbSpace = CGColorSpaceCreateDeviceRGB();
+                CGContextSetFillColorSpace(ctx, rgbSpace);
+                CGColorSpaceRelease(rgbSpace);
+                CGContextSetFillColorWithColor(ctx, [fillColour CGColor]);
+            }
+            else
+            {
+                CGSize s = [fillImage size];
+                CGColorSpaceRef patternSpace = CGColorSpaceCreatePattern(NULL);
+                CGContextSetFillColorSpace(ctx, patternSpace);
+                CGColorSpaceRelease(patternSpace);
+                static const CGPatternCallbacks callbacks = { 0, &patternCallback, NULL };
+                CGPatternRef pat = CGPatternCreate((__bridge void *)[NSDictionary dictionaryWithObjectsAndKeys:fillImage, @"I", [NSValue valueWithCGSize:s], @"s", nil], CGRectMake(0.0f, 0.0f, s.width, s.height), CGAffineTransformMakeScale(1.0, -1.0), s.width, s.height, kCGPatternTilingNoDistortion, true, &callbacks);
+                CGFloat alpha = 1;
+                CGContextSetFillPattern(ctx, pat, &alpha);
+                CGPatternRelease(pat);
+            }
+            CGContextFillPath(ctx);
+            
+            CFRelease(path);
         }
-        else
-        {
-            CGSize s = [fillImage size];
-            CGColorSpaceRef patternSpace = CGColorSpaceCreatePattern(NULL);
-            CGContextSetFillColorSpace(ctx, patternSpace);
-            CGColorSpaceRelease(patternSpace);
-            static const CGPatternCallbacks callbacks = { 0, &patternCallback, NULL };
-            CGPatternRef pat = CGPatternCreate((__bridge void *)[NSDictionary dictionaryWithObjectsAndKeys:fillImage, @"I", [NSValue valueWithCGSize:s], @"s", nil], CGRectMake(0.0f, 0.0f, s.width, s.height), CGAffineTransformMakeScale(1.0, -1.0), s.width, s.height, kCGPatternTilingNoDistortion, true, &callbacks);
-            CGFloat alpha = 1;
-            CGContextSetFillPattern(ctx, pat, &alpha);
-            CGPatternRelease(pat);
-        }
-        CGContextFillPath(ctx);
-        
-        CFRelease(path);
     }
 }
 
-- (CGPathRef)createPathForWay:(OSPWay *)way
+- (CGPathRef)newPathForWay:(OSPWay *)way
 {
 //    NSArray *nodes = [way nodeObjects];
 //    
@@ -459,7 +462,7 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
 //        OSPCoordinate2D nl = [node projectedLocation];
 //        CGPathAddLineToPoint(path, NULL, nl.x, nl.y);
 //    }
-	CGMutablePathRef path;
+	CGMutablePathRef path = nil;
 	double NANODEG = 0.000001;
 
     for (int block = 0; block < way->cLength[0]; block++)
@@ -496,7 +499,7 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
     
     if (/*[nodes count] > 1 &&*/ nil != width && nil != casingWidth)
     {
-        CGPathRef path = [self createPathForWay:way];
+        CGPathRef path = [self newPathForWay:way];
         CGContextAddPath(ctx, path);
 		//CGContextClip(ctx);
 		
@@ -521,9 +524,9 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
                     dashes[i] = [size value] * scale;
                     i++;
                 }
-                CGContextSetLineDash(ctx, 0.0f, dashes, i);
-                free(dashes);
             }
+            CGContextSetLineDash(ctx, 0.0f, dashes, i);
+            free(dashes);
         }
         else
         {
@@ -547,7 +550,7 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
     
     if (/*[nodes count] > 1 &&*/ strokeValid)
     {
-        CGPathRef path = [self createPathForWay:way];
+        CGPathRef path = [self newPathForWay:way];
         CGContextAddPath(ctx, path);
 		//CGContextClip(ctx);
         
@@ -750,12 +753,12 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
     CTParagraphStyleRef paragraphStyle = CTParagraphStyleCreate(paragraphStyleSettings, sizeof(paragraphStyleSettings) / sizeof(paragraphStyleSettings[0]));
     NSDictionary *attributes = [NSDictionary dictionaryWithObjectsAndKeys:
                                 (__bridge id)font, kCTFontAttributeName,
-                                paragraphStyle, kCTParagraphStyleAttributeName,
+                                (__bridge id)paragraphStyle, kCTParagraphStyleAttributeName,
                                 nil];
     NSMutableDictionary *scaledAttributes = [NSMutableDictionary dictionaryWithObjectsAndKeys:
                                              (__bridge id)scaledFont, kCTFontAttributeName,
                                              kCFBooleanTrue, kCTForegroundColorFromContextAttributeName,
-                                             paragraphStyle, kCTParagraphStyleAttributeName,
+                                             (__bridge id)paragraphStyle, kCTParagraphStyleAttributeName,
                                              nil];
     
     CFAttributedStringRef attrString = CFAttributedStringCreate(kCFAllocatorDefault, (__bridge CFStringRef)text, (__bridge CFDictionaryRef)attributes);
@@ -874,6 +877,7 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
 			{
 				CGFontRef gf = CTFontCopyGraphicsFont(f, NULL);
 				CGContextSetFont(ctx, gf);
+                CFRelease(gf);
 			}
             CFIndex numGlyphs = CTRunGetGlyphCount(run);
             const CGGlyph *glyphs = CTRunGetGlyphsPtr(run);
@@ -981,10 +985,10 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
     {
         OSPMapCSSUrl *u = [[[spec specifiers] objectAtIndex:0] urlValue];
         NSURL *url = [u content];
-        NSString *urlString = [url relativeString];
+        //NSString *urlString = [url relativeString];
         NSString *ext = [url pathExtension];
         NSString *resName = [[url lastPathComponent] stringByDeletingPathExtension];
-        NSString *dir = [urlString stringByDeletingLastPathComponent];
+        //NSString *dir = [urlString stringByDeletingLastPathComponent];
         NSString *path = [[NSBundle mainBundle] pathForResource:resName ofType:ext];// inDirectory:dir];
         return [UIImage imageWithContentsOfFile:path];
     }

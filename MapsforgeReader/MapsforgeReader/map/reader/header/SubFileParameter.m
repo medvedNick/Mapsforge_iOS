@@ -58,7 +58,7 @@ double const COORDINATES_DIVISOR = 1000000.0;
 }
 
 - (NSString *) description {
-	return [NSString stringWithFormat:@"SubFileParameter [baseZoomLevel=%d, blocksHeight=%d, blocksWidth=%d, boundaryTileBottom=%d, boundaryTileLeft=%d, boundaryTileRight=%d, boundaryTileTop=%d, indexStartAddress=%d, numberOfBlocks=%d, startAddress=%d, subFileSize=%d, zoomLevelMax=%d, zoomLevelMin=%d]", baseZoomLevel,blocksHeight,blocksWidth,boundaryTileBottom,boundaryTileLeft,boundaryTileRight,boundaryTileTop,indexStartAddress,numberOfBlocks,startAddress,subFileSize,zoomLevelMax,zoomLevelMin];
+	return [NSString stringWithFormat:@"SubFileParameter [baseZoomLevel=%d, blocksHeight=%lld, blocksWidth=%lld, boundaryTileBottom=%lld, boundaryTileLeft=%lld, boundaryTileRight=%lld, boundaryTileTop=%lld, indexStartAddress=%lld, numberOfBlocks=%lld, startAddress=%lld, subFileSize=%lld, zoomLevelMax=%d, zoomLevelMin=%d]", baseZoomLevel,blocksHeight,blocksWidth,boundaryTileBottom,boundaryTileLeft,boundaryTileRight,boundaryTileTop,indexStartAddress,numberOfBlocks,startAddress,subFileSize,zoomLevelMax,zoomLevelMin];
 }
 
 

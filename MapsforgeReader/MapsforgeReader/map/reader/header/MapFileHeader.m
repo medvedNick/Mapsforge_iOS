@@ -152,7 +152,7 @@ extern unichar const SPACE;// = ' ';
     }
     long long startAddress = [readBuffer readLong];
     if (startAddress < HEADER_SIZE_MIN || startAddress >= fileSize) {
-        return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid start address:%d", startAddress]];// autorelease];
+        return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid start address:%lld", startAddress]];// autorelease];
     }
     subFileParameterBuilder->startAddress = startAddress;
     long long indexStartAddress = startAddress;
@@ -162,7 +162,7 @@ extern unichar const SPACE;// = ' ';
     subFileParameterBuilder->indexStartAddress = indexStartAddress;
     long long subFileSize = [readBuffer readLong];
     if (subFileSize < 1) {
-		return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid sub-file size: %d",subFileSize]];// autorelease];
+		return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid sub-file size: %lld",subFileSize]];// autorelease];
     }
     subFileParameterBuilder->subFileSize = subFileSize;
     subFileParameterBuilder->boundingBox = mapFileInfoBuilder->boundingBox;

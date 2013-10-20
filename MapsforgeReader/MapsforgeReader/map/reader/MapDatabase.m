@@ -164,6 +164,14 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
 
 //extern int const MAXIMUM_BUFFER_SIZE;
 
+@interface MapDatabase ()
+- (void)createWayCoordinates:(int***)wayCoordinates
+      andProcessWayDataBlock:(BOOL)doubleDeltaEncoding
+                   andLength:(int**)length;
+- (int)createAndReadZoomTable:(int***)zoomTable
+         withSubFileParameter:(SubFileParameter *)subFileParameter;
+- (void)free2DArray:(int**)array withNumberOfRows:(int)rows;
+@end
 
 @implementation MapDatabase
 
@@ -366,14 +374,17 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
   if (![self processBlockSignature]) {
     return;
   }
-  int** zoomTable = [self readZoomTable:subFileParameter];
-  if (zoomTable == nil) {
+    int** zoomTable;
+    int numRowsInZoomTable = [self createAndReadZoomTable:&zoomTable withSubFileParameter:subFileParameter];
+  if (numRowsInZoomTable == 0) {
+      [self free2DArray:zoomTable withNumberOfRows:numRowsInZoomTable];
     return;
   }
   int zoomTableRow = queryParameters->queryZoomLevel - subFileParameter->zoomLevelMin;
   int poisOnQueryZoomLevel = zoomTable[zoomTableRow][0];
   int waysOnQueryZoomLevel = zoomTable[zoomTableRow][1];
-  int firstWayOffset = [readBuffer readUnsignedInt];
+    [self free2DArray:zoomTable withNumberOfRows:numRowsInZoomTable];
+    int firstWayOffset = [readBuffer readUnsignedInt];
   if (firstWayOffset < 0) {
       NSLog(@"warning in -processBlock in MapDatabase.m: invalid firstWayOffset: %d", firstWayOffset);
     if ([mapFileHeader mapFileInfo]->debugFile) {
@@ -521,10 +532,10 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
 //        return NO;
 //      }
     }
-    int latitude = tileLatitude + [readBuffer readSignedInt];
-    int longitude = tileLongitude + [readBuffer readSignedInt];
+    /*int latitude = tileLatitude + */[readBuffer readSignedInt];
+    /*int longitude = tileLongitude + */[readBuffer readSignedInt];
     Byte specialByte = [readBuffer readByte];
-    Byte layer = (Byte)((specialByte & POI_LAYER_BITMASK) >> POI_LAYER_SHIFT);
+    //Byte layer = (Byte)((specialByte & POI_LAYER_BITMASK) >> POI_LAYER_SHIFT);
     Byte numberOfTags = (Byte)(specialByte & POI_NUMBER_OF_TAGS_BITMASK);
 //    [tags removeAllObjects];
 
@@ -563,51 +574,61 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
   return YES;
 }
 
-- (int **) processWayDataBlock:(BOOL)doubleDeltaEncoding andLength:(int**)length {
-  int numberOfWayCoordinateBlocks = [readBuffer readUnsignedInt];
-  if (numberOfWayCoordinateBlocks < 1 || numberOfWayCoordinateBlocks > SHRT_MAX) {
-    NSLog(@"invalid number of way coordinate blocks: %d", numberOfWayCoordinateBlocks);
-    [self logDebugSignatures];
-    return nil;
-  }
-  int ** wayCoordinates = (int**)malloc(numberOfWayCoordinateBlocks*sizeof(int*));
-  *length = (int*)malloc((numberOfWayCoordinateBlocks+1)*sizeof(int));
+- (void)createWayCoordinates:(int***)wayCoordinates
+      andProcessWayDataBlock:(BOOL)doubleDeltaEncoding
+                   andLength:(int**)length {
+    int numberOfWayCoordinateBlocks = [readBuffer readUnsignedInt];
+    if (numberOfWayCoordinateBlocks < 1 || numberOfWayCoordinateBlocks > SHRT_MAX) {
+        NSLog(@"invalid number of way coordinate blocks: %d", numberOfWayCoordinateBlocks);
+        [self logDebugSignatures];
+        *wayCoordinates = nil;
+        return;
+    }
+    
+    *wayCoordinates = (int**)malloc(numberOfWayCoordinateBlocks * sizeof(int*));
+    
+    *length = (int*)malloc((numberOfWayCoordinateBlocks + 1) * sizeof(int));
     (*length)[0] = 1;//numberOfWayCoordinateBlocks;
-//  NSMutableArray *wayCoordinates = [NSMutableArray arrayWithCapacity:numberOfWayCoordinateBlocks];
-//    for (int i = 0; i < numberOfWayCoordinateBlocks; ++i)
-//    {
-//        [wayCoordinates addObject:[NSNull null]];
-//    }
-
-  for (int coordinateBlock = 0; coordinateBlock < numberOfWayCoordinateBlocks; ++coordinateBlock) {
-    int numberOfWayNodes = [readBuffer readUnsignedInt];
-    if (numberOfWayNodes < 2 || numberOfWayNodes > MAXIMUM_WAY_NODES_SEQUENCE_LENGTH) {
-      NSLog(@"invalid number of way nodes: %d", numberOfWayNodes);
-      [self logDebugSignatures];
-      return nil;
+    //  NSMutableArray *wayCoordinates = [NSMutableArray arrayWithCapacity:numberOfWayCoordinateBlocks];
+    //    for (int i = 0; i < numberOfWayCoordinateBlocks; ++i)
+    //    {
+    //        [wayCoordinates addObject:[NSNull null]];
+    //    }
+    int numRowsInWayCoordinates = 0;
+    for (int coordinateBlock = 0; coordinateBlock < numberOfWayCoordinateBlocks; ++coordinateBlock) {
+        int numberOfWayNodes = [readBuffer readUnsignedInt];
+        if (numberOfWayNodes < 2 || numberOfWayNodes > MAXIMUM_WAY_NODES_SEQUENCE_LENGTH) {
+            NSLog(@"invalid number of way nodes: %d", numberOfWayNodes);
+            [self logDebugSignatures];
+            [self free2DArray:*wayCoordinates withNumberOfRows:numRowsInWayCoordinates];
+            *wayCoordinates = nil;
+            free(*length);
+            length = nil;
+            return;
+        }
+        
+        int wayNodesSequenceLength = numberOfWayNodes * 2;
+        int * waySegment = (int*)malloc(wayNodesSequenceLength * sizeof(int));
+        //      NSMutableArray *waySegment = [NSMutableArray arrayWithCapacity:wayNodesSequenceLength];
+        //      for (int i = 0; i < wayNodesSequenceLength; ++i)
+        //      {
+        //          [waySegment addObject:[NSNull null]];
+        //      }
+        if (doubleDeltaEncoding) {
+            [self decodeWayNodesDoubleDelta:waySegment length:wayNodesSequenceLength];
+        } else {
+            [self decodeWayNodesSingleDelta:waySegment length:wayNodesSequenceLength];
+        }
+        
+        if (coordinateBlock == 0) {
+            (*length)[coordinateBlock+1] = wayNodesSequenceLength;
+            (*wayCoordinates)[coordinateBlock] = waySegment;
+            numRowsInWayCoordinates++;
+        } else {
+            free(waySegment);
+        }
+        //    [wayCoordinates replaceObjectAtIndex:coordinateBlock withObject:waySegment];
     }
-    int wayNodesSequenceLength = numberOfWayNodes * 2;
-    int * waySegment = (int*)malloc(wayNodesSequenceLength*sizeof(int));
-//      NSMutableArray *waySegment = [NSMutableArray arrayWithCapacity:wayNodesSequenceLength];
-//      for (int i = 0; i < wayNodesSequenceLength; ++i)
-//      {
-//          [waySegment addObject:[NSNull null]];
-//      }
-    if (doubleDeltaEncoding) {
-      [self decodeWayNodesDoubleDelta:waySegment length:wayNodesSequenceLength];
-    }
-     else {
-      [self decodeWayNodesSingleDelta:waySegment length:wayNodesSequenceLength];
-    }
-      if (coordinateBlock == 0)
-      {
-    (*length)[coordinateBlock+1] = wayNodesSequenceLength;
-    wayCoordinates[coordinateBlock] = waySegment;
-      }
-//    [wayCoordinates replaceObjectAtIndex:coordinateBlock withObject:waySegment];
-  }
-
-  return wayCoordinates;
 }
 
 
@@ -691,14 +712,14 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
       [tagsDict setObject:[readBuffer readUTF8EncodedString] forKey:TAG_KEY_REF];
 //      [tags addObject:[[MFTag alloc] init:TAG_KEY_REF value:[readBuffer readUTF8EncodedString]]];//autorelease]];
     }
-    float * labelPosition = [self readOptionalLabelPosition:featureLabelPosition];
+    
     int wayDataBlocks = [self readOptionalWayDataBlocksByte:featureWayDataBlocksByte];
     if (wayDataBlocks < 1) {
       NSLog(@"warning in -processWays in MapDatabase.m: invalid number of way data blocks: %d", wayDataBlocks);
       [self logDebugSignatures];
       return NO;
     }
-
+      float * labelPosition = [self readOptionalLabelPosition:featureLabelPosition];
 //    NSMutableDictionary *tagsDict = [[NSMutableDictionary alloc] initWithCapacity:tags.count];
 //    for (MFTag *tag in tags)
 //    {
@@ -709,11 +730,21 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
     int *wayLength;
 
     for (int wayDataBlock = 0; wayDataBlock < wayDataBlocks; ++wayDataBlock) {
-      int ** wayNodes = [self processWayDataBlock:featureWayDoubleDeltaEncoding andLength:&wayLength];
+      //int ** wayNodes = [self processWayDataBlock:featureWayDoubleDeltaEncoding andLength:&wayLength];
+        int **wayNodes;
+        [self createWayCoordinates:&wayNodes
+            andProcessWayDataBlock:featureWayDoubleDeltaEncoding
+                         andLength:&wayLength];
       if (wayNodes == nil) {
+          free(labelPosition);
         return NO;
       }
-      if (wayDataBlock == 0) [mapDatabaseCallback addWay:wayId++ nodes:wayNodes length:wayLength labelPosition:labelPosition tags:tagsDict layer:layer];
+        if (wayDataBlock == 0) {
+            [mapDatabaseCallback addWay:wayId++ nodes:wayNodes length:wayLength labelPosition:labelPosition tags:tagsDict layer:layer];
+        } else {
+            [self free2DArray:wayNodes withNumberOfRows:*wayLength];
+            free(wayLength);
+        }
 //    [mapDatabaseCallback renderWay:layer labelPosition:labelPosition tags:tags wayNodes:wayNodes];
     }
 //    [tagsDict release];
@@ -739,35 +770,44 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
   return 1;
 }
 
-- (int**) readZoomTable:(SubFileParameter *)subFileParameter {
+- (int)createAndReadZoomTable:(int***)zoomTable withSubFileParameter:(SubFileParameter *)subFileParameter {
   int rows = subFileParameter->zoomLevelMax - subFileParameter->zoomLevelMin + 1;
-  int ** zoomTable = (int**)malloc(rows*sizeof(int*));
+  *zoomTable = (int**)malloc(rows*sizeof(int*));
   int cumulatedNumberOfPois = 0;
   int cumulatedNumberOfWays = 0;
 
   for (int row = 0; row < rows; ++row) {
-    zoomTable[row] = (int*)malloc(2*sizeof(int));
+    (*zoomTable)[row] = (int*)malloc(2*sizeof(int));
     cumulatedNumberOfPois += [readBuffer readUnsignedInt];
     cumulatedNumberOfWays += [readBuffer readUnsignedInt];
     if (cumulatedNumberOfPois < 0 || cumulatedNumberOfPois > MAXIMUM_ZOOM_TABLE_OBJECTS) {
-      NSLog(@"warning in -readZoomTable in MapDatabase.m: invalid cumulated number of POIs in row: %d %d", row, cumulatedNumberOfPois);
+      NSLog(@"warning in -createAndReadZoomTable:withSubFileParameter: in MapDatabase.m: invalid cumulated number of POIs in row: %d %d", row, cumulatedNumberOfPois);
       if ([mapFileHeader mapFileInfo]->debugFile) {
         NSLog(@"warning in -processWays in MapDatabase.m: debug signature block: %@", signatureBlock);
       }
-      return nil;
+        [self free2DArray:*zoomTable withNumberOfRows:row + 1];
+      return 0;
     }
      else if (cumulatedNumberOfWays < 0 || cumulatedNumberOfWays > MAXIMUM_ZOOM_TABLE_OBJECTS) {
-       NSLog(@"warning in -readZoomTable in MapDatabase.m: invalid invalid cumulated number of ways in row: %d %d", row, cumulatedNumberOfWays);
+       NSLog(@"warning in -createAndReadZoomTable:withSubFileParameter: in MapDatabase.m: invalid invalid cumulated number of ways in row: %d %d", row, cumulatedNumberOfWays);
       if ([mapFileHeader mapFileInfo]->debugFile) {
         NSLog(@"warning in -processWays in MapDatabase.m: debug signature block: %@", signatureBlock);
       }
-      return nil;
+         [self free2DArray:*zoomTable withNumberOfRows:row + 1];
+      return 0;
     }
-    zoomTable[row][0] = cumulatedNumberOfPois;
-    zoomTable[row][1] = cumulatedNumberOfWays;
+    (*zoomTable)[row][0] = cumulatedNumberOfPois;
+    (*zoomTable)[row][1] = cumulatedNumberOfWays;
   }
 
-  return zoomTable;
+  return rows;
+}
+
+- (void)free2DArray:(int**)array withNumberOfRows:(int)rows {
+    for (int i = 0; i < rows; i++) {
+        free(array[i]);
+    }
+    free(array);
 }
 
 //- (void) dealloc {

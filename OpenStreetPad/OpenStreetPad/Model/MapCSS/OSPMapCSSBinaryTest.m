@@ -108,7 +108,7 @@ NSString *NSStringFromOSPMapCSSBinaryOperator(OSPMapCSSBinaryOperator o)
             return ![objectValue isEqualToString:value];
         case OSPMapCSSBinaryOperatorMatches:
         {
-            NSError *err = nil;
+            //NSError *err = nil;
             //NSRegularExpression *e = [NSRegularExpression regularExpressionWithPattern:value options:0 error:&err];
             return NO;//[e numberOfMatchesInString:objectValue options:NSMatchingAnchored range:NSMakeRange(0, [objectValue length])] > 0;
         }

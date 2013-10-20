@@ -44,10 +44,8 @@
 - (void) prepareExecution;
 - (void) processBlocks:(id<MapDatabaseCallback>)mapDatabaseCallback queryParameters:(QueryParameters *)queryParameters subFileParameter:(SubFileParameter *)subFileParameter;
 - (BOOL) processBlockSignature;
-- (int **) readZoomTable:(SubFileParameter *)subFileParameter;
 - (BOOL) processPOIs:(id<MapDatabaseCallback>)mapDatabaseCallback numberOfPois:(int)numberOfPois;
 - (BOOL) processWays:(QueryParameters *)queryParameters mapDatabaseCallback:(id<MapDatabaseCallback>)mapDatabaseCallback numberOfWays:(int)numberOfWays;
 - (float *) readOptionalLabelPosition:(BOOL)featureLabelPosition;
 - (int) readOptionalWayDataBlocksByte:(BOOL)featureWayDataBlocksByte;
-- (int **) processWayDataBlock:(BOOL)doubleDeltaEncoding andLength:(int**)length;
 @end

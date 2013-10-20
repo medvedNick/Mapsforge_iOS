@@ -66,7 +66,7 @@ long const serialVersionUID = 1L;
 }
 
 - (NSString *) description {
-	return [NSString stringWithFormat:@"Tile [tileX=%d, tileY=%d, zoomLevel=%d", tileX, tileY, zoomLevel];
+	return [NSString stringWithFormat:@"Tile [tileX=%ld, tileY=%ld, zoomLevel=%d", tileX, tileY, zoomLevel];
 }
 
 

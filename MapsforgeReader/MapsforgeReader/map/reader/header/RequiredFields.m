@@ -83,7 +83,7 @@ int const RF_LONGITUDE_MIN = -180000000;
 + (FileOpenResult *) readFileSize:(ReadBuffer *)readBuffer fileSize:(long)fileSize mapFileInfoBuilder:(MapFileInfoBuilder *)mapFileInfoBuilder {
   long long headerFileSize = [readBuffer readLong];
   if (headerFileSize != fileSize) {
-      return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid file size: %d", headerFileSize]];// autorelease];
+      return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid file size: %lld", headerFileSize]];// autorelease];
   }
   mapFileInfoBuilder->fileSize = fileSize;
   return [FileOpenResult SUCCESS];
@@ -105,7 +105,7 @@ int const RF_LONGITUDE_MIN = -180000000;
   }
   NSString * magicByte = [readBuffer readUTF8EncodedString:magicByteLength];
   if (![BINARY_OSM_MAGIC_BYTE isEqualToString:magicByte]) {
-      return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid magic byte: %d", magicByte]];// autorelease];
+      return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid magic byte: %@", magicByte]];// autorelease];
   }
   return [FileOpenResult SUCCESS];
 }
