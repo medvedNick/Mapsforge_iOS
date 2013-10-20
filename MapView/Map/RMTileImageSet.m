@@ -169,7 +169,7 @@
 	}
 	else
 	{
-		if ([((RMCachedTileSource*)tileSource).tileSource isKindOfClass:[RMOSPTileSource class]])
+		if (NO)//[((RMCachedTileSource*)tileSource).tileSource isKindOfClass:[RMOSPTileSource class]])
 		{
 			NSMutableArray* array = [NSMutableArray arrayWithObjects:
 									 [NSData dataWithBytes:&tile length:sizeof(tile)],
