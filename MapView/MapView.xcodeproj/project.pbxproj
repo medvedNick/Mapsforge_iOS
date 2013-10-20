@@ -34,13 +34,6 @@
 /* Begin PBXBuildFile section */
 		090FE3140ECD71A500035FBC /* RMTilesUpdateDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 090FE3130ECD71A500035FBC /* RMTilesUpdateDelegate.h */; };
 		11EBA15B18117F5A000B3EFF /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 11EBA15A18117F5A000B3EFF /* libsqlite3.0.dylib */; };
-		11EBA16518117FA3000B3EFF /* FMDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 11EBA15D18117FA3000B3EFF /* FMDatabase.h */; };
-		11EBA16618117FA3000B3EFF /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 11EBA15E18117FA3000B3EFF /* FMDatabase.m */; };
-		11EBA16718117FA3000B3EFF /* FMDatabaseAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 11EBA15F18117FA3000B3EFF /* FMDatabaseAdditions.h */; };
-		11EBA16818117FA3000B3EFF /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 11EBA16018117FA3000B3EFF /* FMDatabaseAdditions.m */; };
-		11EBA16918117FA3000B3EFF /* fmdb.m in Sources */ = {isa = PBXBuildFile; fileRef = 11EBA16118117FA3000B3EFF /* fmdb.m */; };
-		11EBA16A18117FA3000B3EFF /* FMResultSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 11EBA16218117FA3000B3EFF /* FMResultSet.h */; };
-		11EBA16B18117FA3000B3EFF /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 11EBA16318117FA3000B3EFF /* FMResultSet.m */; };
 		126693040EB76C0B00E002D5 /* RMConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 126692A00EB75C0A00E002D5 /* RMConfiguration.m */; };
 		17157D88133BBC8300E28941 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		17157D89133BBC8300E28941 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -275,14 +268,6 @@
 		090C948C0EC23FCD003AEE25 /* RMMarkerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMMarkerManager.m; sourceTree = "<group>"; };
 		090FE3130ECD71A500035FBC /* RMTilesUpdateDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMTilesUpdateDelegate.h; sourceTree = "<group>"; };
 		11EBA15A18117F5A000B3EFF /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
-		11EBA15D18117FA3000B3EFF /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
-		11EBA15E18117FA3000B3EFF /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
-		11EBA15F18117FA3000B3EFF /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
-		11EBA16018117FA3000B3EFF /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseAdditions.m; sourceTree = "<group>"; };
-		11EBA16118117FA3000B3EFF /* fmdb.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = fmdb.m; sourceTree = "<group>"; };
-		11EBA16218117FA3000B3EFF /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
-		11EBA16318117FA3000B3EFF /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
-		11EBA16418117FA3000B3EFF /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		1266929F0EB75C0A00E002D5 /* RMConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMConfiguration.h; sourceTree = "<group>"; };
 		126692A00EB75C0A00E002D5 /* RMConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMConfiguration.m; sourceTree = "<group>"; };
 		12F2031E0EBB65E9003D7B6B /* RMMapViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMMapViewDelegate.h; sourceTree = "<group>"; };
@@ -498,21 +483,6 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		11EBA15C18117FA3000B3EFF /* FMDB */ = {
-			isa = PBXGroup;
-			children = (
-				11EBA15D18117FA3000B3EFF /* FMDatabase.h */,
-				11EBA15E18117FA3000B3EFF /* FMDatabase.m */,
-				11EBA15F18117FA3000B3EFF /* FMDatabaseAdditions.h */,
-				11EBA16018117FA3000B3EFF /* FMDatabaseAdditions.m */,
-				11EBA16118117FA3000B3EFF /* fmdb.m */,
-				11EBA16218117FA3000B3EFF /* FMResultSet.h */,
-				11EBA16318117FA3000B3EFF /* FMResultSet.m */,
-				11EBA16418117FA3000B3EFF /* README.txt */,
-			);
-			path = FMDB;
-			sourceTree = "<group>";
-		};
 		1266929E0EB75BEA00E002D5 /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
@@ -862,7 +832,6 @@
 			isa = PBXGroup;
 			children = (
 				175701DB1323C2CF00A5D314 /* iOS Additions */,
-				11EBA15C18117FA3000B3EFF /* FMDB */,
 				17F02BB01319BA4B00260C6B /* RouteMe.h */,
 				96492C3F0FA8AD3400EBA6D2 /* RMGlobalConstants.h */,
 				B1EB26C510B5D8E6009F8658 /* RMNotifications.h */,
@@ -951,11 +920,9 @@
 				B8474B9F0EB40094006A0BC1 /* FMResultSet.h in Headers */,
 				B8474BA20EB40094006A0BC1 /* RMTileCacheDAO.h in Headers */,
 				B8474BA40EB40094006A0BC1 /* RMDatabaseCache.h in Headers */,
-				11EBA16518117FA3000B3EFF /* FMDatabase.h in Headers */,
 				23A0AAEB0EB90AA6003A4521 /* RMFoundation.h in Headers */,
 				23A0ABAA0EB923AF003A4521 /* RMLatLong.h in Headers */,
 				B885ABB20EBB1332002206AB /* RMCloudMadeMapSource.h in Headers */,
-				11EBA16A18117FA3000B3EFF /* FMResultSet.h in Headers */,
 				B8800FF10EC3A237003E9CDD /* RMMarkerManager.h in Headers */,
 				B8800FF20EC3A239003E9CDD /* RMMapViewDelegate.h in Headers */,
 				B8800FF30EC3A23D003E9CDD /* RMConfiguration.h in Headers */,
@@ -972,7 +939,6 @@
 				D1437B37122869E400888DAE /* RMDBMapSource.h in Headers */,
 				25757F4F1291C8640083D504 /* RMCircle.h in Headers */,
 				2599740912EB966400816331 /* RMSpatialCloudMapSource.h in Headers */,
-				11EBA16718117FA3000B3EFF /* FMDatabaseAdditions.h in Headers */,
 				DD55FD1512FB40E000B6FE24 /* RMMBTilesTileSource.h in Headers */,
 				447420DA1302B2F5004D6E8A /* RMWMSSource.h in Headers */,
 				4474211B1302B60A004D6E8A /* RMWMS.h in Headers */,
@@ -1274,9 +1240,7 @@
 				B8C974460E8A19B2007D16AD /* RMFileTileImage.m in Sources */,
 				B8C974480E8A19B2007D16AD /* RMTileCache.m in Sources */,
 				B8C9744A0E8A19B2007D16AD /* RMProjection.m in Sources */,
-				11EBA16B18117FA3000B3EFF /* FMResultSet.m in Sources */,
 				B8C9744C0E8A19B2007D16AD /* RMAbstractMercatorWebSource.m in Sources */,
-				11EBA16618117FA3000B3EFF /* FMDatabase.m in Sources */,
 				B8C9745D0E8A19E6007D16AD /* RMTileImageSet.m in Sources */,
 				B8C9745F0E8A19E7007D16AD /* RMTileLoader.m in Sources */,
 				B8C974610E8A19E8007D16AD /* RMTileProxy.m in Sources */,
@@ -1289,7 +1253,6 @@
 				B8FA921A0E9315EC003A9FE6 /* RMLayerCollection.m in Sources */,
 				B8F3FC610EA2B382004D8F85 /* RMMapLayer.m in Sources */,
 				B8F3FC650EA2E792004D8F85 /* RMMarker.m in Sources */,
-				11EBA16918117FA3000B3EFF /* fmdb.m in Sources */,
 				B8474BA30EB40094006A0BC1 /* RMTileCacheDAO.m in Sources */,
 				B8474BA50EB40094006A0BC1 /* RMDatabaseCache.m in Sources */,
 				126693040EB76C0B00E002D5 /* RMConfiguration.m in Sources */,
@@ -1302,7 +1265,6 @@
 				F5C12D2B0F8A86CA00A894D2 /* RMGeoHash.m in Sources */,
 				B144DEFF0FD989C3003F3368 /* RMTileMapServiceSource.m in Sources */,
 				B1EB26C410B5D8C0009F8658 /* RMOpenCycleMapSource.m in Sources */,
-				11EBA16818117FA3000B3EFF /* FMDatabaseAdditions.m in Sources */,
 				D1437B34122869E400888DAE /* RMDBTileImage.m in Sources */,
 				D1437B36122869E400888DAE /* RMDBMapSource.m in Sources */,
 				25757F501291C8640083D504 /* RMCircle.m in Sources */,

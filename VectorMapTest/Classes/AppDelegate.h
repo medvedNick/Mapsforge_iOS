@@ -1,6 +1,6 @@
 //
 //  AppDelegate.h
-//  VectorMap_4_0_test
+//  VectorMapTest
 //
 //  Created by Nikita Medvedev on 6/15/12.
 //  Copyright (c) 2012 __MyCompanyName__. All rights reserved.

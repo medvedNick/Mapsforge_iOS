@@ -1,6 +1,6 @@
 //
 //  ViewController.m
-//  VectorMap_4_0_test
+//  VectorMapTest
 //
 //  Created by Nikita on 18.10.13.
 //

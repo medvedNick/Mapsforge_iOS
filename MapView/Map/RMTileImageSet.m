@@ -192,11 +192,11 @@
 	}
 }
 
--(void) addImage:(NSMutableArray*) obj{
+-(void) addImage:(NSMutableArray*) obj
+{
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
     CGRect screenLocation;
     RMTile tile;
-//    NSInteger count;
 	
     [[obj objectAtIndex:0] getBytes:&tile length:sizeof(tile)];
     [[obj objectAtIndex:1] getBytes:&screenLocation length:sizeof(screenLocation)];
@@ -209,33 +209,28 @@
 	[pool release];
 }
 
--(void) startStack{
-   if (!isStart) {
-        
+-(void) startStack
+{
+   if (!isStart)
+   {
         [self performSelectorInBackground:@selector(stackGo) withObject:nil];
    }
 }
 
--(void) stackGo{
+-(void) stackGo
+{
     if (stackArray.count)
 	{
 		NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 		isStart = YES;
 		isRender = YES;
-		NSMutableArray* array = nil;//[[stackArray objectAtIndex: 0] retain];
-		//			[stackArray removeObjectAtIndex:0];
-//		[NSThread detachNewThreadSelector:@selector(newTread:) toTarget:self withObject:array];
 
 		[lock lock];
 		
-		CGRect screenLocation;
 		RMTile normalisedTile;
-		NSInteger count;
-//		[stackLock lock];
+
 		NSMutableArray *obj = [[stackArray objectAtIndex:0] retain];
 		[[obj objectAtIndex:0] getBytes:&normalisedTile length:sizeof(normalisedTile)];
-//		[[obj objectAtIndex:1] getBytes:&screenLocation length:sizeof(screenLocation)];
-//		[[obj objectAtIndex:2] getBytes:&count length:sizeof(count)];
 		
 		RMTileImage *image = [tileSource tileImage:normalisedTile];
 		
@@ -251,9 +246,7 @@
 		[stackArray removeObject:obj];
 		[obj release];
 		isRender = NO;
-//		[stackLock unlock];
 		[lock unlock];
-//		[self performSelectorInBackground:@selector(stackGo) withObject:nil];
 		
 		[pool release];
 		[self stackGo];
@@ -274,37 +267,6 @@
 		}
     }
 }
-
-//-(void) newTread:(NSMutableArray*) obj{
-//	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-//    [lock lock];
-//
-//    CGRect screenLocation;
-//    RMTile normalisedTile;
-//    NSInteger count;
-//    [[obj objectAtIndex:0] getBytes:&normalisedTile length:sizeof(normalisedTile)];
-//    [[obj objectAtIndex:1] getBytes:&screenLocation length:sizeof(screenLocation)];
-//    [[obj objectAtIndex:2] getBytes:&count length:sizeof(count)];
-//
-//    RMTileImage *image = [tileSource tileImage:normalisedTile];
-//
-//    if (image)
-//	{
-//        NSMutableArray* array = [NSMutableArray array];
-////        [array addObject:[obj objectAtIndex:0]];
-////        [array addObject:[obj objectAtIndex:1]];
-////        [array addObject:image];
-//        [self performSelectorOnMainThread:@selector(addImage:) withObject:array waitUntilDone:NO];
-//    }
-//	[obj release];
-//    isRender = NO;
-////    if ([stackArray indexOfObject:obj] != NSNotFound) [stackArray removeObject:obj];
-////	[stackLock unlock];
-//    [lock unlock];
-//	[pool release];
-//    [self performSelectorInBackground:@selector(stackGo) withObject:nil];
-//}
-
 
 // Add tiles inside rect protected to bounds. Return rectangle containing bounds
 // extended to full tile loading area
