@@ -131,7 +131,7 @@
 
 - (NSUInteger)hash
 {
-    return [name hash] << 16 + [self tag] ;
+    return ([name hash] << 16) + [self tag] ;
 }
 
 - (BOOL)isEqual:(id)object

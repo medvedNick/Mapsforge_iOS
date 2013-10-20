@@ -250,6 +250,20 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		11EBA1C618128F31000B3EFF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1FCA08E314CAE5C2008889C3 /* CoreParse.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 1F92817E145C11050033BC34;
+			remoteInfo = iOSCoreParse;
+		};
+		11EBA1C818128F35000B3EFF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 79ED335B153C4C280057392A /* MapsforgeReader.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 7907198B151CB0C30008E07F;
+			remoteInfo = MapsforgeReader;
+		};
 		1FCA08EF14CAE5C2008889C3 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 1FCA08E314CAE5C2008889C3 /* CoreParse.xcodeproj */;
@@ -626,7 +640,6 @@
 		1FD8C51413ED378500ADD20A = {
 			isa = PBXGroup;
 			children = (
-				790009B41580C6F400008DE7 /* OpenGLES.framework */,
 				79ED335B153C4C280057392A /* MapsforgeReader.xcodeproj */,
 				1FCA08E314CAE5C2008889C3 /* CoreParse.xcodeproj */,
 				1FD8C52913ED378600ADD20A /* OpenStreetPad */,
@@ -650,6 +663,7 @@
 		1FD8C52213ED378600ADD20A /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				790009B41580C6F400008DE7 /* OpenGLES.framework */,
 				792FED5C150F78BC00505594 /* libz.dylib */,
 				792C443F14DAE3EE00193DEF /* MapKit.framework */,
 				1F0007D01412662900220FAA /* QuartzCore.framework */,
@@ -945,6 +959,8 @@
 			buildRules = (
 			);
 			dependencies = (
+				11EBA1C918128F35000B3EFF /* PBXTargetDependency */,
+				11EBA1C718128F31000B3EFF /* PBXTargetDependency */,
 			);
 			name = OSP;
 			productName = OSP;
@@ -1225,6 +1241,19 @@
 		};
 /* End PBXSourcesBuildPhase section */
 
+/* Begin PBXTargetDependency section */
+		11EBA1C718128F31000B3EFF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = iOSCoreParse;
+			targetProxy = 11EBA1C618128F31000B3EFF /* PBXContainerItemProxy */;
+		};
+		11EBA1C918128F35000B3EFF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = MapsforgeReader;
+			targetProxy = 11EBA1C818128F35000B3EFF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
 /* Begin PBXVariantGroup section */
 		1FD8C52C13ED378600ADD20A /* InfoPlist.strings */ = {
 			isa = PBXVariantGroup;
@@ -1249,7 +1278,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
@@ -1282,7 +1311,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
@@ -1309,10 +1338,7 @@
 		1FD8C53E13ED378600ADD20A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					armv7,
-					armv6,
-				);
+				ARCHS = "$(ARCHS_STANDARD)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OpenStreetPad/OpenStreetPad-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -1340,10 +1366,7 @@
 		1FD8C53F13ED378600ADD20A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = (
-					armv7,
-					armv6,
-				);
+				ARCHS = "$(ARCHS_STANDARD)";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "OpenStreetPad/OpenStreetPad-Prefix.pch";
 				HEADER_SEARCH_PATHS = (
@@ -1406,7 +1429,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/OSP.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1425,7 +1448,7 @@
 					/usr/lib,
 				);
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
@@ -1437,7 +1460,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = YES;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/OSP.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -1456,7 +1479,7 @@
 					/usr/lib,
 				);
 				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;

@@ -187,7 +187,7 @@ BOOL runInBackground;
 
 -(void) writeCacheIntoDisk
 {
-	NSLog(@"wrote cache into disk");
+//	NSLog(@"wrote cache into disk");
 	[cacheLock lock];
 	for (NSMutableArray *array in imagesCache)
 	{

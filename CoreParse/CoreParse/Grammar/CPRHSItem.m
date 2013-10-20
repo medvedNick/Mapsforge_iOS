@@ -16,7 +16,7 @@
 
 - (NSUInteger)hash
 {
-    return [[self contents] hash] << 2 + ([self repeats] ? 0x2 : 0x0) + ([self mayNotExist] ? 0x1 : 0x0);
+    return ([[self contents] hash] << 2) + ([self repeats] ? 0x2 : 0x0) + ([self mayNotExist] ? 0x1 : 0x0);
 }
 
 - (BOOL)isEqual:(id)object

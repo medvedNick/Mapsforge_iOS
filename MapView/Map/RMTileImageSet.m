@@ -171,13 +171,10 @@
 	{
 		if ([((RMCachedTileSource*)tileSource).tileSource isKindOfClass:[RMOSPTileSource class]])
 		{
-			NSMutableArray* array = [NSMutableArray array];
-			NSData* data1  = [NSData dataWithBytes:&tile length:sizeof(tile) ];
-    	    NSData* data2  = [NSData dataWithBytes:&screenLocation length:sizeof(screenLocation) ];
-			NSData* data3  = [NSData dataWithBytes:&stackNumber length:sizeof(stackNumber) ];
-			[array addObject:data1];
-			[array addObject:data2];
-			[array addObject:data3];
+			NSMutableArray* array = [NSMutableArray arrayWithObjects:
+									 [NSData dataWithBytes:&tile length:sizeof(tile)],
+									 [NSData dataWithBytes:&screenLocation length:sizeof(screenLocation)],
+									 [NSData dataWithBytes:&stackNumber length:sizeof(stackNumber)], nil];
 			[stackLock lock];
 			[stackArray addObject:array];
 			[stackLock unlock];
@@ -198,13 +195,12 @@
     CGRect screenLocation;
     RMTile tile;
 	
-    [[obj objectAtIndex:0] getBytes:&tile length:sizeof(tile)];
-    [[obj objectAtIndex:1] getBytes:&screenLocation length:sizeof(screenLocation)];
-	RMTileImage *image = [obj objectAtIndex:2];
+    [obj[0] getBytes:&tile length:sizeof(tile)];
+    [obj[1] getBytes:&screenLocation length:sizeof(screenLocation)];
+	RMTileImage *image = obj[2];
 		
     [self addTile:tile WithImage:image At:screenLocation];
-	
-//	[stackArray removeObjectAtIndex:0];
+
 	[image release];
 	[pool release];
 }
@@ -229,18 +225,22 @@
 		
 		RMTile normalisedTile;
 
-		NSMutableArray *obj = [[stackArray objectAtIndex:0] retain];
-		[[obj objectAtIndex:0] getBytes:&normalisedTile length:sizeof(normalisedTile)];
+		NSMutableArray *obj = nil;
+
+		@try {
+			obj = [stackArray[0] retain];
+			[obj[0] getBytes:&normalisedTile length:sizeof(normalisedTile)];
+		}
+		@catch (NSException *exception) {
+			NSLog(@"ALARM ALARM: %@", exception);
+		}
 		
 		RMTileImage *image = [tileSource tileImage:normalisedTile];
 		
 		if (image)
 		{
 			[image retain];
-			NSMutableArray* array = [NSMutableArray array];
-			[array addObject:[obj objectAtIndex:0]];
-			[array addObject:[obj objectAtIndex:1]];
-			[array addObject:image];
+			NSMutableArray* array = [NSMutableArray arrayWithObjects:obj[0], obj[1], image, nil];
 			[self performSelectorOnMainThread:@selector(addImage:) withObject:array waitUntilDone:NO];
 		}
 		[stackArray removeObject:obj];
@@ -422,7 +422,7 @@
 		for (NSMutableArray *tileAndLocation in stackArray)
 		{
 			CGRect screenLocation;
-			[[tileAndLocation objectAtIndex:1] getBytes:&screenLocation length:sizeof(screenLocation)];
+			[tileAndLocation[1] getBytes:&screenLocation length:sizeof(screenLocation)];
 			screenLocation = CGRectMake(screenLocation.origin.x+delta.width, screenLocation.origin.y+delta.height, screenLocation.size.width, screenLocation.size.height);
 			NSData* locationData  = [NSData dataWithBytes:&screenLocation length:sizeof(screenLocation)];
 			[tileAndLocation replaceObjectAtIndex:1 withObject:locationData];
@@ -430,7 +430,7 @@
 		[stackLock unlock];
 	}
 	@catch (NSException *e) {
-		NSLog(@"Exception: %@, %@", e.name, e.reason);
+		NSLog(@"Shit exception: %@, %@", e.name, e.reason);
 		[stackLock unlock];
 	}
 }

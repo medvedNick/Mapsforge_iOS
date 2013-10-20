@@ -176,7 +176,7 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
 	[self setupContext:context inRect:b atZoom:zoom];
 	
 	NSArray *styledObjects = [[self stylesheet] styledObjects:mapLoader.mapObjects atZoom:zoom];
-	NSLog(@"loaded: %d, styled: %d", mapLoader.mapObjects.count, styledObjects.count);
+//	NSLog(@"loaded: %d, styled: %d", mapLoader.mapObjects.count, styledObjects.count);
 	
 	switch (zoom) {
 		case 18:

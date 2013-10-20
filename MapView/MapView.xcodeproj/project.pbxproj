@@ -33,7 +33,12 @@
 
 /* Begin PBXBuildFile section */
 		090FE3140ECD71A500035FBC /* RMTilesUpdateDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 090FE3130ECD71A500035FBC /* RMTilesUpdateDelegate.h */; };
-		11EBA15B18117F5A000B3EFF /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 11EBA15A18117F5A000B3EFF /* libsqlite3.0.dylib */; };
+		11EBA1B018128D6E000B3EFF /* FMDatabase.h in Headers */ = {isa = PBXBuildFile; fileRef = 11EBA1A818128D6E000B3EFF /* FMDatabase.h */; };
+		11EBA1B118128D6E000B3EFF /* FMDatabase.m in Sources */ = {isa = PBXBuildFile; fileRef = 11EBA1A918128D6E000B3EFF /* FMDatabase.m */; };
+		11EBA1B218128D6E000B3EFF /* FMDatabaseAdditions.h in Headers */ = {isa = PBXBuildFile; fileRef = 11EBA1AA18128D6E000B3EFF /* FMDatabaseAdditions.h */; };
+		11EBA1B318128D6E000B3EFF /* FMDatabaseAdditions.m in Sources */ = {isa = PBXBuildFile; fileRef = 11EBA1AB18128D6E000B3EFF /* FMDatabaseAdditions.m */; };
+		11EBA1B518128D6E000B3EFF /* FMResultSet.h in Headers */ = {isa = PBXBuildFile; fileRef = 11EBA1AD18128D6E000B3EFF /* FMResultSet.h */; };
+		11EBA1B618128D6E000B3EFF /* FMResultSet.m in Sources */ = {isa = PBXBuildFile; fileRef = 11EBA1AE18128D6E000B3EFF /* FMResultSet.m */; };
 		126693040EB76C0B00E002D5 /* RMConfiguration.m in Sources */ = {isa = PBXBuildFile; fileRef = 126692A00EB75C0A00E002D5 /* RMConfiguration.m */; };
 		17157D88133BBC8300E28941 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		17157D89133BBC8300E28941 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
@@ -108,7 +113,6 @@
 		2BEC612E0F8ACC1E008FB858 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 288765A40DF7441C002DB57D /* CoreGraphics.framework */; };
 		2BEC612F0F8ACC1E008FB858 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B83E65630E80E81C001663B6 /* CoreLocation.framework */; };
 		2BEC61300F8ACC1F008FB858 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1D30AB110D05D00D00671497 /* Foundation.framework */; };
-		2BEC61310F8ACC21008FB858 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = B8474BC00EB4019A006A0BC1 /* libsqlite3.dylib */; };
 		2BEC61320F8ACC24008FB858 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B83E65680E80E830001663B6 /* QuartzCore.framework */; };
 		2BEC61330F8ACC25008FB858 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1DF5F4DF0D08C38300B7A737 /* UIKit.framework */; };
 		3849889C0F6F758100496293 /* libProj4.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 38D818500F6F67B90034598B /* libProj4.a */; };
@@ -219,6 +223,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		11EBA1C418128F00000B3EFF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 797CF1F41518ABB20031606E /* OpenStreetPad.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = 7969992D14F3F5A8002A2688;
+			remoteInfo = OSP;
+		};
 		2BEC606C0F8AC7B3008FB858 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = B83E654A0E80E7A8001663B6 /* Proj4.xcodeproj */;
@@ -268,6 +279,13 @@
 		090C948C0EC23FCD003AEE25 /* RMMarkerManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMMarkerManager.m; sourceTree = "<group>"; };
 		090FE3130ECD71A500035FBC /* RMTilesUpdateDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMTilesUpdateDelegate.h; sourceTree = "<group>"; };
 		11EBA15A18117F5A000B3EFF /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
+		11EBA1A818128D6E000B3EFF /* FMDatabase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabase.h; sourceTree = "<group>"; };
+		11EBA1A918128D6E000B3EFF /* FMDatabase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabase.m; sourceTree = "<group>"; };
+		11EBA1AA18128D6E000B3EFF /* FMDatabaseAdditions.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMDatabaseAdditions.h; sourceTree = "<group>"; };
+		11EBA1AB18128D6E000B3EFF /* FMDatabaseAdditions.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMDatabaseAdditions.m; sourceTree = "<group>"; };
+		11EBA1AD18128D6E000B3EFF /* FMResultSet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FMResultSet.h; sourceTree = "<group>"; };
+		11EBA1AE18128D6E000B3EFF /* FMResultSet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = FMResultSet.m; sourceTree = "<group>"; };
+		11EBA1AF18128D6E000B3EFF /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		1266929F0EB75C0A00E002D5 /* RMConfiguration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMConfiguration.h; sourceTree = "<group>"; };
 		126692A00EB75C0A00E002D5 /* RMConfiguration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMConfiguration.m; sourceTree = "<group>"; };
 		12F2031E0EBB65E9003D7B6B /* RMMapViewDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMMapViewDelegate.h; sourceTree = "<group>"; };
@@ -398,7 +416,6 @@
 		B8474B970EB40094006A0BC1 /* RMTileCacheDAO.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMTileCacheDAO.m; sourceTree = "<group>"; };
 		B8474B980EB40094006A0BC1 /* RMDatabaseCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RMDatabaseCache.h; sourceTree = "<group>"; };
 		B8474B990EB40094006A0BC1 /* RMDatabaseCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RMDatabaseCache.m; sourceTree = "<group>"; };
-		B8474BC00EB4019A006A0BC1 /* libsqlite3.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.dylib; path = usr/lib/libsqlite3.dylib; sourceTree = SDKROOT; };
 		B8474BE70EB40404006A0BC1 /* README.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = README.txt; sourceTree = "<group>"; };
 		B8474C6D0EB53A41006A0BC1 /* marker-blue.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "marker-blue.png"; sourceTree = "<group>"; };
 		B8474C6E0EB53A41006A0BC1 /* marker-red-withletter.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "marker-red-withletter.png"; sourceTree = "<group>"; };
@@ -459,7 +476,6 @@
 				2BEC612E0F8ACC1E008FB858 /* CoreGraphics.framework in Frameworks */,
 				2BEC612F0F8ACC1E008FB858 /* CoreLocation.framework in Frameworks */,
 				2BEC61300F8ACC1F008FB858 /* Foundation.framework in Frameworks */,
-				2BEC61310F8ACC21008FB858 /* libsqlite3.dylib in Frameworks */,
 				2BEC61320F8ACC24008FB858 /* QuartzCore.framework in Frameworks */,
 				2BEC61330F8ACC25008FB858 /* UIKit.framework in Frameworks */,
 			);
@@ -469,7 +485,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				11EBA15B18117F5A000B3EFF /* libsqlite3.0.dylib in Frameworks */,
 				79DA5E341524AA1A003F431F /* libOSP.a in Frameworks */,
 				B8C974500E8A19B2007D16AD /* CoreFoundation.framework in Frameworks */,
 				B8C974510E8A19B2007D16AD /* CoreGraphics.framework in Frameworks */,
@@ -483,6 +498,20 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		11EBA1A718128D6E000B3EFF /* FMDB */ = {
+			isa = PBXGroup;
+			children = (
+				11EBA1A818128D6E000B3EFF /* FMDatabase.h */,
+				11EBA1A918128D6E000B3EFF /* FMDatabase.m */,
+				11EBA1AA18128D6E000B3EFF /* FMDatabaseAdditions.h */,
+				11EBA1AB18128D6E000B3EFF /* FMDatabaseAdditions.m */,
+				11EBA1AD18128D6E000B3EFF /* FMResultSet.h */,
+				11EBA1AE18128D6E000B3EFF /* FMResultSet.m */,
+				11EBA1AF18128D6E000B3EFF /* README.txt */,
+			);
+			path = FMDB;
+			sourceTree = "<group>";
+		};
 		1266929E0EB75BEA00E002D5 /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
@@ -543,7 +572,6 @@
 			children = (
 				11EBA15A18117F5A000B3EFF /* libsqlite3.0.dylib */,
 				B83E654A0E80E7A8001663B6 /* Proj4.xcodeproj */,
-				B8474BC00EB4019A006A0BC1 /* libsqlite3.dylib */,
 				B83E65590E80E7EB001663B6 /* CoreFoundation.framework */,
 				B83E65630E80E81C001663B6 /* CoreLocation.framework */,
 				B83E65680E80E830001663B6 /* QuartzCore.framework */,
@@ -832,6 +860,7 @@
 			isa = PBXGroup;
 			children = (
 				175701DB1323C2CF00A5D314 /* iOS Additions */,
+				11EBA1A718128D6E000B3EFF /* FMDB */,
 				17F02BB01319BA4B00260C6B /* RouteMe.h */,
 				96492C3F0FA8AD3400EBA6D2 /* RMGlobalConstants.h */,
 				B1EB26C510B5D8E6009F8658 /* RMNotifications.h */,
@@ -920,9 +949,11 @@
 				B8474B9F0EB40094006A0BC1 /* FMResultSet.h in Headers */,
 				B8474BA20EB40094006A0BC1 /* RMTileCacheDAO.h in Headers */,
 				B8474BA40EB40094006A0BC1 /* RMDatabaseCache.h in Headers */,
+				11EBA1B018128D6E000B3EFF /* FMDatabase.h in Headers */,
 				23A0AAEB0EB90AA6003A4521 /* RMFoundation.h in Headers */,
 				23A0ABAA0EB923AF003A4521 /* RMLatLong.h in Headers */,
 				B885ABB20EBB1332002206AB /* RMCloudMadeMapSource.h in Headers */,
+				11EBA1B518128D6E000B3EFF /* FMResultSet.h in Headers */,
 				B8800FF10EC3A237003E9CDD /* RMMarkerManager.h in Headers */,
 				B8800FF20EC3A239003E9CDD /* RMMapViewDelegate.h in Headers */,
 				B8800FF30EC3A23D003E9CDD /* RMConfiguration.h in Headers */,
@@ -939,6 +970,7 @@
 				D1437B37122869E400888DAE /* RMDBMapSource.h in Headers */,
 				25757F4F1291C8640083D504 /* RMCircle.h in Headers */,
 				2599740912EB966400816331 /* RMSpatialCloudMapSource.h in Headers */,
+				11EBA1B218128D6E000B3EFF /* FMDatabaseAdditions.h in Headers */,
 				DD55FD1512FB40E000B6FE24 /* RMMBTilesTileSource.h in Headers */,
 				447420DA1302B2F5004D6E8A /* RMWMSSource.h in Headers */,
 				4474211B1302B60A004D6E8A /* RMWMS.h in Headers */,
@@ -1002,6 +1034,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				11EBA1C518128F00000B3EFF /* PBXTargetDependency */,
 				B8C974140E8A19B2007D16AD /* PBXTargetDependency */,
 			);
 			name = MapView;
@@ -1240,7 +1273,9 @@
 				B8C974460E8A19B2007D16AD /* RMFileTileImage.m in Sources */,
 				B8C974480E8A19B2007D16AD /* RMTileCache.m in Sources */,
 				B8C9744A0E8A19B2007D16AD /* RMProjection.m in Sources */,
+				11EBA1B618128D6E000B3EFF /* FMResultSet.m in Sources */,
 				B8C9744C0E8A19B2007D16AD /* RMAbstractMercatorWebSource.m in Sources */,
+				11EBA1B118128D6E000B3EFF /* FMDatabase.m in Sources */,
 				B8C9745D0E8A19E6007D16AD /* RMTileImageSet.m in Sources */,
 				B8C9745F0E8A19E7007D16AD /* RMTileLoader.m in Sources */,
 				B8C974610E8A19E8007D16AD /* RMTileProxy.m in Sources */,
@@ -1265,6 +1300,7 @@
 				F5C12D2B0F8A86CA00A894D2 /* RMGeoHash.m in Sources */,
 				B144DEFF0FD989C3003F3368 /* RMTileMapServiceSource.m in Sources */,
 				B1EB26C410B5D8C0009F8658 /* RMOpenCycleMapSource.m in Sources */,
+				11EBA1B318128D6E000B3EFF /* FMDatabaseAdditions.m in Sources */,
 				D1437B34122869E400888DAE /* RMDBTileImage.m in Sources */,
 				D1437B36122869E400888DAE /* RMDBMapSource.m in Sources */,
 				25757F501291C8640083D504 /* RMCircle.m in Sources */,
@@ -1283,6 +1319,11 @@
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
+		11EBA1C518128F00000B3EFF /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = OSP;
+			targetProxy = 11EBA1C418128F00000B3EFF /* PBXContainerItemProxy */;
+		};
 		2BEC606D0F8AC7B3008FB858 /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
 			name = Proj4;
@@ -1498,7 +1539,7 @@
 					../Proj4,
 				);
 				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = MapView;
 				RUN_CLANG_STATIC_ANALYZER = NO;
@@ -1523,7 +1564,7 @@
 					../Proj4,
 				);
 				LIBRARY_SEARCH_PATHS = "";
-				OTHER_LDFLAGS = "-ObjC";
+				OTHER_LDFLAGS = "";
 				PREBINDING = NO;
 				PRODUCT_NAME = MapView;
 				ZERO_LINK = NO;

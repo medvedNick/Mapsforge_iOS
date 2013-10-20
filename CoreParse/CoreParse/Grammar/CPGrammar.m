@@ -317,7 +317,7 @@
 
 - (NSUInteger)hash
 {
-    return [[self start] hash] << 16 + [[self rules] hash];
+    return ([[self start] hash] << 16) + [[self rules] hash];
 }
 
 - (BOOL)isEqual:(id)object

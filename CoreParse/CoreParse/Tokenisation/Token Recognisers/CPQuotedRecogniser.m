@@ -67,7 +67,7 @@
         [self setEscapeSequence:[aDecoder decodeObjectForKey:CPQuotedRecogniserEscapeSequenceKey]];
         @try
         {
-            [self setMaximumLength:[aDecoder decodeIntegerForKey:CPQuotedRecogniserMaximumLengthKey]];
+            [self setMaximumLength:NSNotFound];//[aDecoder decodeIntegerForKey:CPQuotedRecogniserMaximumLengthKey]];
         }
         @catch (NSException *exception)
         {
