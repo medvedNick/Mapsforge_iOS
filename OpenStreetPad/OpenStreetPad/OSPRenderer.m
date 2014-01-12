@@ -698,7 +698,8 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
     
     if (nil != title)
     {
-        OSPCoordinate2D c = [node projectedLocation];
+		CLLocationCoordinate2D q = node.location;
+        OSPCoordinate2D c = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(q.latitude/1000000, q.longitude/1000000));//[node projectedLocation];
         CGPoint textPosition = CGPointMake(c.x, c.y);
         
         [self drawText:title atPoint:textPosition inContext:ctx withStyle:style scaleMultiplier:scale];

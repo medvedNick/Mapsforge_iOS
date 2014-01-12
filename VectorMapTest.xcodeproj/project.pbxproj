@@ -90,7 +90,7 @@
 		11EBA12318117BA4000B3EFF /* VectorMapTest-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "VectorMapTest-Prefix.pch"; sourceTree = "<group>"; };
 		11EBA19B18118430000B3EFF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
 		11EBA1CF18128F6E000B3EFF /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
-		79E77153158B3BCC0095BF71 /* VectorMap.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = VectorMap.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		79E77153158B3BCC0095BF71 /* MoscowVector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoscowVector.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79E77157158B3BCC0095BF71 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		79E77159158B3BCC0095BF71 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		79E7715B158B3BCC0095BF71 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -210,7 +210,7 @@
 		79E77154158B3BCC0095BF71 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				79E77153158B3BCC0095BF71 /* VectorMap.app */,
+				79E77153158B3BCC0095BF71 /* MoscowVector.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -258,7 +258,7 @@
 			);
 			name = VectorMapTest;
 			productName = VectorMap_4_0_test;
-			productReference = 79E77153158B3BCC0095BF71 /* VectorMap.app */;
+			productReference = 79E77153158B3BCC0095BF71 /* MoscowVector.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -432,10 +432,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "VectorMapTest/SupportingFiles/VectorMapTest-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = (
-					"fmdb/**",
-					"MapView/**",
-				);
+				HEADER_SEARCH_PATHS = "MapView/**";
 				INFOPLIST_FILE = "VectorMapTest/SupportingFiles/VectorMapTest-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				LIBRARY_SEARCH_PATHS = (
@@ -447,8 +444,9 @@
 					"-ObjC",
 					"-all_load",
 				);
-				PRODUCT_NAME = VectorMap;
+				PRODUCT_NAME = MoscowVector;
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -466,10 +464,7 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "VectorMapTest/SupportingFiles/VectorMapTest-Prefix.pch";
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
-				HEADER_SEARCH_PATHS = (
-					"fmdb/**",
-					"MapView/**",
-				);
+				HEADER_SEARCH_PATHS = "MapView/**";
 				INFOPLIST_FILE = "VectorMapTest/SupportingFiles/VectorMapTest-Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
 				LIBRARY_SEARCH_PATHS = (
@@ -481,8 +476,9 @@
 					"-ObjC",
 					"-all_load",
 				);
-				PRODUCT_NAME = VectorMap;
+				PRODUCT_NAME = MoscowVector;
 				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

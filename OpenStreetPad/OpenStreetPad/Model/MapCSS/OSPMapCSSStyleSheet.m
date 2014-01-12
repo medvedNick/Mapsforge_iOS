@@ -65,7 +65,7 @@
     for (OSPAPIObject *object in objects)
     {
 		NSMutableDictionary *tagsWithoutName = [object.tags mutableCopy];
-		[tagsWithoutName removeObjectForKey:@"name"];
+//		[tagsWithoutName removeObjectForKey:@"name"];
 		[tagsWithoutName removeObjectForKey:@"addr:housenumber"];
 		NSDictionary *layerStyles = [cache objectForKey:tagsWithoutName];
 		if (layerStyles == nil)

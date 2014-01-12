@@ -126,6 +126,8 @@
             return t == OSPMemberTypeRelation;
 		case OSPMapCSSObjectTypeLine:
 		{
+			if (t == OSPMemberTypeWay)
+			{
 			OSPWay *way = (OSPWay *)object;
 //			int lastBlock = way->cLength[0];
 //			int lastBlockSize = way->cLength[lastBlock];
@@ -138,21 +140,27 @@
 			BOOL isArea = lat1 == lat2 && lon1 == lon2;
 			BOOL r = t == OSPMemberTypeWay && (!isArea);
             return r;
+			}
+			return NO;
 		}
         case OSPMapCSSObjectTypeArea:
 		{
-			OSPWay *way = (OSPWay *)object;
+			if (t == OSPMapCSSObjectTypeArea)
+			{
+				OSPWay *way = (OSPWay *)object;
 //			int lastBlock = way->cLength[0];
 //			int lastBlockSize = way->cLength[lastBlock];
-			int lon1 = way->cNodes[0][0];
-			int lat1 = way->cNodes[0][1];
+				int lon1 = way->cNodes[0][0];
+				int lat1 = way->cNodes[0][1];
 //			int lon2 = way->cNodes[lastBlock-1][lastBlockSize-2];
 //			int lat2 = way->cNodes[lastBlock-1][lastBlockSize-1];
-			int lon2 = way->cNodes[0][way->cLength[1]-2];
-			int lat2 = way->cNodes[0][way->cLength[1]-1];
-			BOOL isArea = lat1 == lat2 && lon1 == lon2;
-            BOOL r = t == OSPMemberTypeWay && (isArea);
-			return r;
+				int lon2 = way->cNodes[0][way->cLength[1]-2];
+				int lat2 = way->cNodes[0][way->cLength[1]-1];
+				BOOL isArea = lat1 == lat2 && lon1 == lon2;
+				BOOL r = t == OSPMemberTypeWay && (isArea);
+				return r;
+			}
+			return NO;
 		}
 //        case OSPMapCSSObjectTypeLine:
 //            if (t == OSPMemberTypeWay)
