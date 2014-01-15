@@ -29,10 +29,12 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+}
 
+-(void) viewDidAppear:(BOOL)animated
+{
 	CLLocationCoordinate2D startingPoint = CLLocationCoordinate2DMake(55.754529,37.625224);
 	NSString *filePath = [[NSBundle mainBundle] pathForResource:@"moscow" ofType:@"map"];
-	
 	RMMapView *offlineMap = [RMMapView mapViewWithFrame:self.view.frame
 												   file:filePath
 											 startPoint:startingPoint

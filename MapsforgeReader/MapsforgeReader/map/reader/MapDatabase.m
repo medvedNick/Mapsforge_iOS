@@ -519,63 +519,55 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
  * @return true if the POIs could be processed successfully, false otherwise.
  */
 - (BOOL) processPOIs:(id<MapDatabaseCallback>)mapDatabaseCallback numberOfPois:(int)numberOfPois {
-    //  NSMutableArray * tags = [[NSMutableArray alloc] init];//autorelease];
+    NSMutableDictionary *tags = [[NSMutableDictionary alloc] init];
     NSArray * poiTags = [mapFileHeader mapFileInfo]->poiTags;
-    
+
     for (int elementCounter = numberOfPois; elementCounter != 0; --elementCounter) {
         if ([mapFileHeader mapFileInfo]->debugFile) {
-            // get and check the POI signature
-            signatureWay = [readBuffer readUTF8EncodedString:SIGNATURE_LENGTH_POI];
-            
-            if (![signatureWay hasPrefix:@"***POIStart"]) {
-                NSLog(@"invalid POI signature: : %@", signatureWay);
-                return NO;
-            }
+            signaturePoi = [readBuffer readUTF8EncodedString:SIGNATURE_LENGTH_POI];
         }
-        
-        double latitide = tileLatitude+[readBuffer readSignedInt];
-        double longitude = tileLongitude+[readBuffer readSignedInt];
-        
-        //NSLog(@"%f,%f",latitide,longitude);
-        
-        // get the special byte which encodes multiple flags
+        int latitude = tileLatitude + [readBuffer readSignedInt];
+        int longitude = tileLongitude + [readBuffer readSignedInt];
         Byte specialByte = [readBuffer readByte];
-        // bit 1-4 represent the layer
-        Byte layer = (Byte)((specialByte & POI_LAYER_BITMASK) >> POI_LAYER_SHIFT);
-        // bit 5-8 represent the number of tag IDs
+        //Byte layer = (Byte)((specialByte & POI_LAYER_BITMASK) >> POI_LAYER_SHIFT);
         Byte numberOfTags = (Byte)(specialByte & POI_NUMBER_OF_TAGS_BITMASK);
-        
-        NSMutableDictionary *tagsDict = [[NSMutableDictionary alloc] init];
-        
-        // get the tag IDs (VBE-U)
-        for (Byte tagIndex = numberOfTags; tagIndex != 0; --tagIndex) {
+
+        for (char tagIndex = numberOfTags; tagIndex != 0; --tagIndex){
             int tagId = [readBuffer readUnsignedInt];
             if (tagId < 0 || tagId >= poiTags.count) {
-                NSLog(@"invalid POI tag ID: %d", tagId);
-                [self logDebugSignatures];
+                NSLog(@"warning in -processPOIs in MapDatabase.m: invalid POI tag ID: %d", tagId);
+
+                if ([mapFileHeader mapFileInfo]->debugFile) {
+                    NSLog(@"warning in -processPOIs in MapDatabase.m: debug signature POI: %@", signaturePoi);
+                    NSLog(@"warning in -processPOIs in MapDatabase.m: debug signature block: %@", signatureBlock);
+                }
                 return NO;
             }
-            
-            //      [tags addObject:[wayTags objectAtIndex:tagId]];
+
             MFTag *currTag = [poiTags objectAtIndex:tagId];
-            [tagsDict setObject:currTag->value forKey:currTag->key];
+            [tags setValue:currTag->value forKey:currTag->key];
         }
-        
-        // get the feature bitmask (1 byte)
+
         Byte featureByte = [readBuffer readByte];
-        // bit 1-3 enable optional features
         BOOL featureName = (featureByte & POI_FEATURE_NAME) != 0;
-        
-        // check if the POI has a name
+        BOOL featureHouseNumber = (featureByte & POI_FEATURE_HOUSE_NUMBER) != 0;
+        BOOL featureElevation = (featureByte & POI_FEATURE_ELEVATION) != 0;
         if (featureName) {
-            [tagsDict setObject:[readBuffer readUTF8EncodedString] forKey:TAG_KEY_NAME];
+            MFTag *currTag = [[MFTag alloc] init:TAG_KEY_NAME value:[readBuffer readUTF8EncodedString]];
+            [tags setValue:currTag->value forKey:currTag->key];
         }
-        
+        if (featureHouseNumber) {
+            MFTag *currTag = [[MFTag alloc] init:TAG_KEY_HOUSE_NUMBER value:[readBuffer readUTF8EncodedString]];
+            [tags setValue:currTag->value forKey:currTag->key];
+        }
+        if (featureElevation) {
+            MFTag *currTag = [[MFTag alloc] init:TAG_KEY_ELE value:[NSString stringWithFormat:@"%d",[readBuffer readSignedInt]]];
+            [tags setValue:currTag->value forKey:currTag->key];
+        }
         static int nodeId = 666;
-        [mapDatabaseCallback addNode:nodeId++ latitude:latitide longitude:longitude tags:tagsDict];
-        
+        [mapDatabaseCallback addNode:nodeId++ latitude:latitude longitude:longitude tags:tags];
     }
-    
+
     return YES;
 }
 
