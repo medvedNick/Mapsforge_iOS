@@ -1,7 +1,6 @@
 node
 {
-    exit;
-    //text: tag('name');
+    text: tag('name');
 }
 
 canvas
