@@ -519,59 +519,56 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
  * @return true if the POIs could be processed successfully, false otherwise.
  */
 - (BOOL) processPOIs:(id<MapDatabaseCallback>)mapDatabaseCallback numberOfPois:(int)numberOfPois {
-//  NSMutableArray * tags = [[NSMutableArray alloc] init];//autorelease];
-  NSArray * poiTags = [mapFileHeader mapFileInfo]->poiTags;
+    NSMutableDictionary *tags = [[NSMutableDictionary alloc] init];
+    NSArray * poiTags = [mapFileHeader mapFileInfo]->poiTags;
 
-  for (int elementCounter = numberOfPois; elementCounter != 0; --elementCounter) {
-    if ([mapFileHeader mapFileInfo]->debugFile) {
-      signaturePoi = [readBuffer readUTF8EncodedString:SIGNATURE_LENGTH_POI];
-        // TODO: another checking for correct signature
-//      if (![signaturePoi startsWith:@"***POIStart"]) {
-//        NSLog(@"invalid POI signature: %@", signaturePoi);
-//        NSLog(@"warning in -processBlock in MapDatabase.m: debugSignatureBlock: %@", signatureBlock);
-//        return NO;
-//      }
-    }
-    /*int latitude = tileLatitude + */[readBuffer readSignedInt];
-    /*int longitude = tileLongitude + */[readBuffer readSignedInt];
-    Byte specialByte = [readBuffer readByte];
-    //Byte layer = (Byte)((specialByte & POI_LAYER_BITMASK) >> POI_LAYER_SHIFT);
-    Byte numberOfTags = (Byte)(specialByte & POI_NUMBER_OF_TAGS_BITMASK);
-//    [tags removeAllObjects];
-
-    for (char tagIndex = numberOfTags; tagIndex != 0; --tagIndex) {
-      int tagId = [readBuffer readUnsignedInt];
-      if (tagId < 0 || tagId >= poiTags.count) {
-        NSLog(@"warning in -processPOIs in MapDatabase.m: invalid POI tag ID: %d", tagId);
+    for (int elementCounter = numberOfPois; elementCounter != 0; --elementCounter) {
         if ([mapFileHeader mapFileInfo]->debugFile) {
-           NSLog(@"warning in -processPOIs in MapDatabase.m: debug signature POI: %@", signaturePoi);
-           NSLog(@"warning in -processPOIs in MapDatabase.m: debug signature block: %@", signatureBlock);
+            signaturePoi = [readBuffer readUTF8EncodedString:SIGNATURE_LENGTH_POI];
         }
-        return NO;
-      }
-//      [tags addObject:[poiTags objectAtIndex:tagId]];
+        int latitude = tileLatitude + [readBuffer readSignedInt];
+        int longitude = tileLongitude + [readBuffer readSignedInt];
+        Byte specialByte = [readBuffer readByte];
+        //Byte layer = (Byte)((specialByte & POI_LAYER_BITMASK) >> POI_LAYER_SHIFT);
+        Byte numberOfTags = (Byte)(specialByte & POI_NUMBER_OF_TAGS_BITMASK);
+
+        for (char tagIndex = numberOfTags; tagIndex != 0; --tagIndex){
+            int tagId = [readBuffer readUnsignedInt];
+            if (tagId < 0 || tagId >= poiTags.count) {
+                NSLog(@"warning in -processPOIs in MapDatabase.m: invalid POI tag ID: %d", tagId);
+
+                if ([mapFileHeader mapFileInfo]->debugFile) {
+                    NSLog(@"warning in -processPOIs in MapDatabase.m: debug signature POI: %@", signaturePoi);
+                    NSLog(@"warning in -processPOIs in MapDatabase.m: debug signature block: %@", signatureBlock);
+                }
+                return NO;
+            }
+
+            MFTag *currTag = [poiTags objectAtIndex:tagId];
+            [tags setValue:currTag->value forKey:currTag->key];
+        }
+
+        Byte featureByte = [readBuffer readByte];
+        BOOL featureName = (featureByte & POI_FEATURE_NAME) != 0;
+        BOOL featureHouseNumber = (featureByte & POI_FEATURE_HOUSE_NUMBER) != 0;
+        BOOL featureElevation = (featureByte & POI_FEATURE_ELEVATION) != 0;
+        if (featureName) {
+            MFTag *currTag = [[MFTag alloc] init:TAG_KEY_NAME value:[readBuffer readUTF8EncodedString]];
+            [tags setValue:currTag->value forKey:currTag->key];
+        }
+        if (featureHouseNumber) {
+            MFTag *currTag = [[MFTag alloc] init:TAG_KEY_HOUSE_NUMBER value:[readBuffer readUTF8EncodedString]];
+            [tags setValue:currTag->value forKey:currTag->key];
+        }
+        if (featureElevation) {
+            MFTag *currTag = [[MFTag alloc] init:TAG_KEY_ELE value:[NSString stringWithFormat:@"%d",[readBuffer readSignedInt]]];
+            [tags setValue:currTag->value forKey:currTag->key];
+        }
+        static int nodeId = 666;
+        [mapDatabaseCallback addNode:nodeId++ latitude:latitude longitude:longitude tags:tags];
     }
 
-    Byte featureByte = [readBuffer readByte];
-    BOOL featureName = (featureByte & POI_FEATURE_NAME) != 0;
-    BOOL featureHouseNumber = (featureByte & POI_FEATURE_HOUSE_NUMBER) != 0;
-    BOOL featureElevation = (featureByte & POI_FEATURE_ELEVATION) != 0;
-    if (featureName) {
-        [readBuffer readUTF8EncodedString];
-//      [tags addObject:[[MFTag alloc] init:TAG_KEY_NAME value:[readBuffer readUTF8EncodedString]]];//autorelease]];
-    }
-    if (featureHouseNumber) {
-        [readBuffer readUTF8EncodedString];
-//      [tags addObject:[[MFTag alloc] init:TAG_KEY_HOUSE_NUMBER value:[readBuffer readUTF8EncodedString]]];//autorelease]];
-    }
-    if (featureElevation) {
-		[readBuffer readSignedInt];
-//      [tags addObject:[[MFTag alloc] init:TAG_KEY_ELE value:[NSString stringWithFormat:@"%d",[readBuffer readSignedInt]]]];
-    }
-//    [mapDatabaseCallback renderPointOfInterest:layer latitude:latitude longitude:longitude tags:tags];
-  }
-
-  return YES;
+    return YES;
 }
 
 - (void)createWayCoordinates:(int***)wayCoordinates

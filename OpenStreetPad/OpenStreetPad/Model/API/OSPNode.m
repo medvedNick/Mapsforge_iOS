@@ -32,7 +32,7 @@
     @synchronized(self)
     {
         location = newLocation;
-        [self setProjectedLocation:OSPCoordinate2DProjectLocation(newLocation)];
+		[self setProjectedLocation:OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(location.latitude/1000000, location.longitude/1000000))];
     }
 }
 

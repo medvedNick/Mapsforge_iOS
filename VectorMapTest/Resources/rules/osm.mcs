@@ -1,8 +1,9 @@
-//node
-//{
-//  exit;
-//}
-//
+node
+{
+    exit;
+    //text: tag('name');
+}
+
 canvas
 {
     fill-color: rgb(0.95, 0.95, 0.94);
