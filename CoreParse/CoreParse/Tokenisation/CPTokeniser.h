@@ -18,6 +18,8 @@
  */
 @protocol CPTokeniserDelegate <NSObject>
 
+@required
+
 /** 
  * Determines whether a CPTokeniser should produce a token and consume the associated input string.
  * 
@@ -29,16 +31,32 @@
  */
 - (BOOL)tokeniser:(CPTokeniser *)tokeniser shouldConsumeToken:(CPToken *)token;
 
+@optional
+
 /**
  * Allows you to replace a taken in the tokeniser's output stream.
+ *
+ * Only one of this and tokeniser:willProduceToken: will be called.  The tokeniser will attempt to call this method second.
  *
  * @param tokeniser The CPTokeniser that will produce the token.
  * @param token The CPToken that the tokeniser has recognised.
  * @return Return an array of CPToken objects to place in the output token stream.
+ *
+ * @bug Warning this method is deprecated, use -tokeniser:requestsToken:pushedOntoStream: instead.
+ * @see tokeniser:requestsToken:pushedOntoStream:
  */
-- (NSArray *)tokeniser:(CPTokeniser *)tokeniser willProduceToken:(CPToken *)token;
+- (NSArray *)tokeniser:(CPTokeniser *)tokeniser willProduceToken:(CPToken *)token __attribute__((deprecated("Use tokeniser:requestsToken:pushedOntoStream: instead")));
 
-@optional
+/**
+ * Requests that you push a token onto a tokeniser's output stream.  This allows you to replace the token with any others you choose, or not output the token at all.
+ *
+ * Only one of this and tokeniser:willProduceToken: will be called.  The tokeniser will attempt to call this method first.
+ *
+ * @param tokeniser The CPTokeniser that produced the token.
+ * @param token The CPToken that the tokeniser has recognised.
+ * @param stream The CPTokenStream the token should be pushed onto (if required).
+ */
+- (void)tokeniser:(CPTokeniser *)tokeniser requestsToken:(CPToken *)token pushedOntoStream:(CPTokenStream *)stream;
 
 /**
  * This method is called when no recogniser matches a token at the current position in the input stream.  You must provide a new location in the input stream to start
@@ -51,6 +69,17 @@
  * @return Return a new position in the input to begin tokenising from.  Return NSNotFound to request that the tokeniser stops.
  */
 - (NSUInteger)tokeniser:(CPTokeniser *)tokeniser didNotFindTokenOnInput:(NSString *)input position:(NSUInteger)position error:(NSString **)errorMessage;
+
+/**
+ * This method is called when the tokeniser has finished tokenising and is about to push the
+ * <EOF> token onto the token stream. This gives the delegate a chance to push additional tokens
+ * (such as scope closing tokens in a python tokeniser) onto the token stream before the <EOF>
+ * token is pushed onto the stream.
+ *
+ * @param tokeniser The CPTokeniser that is finishing
+ * @param stream the CPTokenStream any tokens should be pushed onto (if required).
+ */
+- (void)tokeniserWillFinish:(CPTokeniser *)tokeniser stream:(CPTokenStream *)stream;
 
 @end
 
@@ -73,7 +102,7 @@
 /**
  * The object that acts as a delegate to the receiving CPTokeniser.
  */
-@property (readwrite, assign) id<CPTokeniserDelegate> delegate;
+@property (readwrite, assign, nonatomic) id<CPTokeniserDelegate> delegate;
 
 ///---------------------------------------------------------------------------------------
 /// @name Managing recognised tokens

@@ -119,44 +119,74 @@
                     NSUInteger numElements = [[reductionRule rightHandSideElements] count];
                     NSMutableArray *components = [NSMutableArray arrayWithCapacity:numElements];
                     NSRange stateStackRange = NSMakeRange([stateStack count] - numElements, numElements);
+                    NSMutableDictionary *tagValues = [NSMutableDictionary dictionary];
                     [stateStack enumerateObjectsAtIndexes:[NSIndexSet indexSetWithIndexesInRange:stateStackRange]
                                                   options:NSEnumerationReverse
                                                usingBlock:^(CPShiftReduceState *state, NSUInteger idx, BOOL *stop)
                      {
                          id o = [state object];
-                         if ([o isKindOfClass:[CPRHSItemResult class]])
+                         if ([o isRHSItemResult])
                          {
-                             o = [(CPRHSItemResult *)o contents];
+                             CPRHSItemResult *r = o;
+                             
+                             if ([o shouldCollapse])
+                             {
+                                 NSArray *comps = [r contents];
+                                 [components insertObjects:comps atIndexes:[NSIndexSet indexSetWithIndexesInRange:NSMakeRange(0, [comps count])]];
+                                 
+                                 if ([r tagNames] != nil && [comps count] == 1)
+                                 {
+                                     for (NSString *tagName in [r tagNames])
+                                     {
+                                         [tagValues setObject:[comps objectAtIndex:0] forKey:tagName];
+                                     }
+                                 }
+                             }
+                             else
+                             {
+                                 [components insertObject:[r contents] atIndex:0];
+                                 if ([r tagNames] != nil)
+                                 {
+                                     for (NSString *tagName in [r tagNames])
+                                     {
+                                         [tagValues setObject:[r contents] forKey:tagName];
+                                     }
+                                 }
+                             }
+                             
+                             [tagValues addEntriesFromDictionary:[r tagValues]];
                          }
-                         [components insertObject:o atIndex:0];
+                         else
+                         {
+                             [components insertObject:o atIndex:0];
+                         }
                      }];
                     [stateStack removeObjectsInRange:stateStackRange];
                     
-                    CPSyntaxTree *tree = [CPSyntaxTree syntaxTreeWithRule:reductionRule children:components];
+                    CPSyntaxTree *tree = [CPSyntaxTree syntaxTreeWithRule:reductionRule children:components tagValues:tagValues];
                     id result = nil;
                     
                     Class c = [reductionRule representitiveClass];
                     if (nil != c)
                     {
-                        result = [(id<CPParseResult>)[c alloc] initWithSyntaxTree:tree];
+                        result = [[(id<CPParseResult>)[c alloc] initWithSyntaxTree:tree] autorelease];
                     }
                     
                     if (nil == result)
                     {
                         result = tree;
-                        if ([[self delegate] respondsToSelector:@selector(parser:didProduceSyntaxTree:)])
+                        if (delegateRespondsTo.didProduceSyntaxTree)
                         {
                             result = [[self delegate] parser:self didProduceSyntaxTree:tree];
                         }
-                        [result retain];
                     }
                     
                     NSUInteger newState = [self gotoForState:[(CPShiftReduceState *)[stateStack lastObject] state] rule:reductionRule];
                     [stateStack addObject:[CPShiftReduceState shiftReduceStateWithObject:result state:newState]];
-                    [result release];
                 }
                 else if ([action isAccept])
                 {
+                    [nextToken release];
                     return [(CPShiftReduceState *)[stateStack lastObject] object];
                 }
                 else
@@ -164,12 +194,13 @@
                     CPRecoveryAction *recoveryAction = [self error:tokenStream expecting:[self acceptableTokenNamesForState:[(CPShiftReduceState *)[stateStack lastObject] state]]];
                     if (nil == recoveryAction)
                     {
-                        if ([nextToken isKindOfClass:[CPErrorToken class]] && [stateStack count] > 0)
+                        if ([nextToken isErrorToken] && [stateStack count] > 0)
                         {
                             [stateStack removeLastObject];
                         }
                         else
                         {
+                            [nextToken release];
                             return nil;
                         }
                     }
@@ -211,18 +242,19 @@
 
 - (CPRecoveryAction *)error:(CPTokenStream *)tokenStream expecting:(NSSet *)acceptableTokens
 {
-    if ([[self delegate] respondsToSelector:@selector(parser:didEncounterErrorOnInput:expecting:)])
+    if (delegateRespondsTo.didEncounterErrorOnInputExpecting)
     {
         return [[self delegate] parser:self didEncounterErrorOnInput:tokenStream expecting:acceptableTokens];
     }
-    else if ([[self delegate] respondsToSelector:@selector(parser:didEncounterErrorOnInput:)])
+    else if (delegateRespondsTo.didEncounterErrorOnInput)
     {
-        return [[self delegate] parser:self didEncounterErrorOnInput:tokenStream];
+        return [[self delegate] performSelector:@selector(parser:didEncounterErrorOnInput:) withObject:self withObject:tokenStream];
+//        return [[self delegate] parser:self didEncounterErrorOnInput:tokenStream];
     }
     else
     {
         CPToken *t = [tokenStream peekToken];
-        NSLog(@"%d:%d: parse error.  Expected %@, found %@", [t lineNumber], [t columnNumber], acceptableTokens, t);
+        NSLog(@"%ld:%ld: parse error.  Expected %@, found %@", (long)[t lineNumber] + 1, (long)[t columnNumber] + 1, acceptableTokens, t);
         return nil;
     }
 }

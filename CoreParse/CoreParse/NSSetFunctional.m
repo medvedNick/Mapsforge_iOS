@@ -11,20 +11,25 @@
 
 @implementation NSSet(Functional)
 
-- (NSSet *)map:(id(^)(id obj))block
+- (NSSet *)cp_map:(id(^)(id obj))block
 {
-    NSMutableSet *newSet = [NSMutableSet setWithCapacity:[self count]];
+    NSUInteger c = [self count];
+    id *resultingObjects = malloc(c * sizeof(id));
     
+    NSUInteger nonNilCount = 0;
     for (id obj in self)
     {
         id r = block(obj);
         if (nil != r)
         {
-            [newSet addObject:r];
+            resultingObjects[nonNilCount] = r;
+            nonNilCount++;
         }
     }
     
-    return [[newSet copy] autorelease];
+    NSSet *s = [NSSet setWithObjects:resultingObjects count:nonNilCount];
+    free(resultingObjects);
+    return s;
 }
 
 @end

@@ -166,9 +166,14 @@ ActionDetails;
     return type;
 }
 
+- (BOOL)isShiftReduceAction
+{
+    return YES;
+}
+
 - (BOOL)isEqual:(id)object
 {
-    if ([object isKindOfClass:[CPShiftReduceAction class]] && ((CPShiftReduceAction *)object)->type == type)
+    if ([object isShiftReduceAction] && ((CPShiftReduceAction *)object)->type == type)
     {
         CPShiftReduceAction *other = (CPShiftReduceAction *)object;
         switch (type)
@@ -185,12 +190,30 @@ ActionDetails;
     return NO;
 }
 
+- (BOOL)isEqualToShiftReduceAction:(CPShiftReduceAction *)object
+{
+    if (object != nil && object->type == type)
+    {
+        switch (type)
+        {
+            case kActionTypeShift:
+                return [object newState] == details.shift;
+            case kActionTypeReduce:
+                return [object reductionRule] == details.reductionRule;
+            case kActionTypeAccept:
+                return YES;
+        }
+    }
+    
+    return NO;
+}
+
 - (NSString *)description
 {
     switch (type)
     {
         case kActionTypeShift:
-            return [NSString stringWithFormat:@"s%d", details.shift];
+            return [NSString stringWithFormat:@"s%ld", (long)details.shift];
         case kActionTypeReduce:
             return [NSString stringWithFormat:@"r%@", [details.reductionRule name]];
         case kActionTypeAccept:
@@ -203,13 +226,21 @@ ActionDetails;
     switch (type)
     {
         case kActionTypeShift:
-            return [NSString stringWithFormat:@"s%d", details.shift];
+            return [NSString stringWithFormat:@"s%ld", (long)details.shift];
         case kActionTypeReduce:
-            return [NSString stringWithFormat:@"r%d", [g indexOfRule:details.reductionRule]];
+            return [NSString stringWithFormat:@"r%ld", (long)[g indexOfRule:details.reductionRule]];
         case kActionTypeAccept:
             return @"acc";
     }
 }
 
+@end
+
+@implementation NSObject(CPIsShiftReduceAction)
+
+- (BOOL)isShiftReduceAction
+{
+    return NO;
+}
 
 @end

@@ -13,6 +13,7 @@
 @synthesize lineNumber;
 @synthesize columnNumber;
 @synthesize characterNumber;
+@synthesize length;
 
 - (NSString *)name
 {
@@ -27,17 +28,22 @@
 
 - (BOOL)isEqual:(id)object
 {
-    if ([object isKindOfClass:[CPToken class]])
-    {
-        CPToken *other = (CPToken *)object;
-        return [[self name] isEqualToString:[other name]];
-    }
-    return NO;
+    return ([object isToken] &&
+            [[self name] isEqualToString:[(CPToken *)object name]]);
 }
 
 - (NSString *)description
 {
     return [NSString stringWithFormat:@"<%@>", [self name]];
+}
+
+@end
+
+@implementation NSObject (CPIsToken)
+
+- (BOOL)isToken
+{
+    return NO;
 }
 
 @end

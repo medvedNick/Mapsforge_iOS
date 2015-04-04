@@ -10,6 +10,7 @@
 
 #import "CPItem.h"
 #import "CPGrammarSymbol.h"
+#import "CPShiftReduceAction.h"
 
 @implementation CPShiftReduceActionTable
 {
@@ -74,7 +75,7 @@
 - (BOOL)setAction:(CPShiftReduceAction *)action forState:(NSUInteger)state name:(NSString *)token
 {
     NSMutableDictionary *row = table[state];
-    if (nil != [row objectForKey:token] && ![[row objectForKey:token] isEqual:action])
+    if (nil != [row objectForKey:token] && ![[row objectForKey:token] isEqualToShiftReduceAction:action])
     {
         return NO;
     }
@@ -132,7 +133,7 @@
         for (NSUInteger state = 0; state < capacity; state++)
         {
             NSDictionary *row = table[state];
-            [s appendFormat:@"%5d | ", idx];
+            [s appendFormat:@"%5ld | ", (long)idx];
             for (NSString *key in orderedKeys)
             {
                 CPShiftReduceAction *action = [row objectForKey:key];
@@ -193,7 +194,7 @@
         for (NSUInteger state = 0; state < capacity; state++)
         {
             NSDictionary *row = table[state];
-            [s appendFormat:@"%5d | ", idx];
+            [s appendFormat:@"%5ld | ", (long)idx];
             for (NSString *key in orderedKeys)
             {
                 CPShiftReduceAction *action = [row objectForKey:key];

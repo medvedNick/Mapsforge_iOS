@@ -71,17 +71,15 @@
 		1F530B8813216A1A00F52EB5 /* CPSyntaxTree.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F530B8613216A1A00F52EB5 /* CPSyntaxTree.m */; };
 		1F530B911322814000F52EB5 /* CPRule.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F530B8F1322813E00F52EB5 /* CPRule.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1F530B921322814000F52EB5 /* CPRule.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F530B901322813F00F52EB5 /* CPRule.m */; };
+		1F5623A8161652FA00C5EFA8 /* NSArray+Functional.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FA6430615E2C5130004FCD3 /* NSArray+Functional.m */; };
 		1F6D44901348CC9500E982C7 /* CPLALR1Parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F6D448E1348CC9500E982C7 /* CPLALR1Parser.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1F6D44911348CC9600E982C7 /* CPLALR1Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6D448F1348CC9500E982C7 /* CPLALR1Parser.m */; };
+		1F8374A1154BF9D000DBA298 /* CPRecoveryAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F893A1E14DEEBFC00316FF7 /* CPRecoveryAction.m */; };
 		1F893A1F14DEEBFC00316FF7 /* CPRecoveryAction.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F893A1D14DEEBFC00316FF7 /* CPRecoveryAction.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1F893A2014DEEBFC00316FF7 /* CPRecoveryAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F893A1E14DEEBFC00316FF7 /* CPRecoveryAction.m */; };
 		1F893A2314DEF40D00316FF7 /* CPTestErrorEvaluatorDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F893A2114DEF40D00316FF7 /* CPTestErrorEvaluatorDelegate.h */; };
 		1F893A2414DEF40D00316FF7 /* CPTestErrorEvaluatorDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F893A2214DEF40D00316FF7 /* CPTestErrorEvaluatorDelegate.m */; };
 		1F928180145C11050033BC34 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FE77D551375AE6F00879A41 /* Foundation.framework */; };
-		1F92818E145C11050033BC34 /* SenTestingKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F92818D145C11050033BC34 /* SenTestingKit.framework */; };
-		1F928190145C11050033BC34 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F92818F145C11050033BC34 /* UIKit.framework */; };
-		1F928191145C11050033BC34 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1FE77D551375AE6F00879A41 /* Foundation.framework */; };
-		1F928194145C11050033BC34 /* libCoreParse.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 1F92817F145C11050033BC34 /* libCoreParse.a */; };
 		1F9281A5145C11A60033BC34 /* CPTokeniser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E8938130463E900537D04 /* CPTokeniser.m */; };
 		1F9281A6145C11A60033BC34 /* CPTokenStream.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E8942130466D000537D04 /* CPTokenStream.m */; };
 		1F9281A7145C11A60033BC34 /* CPKeywordRecogniser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F4683871306AA8500407491 /* CPKeywordRecogniser.m */; };
@@ -117,20 +115,28 @@
 		1F9281C5145C11A60033BC34 /* CPLALR1Parser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F6D448F1348CC9500E982C7 /* CPLALR1Parser.m */; };
 		1F9281C6145C11A60033BC34 /* CPJSONParser.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F45A2E313422E1300092D78 /* CPJSONParser.m */; };
 		1F9281C7145C11A60033BC34 /* NSSetFunctional.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F38820C132432AA000C8876 /* NSSetFunctional.m */; };
-		1F9281C8145C17580033BC34 /* CoreParseTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F0E8919130462F300537D04 /* CoreParseTests.m */; };
-		1F9281C9145C18220033BC34 /* CPTestEvaluatorDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FB3EB23132BA02C00ACC453 /* CPTestEvaluatorDelegate.m */; };
-		1F9281CA145C18220033BC34 /* CPTestWhiteSpaceIgnoringDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FB81321132FEDAF0095982D /* CPTestWhiteSpaceIgnoringDelegate.m */; };
-		1F9281CB145C18220033BC34 /* CPTestMapCSSTokenisingDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FB81325132FF16E0095982D /* CPTestMapCSSTokenisingDelegate.m */; };
-		1F9281CC145C18220033BC34 /* Expression.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F9F83A013B731F3006E939D /* Expression.m */; };
-		1F9281CD145C18220033BC34 /* Term.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F9F83A513B732AC006E939D /* Term.m */; };
 		1F9F83A113B731F3006E939D /* Expression.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F9F839F13B731F3006E939D /* Expression.h */; };
 		1F9F83A613B732AC006E939D /* Term.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F9F83A413B732AC006E939D /* Term.h */; };
 		1F9F83AC13B7CABA006E939D /* CPRHSItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 1F9F83AA13B7CAB9006E939D /* CPRHSItem.h */; };
 		1F9F83AD13B7CABA006E939D /* CPRHSItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F9F83AB13B7CABA006E939D /* CPRHSItem.m */; };
+		1FA43871162F515C00B92704 /* Expression2.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FA4386C162F515C00B92704 /* Expression2.m */; };
+		1FA43872162F515C00B92704 /* RuleBase.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FA4386E162F515C00B92704 /* RuleBase.m */; };
+		1FA43873162F515C00B92704 /* Term2.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FA43870162F515C00B92704 /* Term2.m */; };
+		1FA6430715E2C5130004FCD3 /* NSArray+Functional.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FA6430515E2C5130004FCD3 /* NSArray+Functional.h */; };
+		1FA6430815E2C5130004FCD3 /* NSArray+Functional.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FA6430615E2C5130004FCD3 /* NSArray+Functional.m */; };
 		1FA68DA014DE98C4005519B9 /* CPErrorToken.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FA68D9E14DE98C4005519B9 /* CPErrorToken.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		1FA68DA114DE98C4005519B9 /* CPErrorToken.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FA68D9F14DE98C4005519B9 /* CPErrorToken.m */; };
 		1FA68DA514DE9D3D005519B9 /* CPTestErrorHandlingDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FA68DA314DE9D3D005519B9 /* CPTestErrorHandlingDelegate.h */; };
 		1FA68DA614DE9D3D005519B9 /* CPTestErrorHandlingDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FA68DA414DE9D3D005519B9 /* CPTestErrorHandlingDelegate.m */; };
+		1FA798201567DC0E003AC8AE /* Expression.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F9F83A013B731F3006E939D /* Expression.m */; };
+		1FA798221567DC11003AC8AE /* Term.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F9F83A513B732AC006E939D /* Term.m */; };
+		1FA798231567DC49003AC8AE /* CPTestEvaluatorDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FB3EB23132BA02C00ACC453 /* CPTestEvaluatorDelegate.m */; };
+		1FA798241567DC4C003AC8AE /* CPTestErrorEvaluatorDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F893A2214DEF40D00316FF7 /* CPTestErrorEvaluatorDelegate.m */; };
+		1FA798251567DC51003AC8AE /* CPTestWhiteSpaceIgnoringDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FB81321132FEDAF0095982D /* CPTestWhiteSpaceIgnoringDelegate.m */; };
+		1FA798261567DC58003AC8AE /* CPTestMapCSSTokenisingDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FB81325132FF16E0095982D /* CPTestMapCSSTokenisingDelegate.m */; };
+		1FA798271567DC5C003AC8AE /* CPTestErrorHandlingDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FA68DA414DE9D3D005519B9 /* CPTestErrorHandlingDelegate.m */; };
+		1FA866B715DFAEBC005350EE /* CPRule+Internal.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FA866B515DFAEBB005350EE /* CPRule+Internal.h */; };
+		1FA866C015E18F68005350EE /* CPRHSItem+Private.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FA866BE15E18F67005350EE /* CPRHSItem+Private.h */; };
 		1FB3EB24132BA02C00ACC453 /* CPTestEvaluatorDelegate.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FB3EB22132BA02C00ACC453 /* CPTestEvaluatorDelegate.h */; };
 		1FB3EB25132BA02C00ACC453 /* CPTestEvaluatorDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FB3EB23132BA02C00ACC453 /* CPTestEvaluatorDelegate.m */; };
 		1FB3EB2C132BB2F200ACC453 /* CPLR1Parser.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FB3EB2A132BB2E600ACC453 /* CPLR1Parser.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -151,7 +157,13 @@
 		1FC18282139AE3810027F597 /* CPGrammarInternal.h in Headers */ = {isa = PBXBuildFile; fileRef = 1FC18280139AE3800027F597 /* CPGrammarInternal.h */; };
 		1FC18283139AE3810027F597 /* CPGrammarInternal.m in Sources */ = {isa = PBXBuildFile; fileRef = 1FC18281139AE3810027F597 /* CPGrammarInternal.m */; };
 		1FC18287139BA47D0027F597 /* CoreParse-template.md in Resources */ = {isa = PBXBuildFile; fileRef = 1FC18286139BA47D0027F597 /* CoreParse-template.md */; };
-		7959CABD154C4ABD009F0CA9 /* CPRecoveryAction.m in Sources */ = {isa = PBXBuildFile; fileRef = 1F893A1E14DEEBFC00316FF7 /* CPRecoveryAction.m */; };
+		54197209188F7D49004240B4 /* CPRegexpRecogniser.h in Headers */ = {isa = PBXBuildFile; fileRef = 54197207188F7D49004240B4 /* CPRegexpRecogniser.h */; };
+		5419720A188F7D49004240B4 /* CPRegexpRecogniser.h in Headers */ = {isa = PBXBuildFile; fileRef = 54197207188F7D49004240B4 /* CPRegexpRecogniser.h */; };
+		5419720B188F7D49004240B4 /* CPRegexpRecogniser.m in Sources */ = {isa = PBXBuildFile; fileRef = 54197208188F7D49004240B4 /* CPRegexpRecogniser.m */; };
+		5419720D188F7D49004240B4 /* CPRegexpRecogniser.m in Sources */ = {isa = PBXBuildFile; fileRef = 54197208188F7D49004240B4 /* CPRegexpRecogniser.m */; };
+		5419721D188F9A54004240B4 /* CPRegexpRecogniserTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 5419721C188F9A54004240B4 /* CPRegexpRecogniserTest.m */; };
+		DA2B1DF81566B704002FDBD7 /* CPSTAssertionsTests.m in Sources */ = {isa = PBXBuildFile; fileRef = DA2B1DF71566B704002FDBD7 /* CPSTAssertionsTests.m */; };
+		DC3E9BEF191DBAC800F6023C /* CPWillFinishDelegateTest.m in Sources */ = {isa = PBXBuildFile; fileRef = DC3E9BEE191DBAC800F6023C /* CPWillFinishDelegateTest.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -161,13 +173,6 @@
 			proxyType = 1;
 			remoteGlobalIDString = 1F0E88F5130462F300537D04;
 			remoteInfo = CoreParse;
-		};
-		1F928192145C11050033BC34 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1F0E88EC130462F300537D04 /* Project object */;
-			proxyType = 1;
-			remoteGlobalIDString = 1F92817E145C11050033BC34;
-			remoteInfo = iOSCoreParse;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -250,7 +255,6 @@
 		1F893A2114DEF40D00316FF7 /* CPTestErrorEvaluatorDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPTestErrorEvaluatorDelegate.h; sourceTree = "<group>"; };
 		1F893A2214DEF40D00316FF7 /* CPTestErrorEvaluatorDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPTestErrorEvaluatorDelegate.m; sourceTree = "<group>"; };
 		1F92817F145C11050033BC34 /* libCoreParse.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libCoreParse.a; sourceTree = BUILT_PRODUCTS_DIR; };
-		1F92818C145C11050033BC34 /* CoreParseTests.octest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = CoreParseTests.octest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F92818D145C11050033BC34 /* SenTestingKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SenTestingKit.framework; path = Library/Frameworks/SenTestingKit.framework; sourceTree = DEVELOPER_DIR; };
 		1F92818F145C11050033BC34 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = Library/Frameworks/UIKit.framework; sourceTree = DEVELOPER_DIR; };
 		1F9F839F13B731F3006E939D /* Expression.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Expression.h; sourceTree = "<group>"; };
@@ -259,10 +263,20 @@
 		1F9F83A513B732AC006E939D /* Term.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Term.m; sourceTree = "<group>"; };
 		1F9F83AA13B7CAB9006E939D /* CPRHSItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRHSItem.h; sourceTree = "<group>"; };
 		1F9F83AB13B7CABA006E939D /* CPRHSItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRHSItem.m; sourceTree = "<group>"; };
+		1FA4386B162F515C00B92704 /* Expression2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Expression2.h; sourceTree = "<group>"; };
+		1FA4386C162F515C00B92704 /* Expression2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Expression2.m; sourceTree = "<group>"; };
+		1FA4386D162F515C00B92704 /* RuleBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RuleBase.h; sourceTree = "<group>"; };
+		1FA4386E162F515C00B92704 /* RuleBase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RuleBase.m; sourceTree = "<group>"; };
+		1FA4386F162F515C00B92704 /* Term2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Term2.h; sourceTree = "<group>"; };
+		1FA43870162F515C00B92704 /* Term2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Term2.m; sourceTree = "<group>"; };
+		1FA6430515E2C5130004FCD3 /* NSArray+Functional.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSArray+Functional.h"; sourceTree = "<group>"; };
+		1FA6430615E2C5130004FCD3 /* NSArray+Functional.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSArray+Functional.m"; sourceTree = "<group>"; };
 		1FA68D9E14DE98C4005519B9 /* CPErrorToken.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPErrorToken.h; sourceTree = "<group>"; };
 		1FA68D9F14DE98C4005519B9 /* CPErrorToken.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPErrorToken.m; sourceTree = "<group>"; };
 		1FA68DA314DE9D3D005519B9 /* CPTestErrorHandlingDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPTestErrorHandlingDelegate.h; sourceTree = "<group>"; };
 		1FA68DA414DE9D3D005519B9 /* CPTestErrorHandlingDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPTestErrorHandlingDelegate.m; sourceTree = "<group>"; };
+		1FA866B515DFAEBB005350EE /* CPRule+Internal.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CPRule+Internal.h"; sourceTree = "<group>"; };
+		1FA866BE15E18F67005350EE /* CPRHSItem+Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CPRHSItem+Private.h"; sourceTree = "<group>"; };
 		1FB3EB22132BA02C00ACC453 /* CPTestEvaluatorDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPTestEvaluatorDelegate.h; sourceTree = "<group>"; };
 		1FB3EB23132BA02C00ACC453 /* CPTestEvaluatorDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPTestEvaluatorDelegate.m; sourceTree = "<group>"; };
 		1FB3EB2A132BB2E600ACC453 /* CPLR1Parser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPLR1Parser.h; sourceTree = "<group>"; };
@@ -284,6 +298,13 @@
 		1FC18286139BA47D0027F597 /* CoreParse-template.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "CoreParse-template.md"; sourceTree = "<group>"; };
 		1FE77D551375AE6F00879A41 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1FE77D821375EA8F00879A41 /* CoreParse Documentation */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "CoreParse Documentation"; sourceTree = BUILT_PRODUCTS_DIR; };
+		54197207188F7D49004240B4 /* CPRegexpRecogniser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPRegexpRecogniser.h; sourceTree = "<group>"; };
+		54197208188F7D49004240B4 /* CPRegexpRecogniser.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRegexpRecogniser.m; sourceTree = "<group>"; };
+		5419721C188F9A54004240B4 /* CPRegexpRecogniserTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPRegexpRecogniserTest.m; sourceTree = "<group>"; };
+		DA2B1DF41566B311002FDBD7 /* CPSenTestKitAssertions.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = CPSenTestKitAssertions.h; sourceTree = "<group>"; };
+		DA2B1DF61566B704002FDBD7 /* CPSTAssertionsTests.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CPSTAssertionsTests.h; sourceTree = "<group>"; };
+		DA2B1DF71566B704002FDBD7 /* CPSTAssertionsTests.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPSTAssertionsTests.m; sourceTree = "<group>"; };
+		DC3E9BEE191DBAC800F6023C /* CPWillFinishDelegateTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CPWillFinishDelegateTest.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -312,17 +333,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1F928188145C11050033BC34 /* Frameworks */ = {
-			isa = PBXFrameworksBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1F92818E145C11050033BC34 /* SenTestingKit.framework in Frameworks */,
-				1F928190145C11050033BC34 /* UIKit.framework in Frameworks */,
-				1F928191145C11050033BC34 /* Foundation.framework in Frameworks */,
-				1F928194145C11050033BC34 /* libCoreParse.a in Frameworks */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
@@ -344,7 +354,6 @@
 				1F0E890B130462F300537D04 /* CoreParseTests.octest */,
 				1FE77D821375EA8F00879A41 /* CoreParse Documentation */,
 				1F92817F145C11050033BC34 /* libCoreParse.a */,
-				1F92818C145C11050033BC34 /* CoreParseTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -381,8 +390,11 @@
 				1F530B7B132155BB00F52EB5 /* Parsers */,
 				1F45A2E113422DD800092D78 /* Built In Parsers */,
 				1F0E8900130462F300537D04 /* Supporting Files */,
+				DA2B1DF41566B311002FDBD7 /* CPSenTestKitAssertions.h */,
 				1F38820B132432A1000C8876 /* NSSetFunctional.h */,
 				1F38820C132432AA000C8876 /* NSSetFunctional.m */,
+				1FA6430515E2C5130004FCD3 /* NSArray+Functional.h */,
+				1FA6430615E2C5130004FCD3 /* NSArray+Functional.m */,
 			);
 			path = CoreParse;
 			sourceTree = "<group>";
@@ -402,6 +414,8 @@
 			children = (
 				1F0E8917130462F300537D04 /* CoreParseTests.h */,
 				1F0E8919130462F300537D04 /* CoreParseTests.m */,
+				DA2B1DF61566B704002FDBD7 /* CPSTAssertionsTests.h */,
+				DA2B1DF71566B704002FDBD7 /* CPSTAssertionsTests.m */,
 				1F0E8911130462F300537D04 /* Supporting Files */,
 				1FB3EB22132BA02C00ACC453 /* CPTestEvaluatorDelegate.h */,
 				1FB3EB23132BA02C00ACC453 /* CPTestEvaluatorDelegate.m */,
@@ -413,10 +427,18 @@
 				1FB81325132FF16E0095982D /* CPTestMapCSSTokenisingDelegate.m */,
 				1FA68DA314DE9D3D005519B9 /* CPTestErrorHandlingDelegate.h */,
 				1FA68DA414DE9D3D005519B9 /* CPTestErrorHandlingDelegate.m */,
+				5419721C188F9A54004240B4 /* CPRegexpRecogniserTest.m */,
+				DC3E9BEE191DBAC800F6023C /* CPWillFinishDelegateTest.m */,
 				1F9F839F13B731F3006E939D /* Expression.h */,
 				1F9F83A013B731F3006E939D /* Expression.m */,
 				1F9F83A413B732AC006E939D /* Term.h */,
 				1F9F83A513B732AC006E939D /* Term.m */,
+				1FA4386B162F515C00B92704 /* Expression2.h */,
+				1FA4386C162F515C00B92704 /* Expression2.m */,
+				1FA4386D162F515C00B92704 /* RuleBase.h */,
+				1FA4386E162F515C00B92704 /* RuleBase.m */,
+				1FA4386F162F515C00B92704 /* Term2.h */,
+				1FA43870162F515C00B92704 /* Term2.m */,
 			);
 			path = CoreParseTests;
 			sourceTree = "<group>";
@@ -518,6 +540,8 @@
 				1F1DFCE01306E3C300B22855 /* CPIdentifierRecogniser.m */,
 				1F1DFCF11307D2C500B22855 /* CPQuotedRecogniser.h */,
 				1F1DFCF21307D2C500B22855 /* CPQuotedRecogniser.m */,
+				54197207188F7D49004240B4 /* CPRegexpRecogniser.h */,
+				54197208188F7D49004240B4 /* CPRegexpRecogniser.m */,
 			);
 			path = "Token Recognisers";
 			sourceTree = "<group>";
@@ -533,8 +557,10 @@
 				1FC18281139AE3810027F597 /* CPGrammarInternal.m */,
 				1F530B8F1322813E00F52EB5 /* CPRule.h */,
 				1F530B901322813F00F52EB5 /* CPRule.m */,
+				1FA866B515DFAEBB005350EE /* CPRule+Internal.h */,
 				1FB3EB38132D096700ACC453 /* CPGrammarSymbol.h */,
 				1FB3EB39132D096800ACC453 /* CPGrammarSymbol.m */,
+				1FA866BE15E18F67005350EE /* CPRHSItem+Private.h */,
 				1F9F83AA13B7CAB9006E939D /* CPRHSItem.h */,
 				1F9F83AB13B7CABA006E939D /* CPRHSItem.m */,
 				1FC00D4E14544EDC00DC8D35 /* CPRHSItemResult.h */,
@@ -589,6 +615,7 @@
 			files = (
 				1F0E8935130463D000537D04 /* CoreParse.h in Headers */,
 				1F0E8939130463E900537D04 /* CPTokeniser.h in Headers */,
+				54197209188F7D49004240B4 /* CPRegexpRecogniser.h in Headers */,
 				1F0E8943130466D000537D04 /* CPTokenStream.h in Headers */,
 				1F0E894C1306795800537D04 /* CPToken.h in Headers */,
 				1F4683891306AA8500407491 /* CPKeywordRecogniser.h in Headers */,
@@ -634,6 +661,9 @@
 				1FC00D5014544EDC00DC8D35 /* CPRHSItemResult.h in Headers */,
 				1FA68DA514DE9D3D005519B9 /* CPTestErrorHandlingDelegate.h in Headers */,
 				1F893A2314DEF40D00316FF7 /* CPTestErrorEvaluatorDelegate.h in Headers */,
+				1FA866B715DFAEBC005350EE /* CPRule+Internal.h in Headers */,
+				1FA866C015E18F68005350EE /* CPRHSItem+Private.h in Headers */,
+				1FA6430715E2C5130004FCD3 /* NSArray+Functional.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -641,6 +671,7 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				5419720A188F7D49004240B4 /* CPRegexpRecogniser.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -682,7 +713,7 @@
 			name = CoreParseTests;
 			productName = CoreParseTests;
 			productReference = 1F0E890B130462F300537D04 /* CoreParseTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 		1F92817E145C11050033BC34 /* iOSCoreParse */ = {
 			isa = PBXNativeTarget;
@@ -700,25 +731,6 @@
 			productName = iOSCoreParse;
 			productReference = 1F92817F145C11050033BC34 /* libCoreParse.a */;
 			productType = "com.apple.product-type.library.static";
-		};
-		1F92818B145C11050033BC34 /* iOSCoreParseTests */ = {
-			isa = PBXNativeTarget;
-			buildConfigurationList = 1F9281A3145C11050033BC34 /* Build configuration list for PBXNativeTarget "iOSCoreParseTests" */;
-			buildPhases = (
-				1F928187145C11050033BC34 /* Sources */,
-				1F928188145C11050033BC34 /* Frameworks */,
-				1F928189145C11050033BC34 /* Resources */,
-				1F92818A145C11050033BC34 /* ShellScript */,
-			);
-			buildRules = (
-			);
-			dependencies = (
-				1F928193145C11050033BC34 /* PBXTargetDependency */,
-			);
-			name = iOSCoreParseTests;
-			productName = iOSCoreParseTests;
-			productReference = 1F92818C145C11050033BC34 /* CoreParseTests.octest */;
-			productType = "com.apple.product-type.bundle";
 		};
 		1FE77D811375EA8F00879A41 /* CoreParse Documentation */ = {
 			isa = PBXNativeTarget;
@@ -760,7 +772,6 @@
 				1F0E890A130462F300537D04 /* CoreParseTests */,
 				1FE77D811375EA8F00879A41 /* CoreParse Documentation */,
 				1F92817E145C11050033BC34 /* iOSCoreParse */,
-				1F92818B145C11050033BC34 /* iOSCoreParseTests */,
 			);
 		};
 /* End PBXProject section */
@@ -784,30 +795,10 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1F928189145C11050033BC34 /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
 		1F0E8909130462F300537D04 /* ShellScript */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "# Run the unit tests in this test bundle.\n\"${SYSTEM_DEVELOPER_DIR}/Tools/RunUnitTests\"\n";
-		};
-		1F92818A145C11050033BC34 /* ShellScript */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -832,7 +823,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "appledoc --logformat xcode \\\n         --exit-threshold 4 \\\n         --create-html \\\n         --no-create-docset \\\n         -o $SOURCE_ROOT/../CoreParseDocs/ \\\n         --project-name CoreParse \\\n         --project-version 0.9 \\\n         --project-company Beelsebob \\\n         --ignore $SOURCE_ROOT/CoreParse/Parsers/CPShiftReduceParsers/CPShiftReduceAction.h \\\n         --ignore $SOURCE_ROOT/CoreParse/Parsers/CPShiftReduceParsers/CPShiftReduceState.h \\\n         --ignore $SOURCE_ROOT/CoreParse/Parsers/CPShiftReduceParsers/CPShiftReduceActionTable.h \\\n         --ignore $SOURCE_ROOT/CoreParse/Parsers/CPShiftReduceParsers/CPShiftReduceGotoTable.h \\\n         --ignore $SOURCE_ROOT/CoreParse/Parsers/CPShiftReduceParsers/CPItem.h \\\n         --ignore $SOURCE_ROOT/CoreParse/Parsers/CPShiftReduceParsers/CPLR1Item.h \\\n         --ignore $SOURCE_ROOT/CoreParse/Parsers/CPShiftReduceParsers/CPShiftReduceParserProtectedMethods.h \\\n         --ignore $SOURCE_ROOT/CoreParse/Grammar/CPRHSItem.h \\\n         --ignore $SOURCE_ROOT/CoreParse/Grammar/CPRHSItemResult.h \\\n         --ignore $SOURCE_ROOT/CoreParse/Grammar/CPGrammar.m \\\n         $SOURCE_ROOT/CoreParse\n";
+			shellScript = "/usr/local/bin/appledoc --logformat xcode \\\n         --exit-threshold 4 \\\n         --create-html \\\n         --no-create-docset \\\n         -o $SOURCE_ROOT/../CoreParseDocs/ \\\n         --project-name CoreParse \\\n         --project-version 0.9 \\\n         --project-company Beelsebob \\\n         --ignore $SOURCE_ROOT/CoreParse/Parsers/CPShiftReduceParsers/CPShiftReduceAction.h \\\n         --ignore $SOURCE_ROOT/CoreParse/Parsers/CPShiftReduceParsers/CPShiftReduceState.h \\\n         --ignore $SOURCE_ROOT/CoreParse/Parsers/CPShiftReduceParsers/CPShiftReduceActionTable.h \\\n         --ignore $SOURCE_ROOT/CoreParse/Parsers/CPShiftReduceParsers/CPShiftReduceGotoTable.h \\\n         --ignore $SOURCE_ROOT/CoreParse/Parsers/CPShiftReduceParsers/CPItem.h \\\n         --ignore $SOURCE_ROOT/CoreParse/Parsers/CPShiftReduceParsers/CPLR1Item.h \\\n         --ignore $SOURCE_ROOT/CoreParse/Parsers/CPShiftReduceParsers/CPShiftReduceParserProtectedMethods.h \\\n         --ignore $SOURCE_ROOT/CoreParse/Grammar/CPRHSItem.h \\\n         --ignore $SOURCE_ROOT/CoreParse/Grammar/CPRHSItemResult.h \\\n         --ignore $SOURCE_ROOT/CoreParse/Grammar/CPGrammar.m \\\n         $SOURCE_ROOT/CoreParse\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 
@@ -875,6 +866,7 @@
 				1FB81327132FF16E0095982D /* CPTestMapCSSTokenisingDelegate.m in Sources */,
 				1F45A2E513422E1300092D78 /* CPJSONParser.m in Sources */,
 				1F6D44911348CC9600E982C7 /* CPLALR1Parser.m in Sources */,
+				5419720B188F7D49004240B4 /* CPRegexpRecogniser.m in Sources */,
 				1FC1827E139ADC800027F597 /* CPGrammarPrivate.m in Sources */,
 				1FC18283139AE3810027F597 /* CPGrammarInternal.m in Sources */,
 				1F9F83AD13B7CABA006E939D /* CPRHSItem.m in Sources */,
@@ -883,6 +875,7 @@
 				1FA68DA614DE9D3D005519B9 /* CPTestErrorHandlingDelegate.m in Sources */,
 				1F893A2014DEEBFC00316FF7 /* CPRecoveryAction.m in Sources */,
 				1F893A2414DEF40D00316FF7 /* CPTestErrorEvaluatorDelegate.m in Sources */,
+				1FA6430815E2C5130004FCD3 /* NSArray+Functional.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -891,6 +884,19 @@
 			buildActionMask = 2147483647;
 			files = (
 				1F0E891A130462F300537D04 /* CoreParseTests.m in Sources */,
+				DA2B1DF81566B704002FDBD7 /* CPSTAssertionsTests.m in Sources */,
+				1FA798201567DC0E003AC8AE /* Expression.m in Sources */,
+				1FA798221567DC11003AC8AE /* Term.m in Sources */,
+				1FA798231567DC49003AC8AE /* CPTestEvaluatorDelegate.m in Sources */,
+				1FA798241567DC4C003AC8AE /* CPTestErrorEvaluatorDelegate.m in Sources */,
+				1FA798251567DC51003AC8AE /* CPTestWhiteSpaceIgnoringDelegate.m in Sources */,
+				1FA798261567DC58003AC8AE /* CPTestMapCSSTokenisingDelegate.m in Sources */,
+				1FA798271567DC5C003AC8AE /* CPTestErrorHandlingDelegate.m in Sources */,
+				1FA43871162F515C00B92704 /* Expression2.m in Sources */,
+				DC3E9BEF191DBAC800F6023C /* CPWillFinishDelegateTest.m in Sources */,
+				5419721D188F9A54004240B4 /* CPRegexpRecogniserTest.m in Sources */,
+				1FA43872162F515C00B92704 /* RuleBase.m in Sources */,
+				1FA43873162F515C00B92704 /* Term2.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -898,7 +904,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7959CABD154C4ABD009F0CA9 /* CPRecoveryAction.m in Sources */,
+				1F5623A8161652FA00C5EFA8 /* NSArray+Functional.m in Sources */,
+				1F8374A1154BF9D000DBA298 /* CPRecoveryAction.m in Sources */,
 				1F9281A5145C11A60033BC34 /* CPTokeniser.m in Sources */,
 				1F9281A6145C11A60033BC34 /* CPTokenStream.m in Sources */,
 				1F9281A7145C11A60033BC34 /* CPKeywordRecogniser.m in Sources */,
@@ -921,6 +928,7 @@
 				1F9281B7145C11A60033BC34 /* CPGrammarSymbol.m in Sources */,
 				1F9281B8145C11A60033BC34 /* CPRHSItem.m in Sources */,
 				1F9281B9145C11A60033BC34 /* CPRHSItemResult.m in Sources */,
+				5419720D188F7D49004240B4 /* CPRegexpRecogniser.m in Sources */,
 				1F9281BA145C11A60033BC34 /* CPSyntaxTree.m in Sources */,
 				1F9281BB145C11A60033BC34 /* CPParser.m in Sources */,
 				1F9281BC145C11A60033BC34 /* CPShiftReduceAction.m in Sources */,
@@ -938,19 +946,6 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
-		1F928187145C11050033BC34 /* Sources */ = {
-			isa = PBXSourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				1F9281C9145C18220033BC34 /* CPTestEvaluatorDelegate.m in Sources */,
-				1F9281CA145C18220033BC34 /* CPTestWhiteSpaceIgnoringDelegate.m in Sources */,
-				1F9281CB145C18220033BC34 /* CPTestMapCSSTokenisingDelegate.m in Sources */,
-				1F9281CC145C18220033BC34 /* Expression.m in Sources */,
-				1F9281CD145C18220033BC34 /* Term.m in Sources */,
-				1F9281C8145C17580033BC34 /* CoreParseTests.m in Sources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
@@ -958,11 +953,6 @@
 			isa = PBXTargetDependency;
 			target = 1F0E88F5130462F300537D04 /* CoreParse */;
 			targetProxy = 1F0E890D130462F300537D04 /* PBXContainerItemProxy */;
-		};
-		1F928193145C11050033BC34 /* PBXTargetDependency */ = {
-			isa = PBXTargetDependency;
-			target = 1F92817E145C11050033BC34 /* iOSCoreParse */;
-			targetProxy = 1F928192145C11050033BC34 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -990,13 +980,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PREPROCESSOR_DEFINITIONS = DEBUG;
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
@@ -1023,10 +1011,9 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = YES;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
+				SDKROOT = "";
 				SUPPORTED_PLATFORMS = macosx;
-				VALID_ARCHS = "armv6 i386 x86_64 armv7 armv7s";
+				VALID_ARCHS = "i386 x86_64 armv7 armv7s";
 			};
 			name = Debug;
 		};
@@ -1034,13 +1021,11 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
-				CLANG_ENABLE_OBJC_ARC = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
-				GCC_INCREASE_PRECOMPILED_HEADER_SHARING = NO;
 				GCC_TREAT_IMPLICIT_FUNCTION_DECLARATIONS_AS_ERRORS = YES;
 				GCC_TREAT_WARNINGS_AS_ERRORS = YES;
 				GCC_VERSION = com.apple.compilers.llvm.clang.1_0;
@@ -1065,10 +1050,9 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
 				ONLY_ACTIVE_ARCH = NO;
-				SDKROOT = macosx;
-				SKIP_INSTALL = YES;
+				SDKROOT = "";
 				SUPPORTED_PLATFORMS = macosx;
-				VALID_ARCHS = "armv6 i386 x86_64 armv7 armv7s";
+				VALID_ARCHS = "i386 x86_64 armv7 armv7s";
 			};
 			name = Release;
 		};
@@ -1076,7 +1060,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
@@ -1084,7 +1067,6 @@
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_ENABLE_OBJC_GC = supported;
 				GCC_ENABLE_SSE3_EXTENSIONS = YES;
 				GCC_ENABLE_SSE41_EXTENSIONS = NO;
 				GCC_ENABLE_SSE42_EXTENSIONS = NO;
@@ -1103,6 +1085,7 @@
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "CoreParse/CoreParse-Info.plist";
+				INSTALL_PATH = "@rpath";
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_AFTER_BUILD = YES;
@@ -1114,7 +1097,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DYLIB_COMPATIBILITY_VERSION = 1;
@@ -1122,7 +1104,6 @@
 				FRAMEWORK_VERSION = A;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
-				GCC_ENABLE_OBJC_GC = supported;
 				GCC_ENABLE_SSE3_EXTENSIONS = YES;
 				GCC_ENABLE_SSE41_EXTENSIONS = NO;
 				GCC_ENABLE_SSE42_EXTENSIONS = NO;
@@ -1141,6 +1122,7 @@
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "CoreParse/CoreParse-Info.plist";
+				INSTALL_PATH = "@rpath";
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_AFTER_BUILD = YES;
@@ -1152,7 +1134,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1174,7 +1155,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				COMBINE_HIDPI_IMAGES = YES;
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				FRAMEWORK_SEARCH_PATHS = "$(DEVELOPER_LIBRARY_DIR)/Frameworks";
@@ -1195,9 +1175,8 @@
 		1F92819E145C11050033BC34 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
-				CLANG_ENABLE_OBJC_ARC = NO;
 				COPY_PHASE_STRIP = NO;
 				DSTROOT = /tmp/iOSCoreParse.dst;
 				GCC_DYNAMIC_NO_PIC = NO;
@@ -1208,107 +1187,35 @@
 					"$(inherited)",
 				);
 				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = (
-					"-all_load",
-					"-ObjC",
-				);
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = CoreParse;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				VALID_ARCHS = "armv6 armv7 armv7s";
+				VALID_ARCHS = "armv7 armv7s x86_x64";
 			};
 			name = Debug;
 		};
 		1F92819F145C11050033BC34 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
+				ALWAYS_SEARCH_USER_PATHS = YES;
 				ARCHS = "$(ARCHS_STANDARD)";
-				CLANG_ENABLE_OBJC_ARC = NO;
 				COPY_PHASE_STRIP = YES;
 				DSTROOT = /tmp/iOSCoreParse.dst;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "CoreParse/CoreParse-Prefix.pch";
-				IPHONEOS_DEPLOYMENT_TARGET = 4.0;
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = (
-					"-all_load",
-					"-ObjC",
-				);
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = CoreParse;
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "armv6 armv7 armv7s";
-			};
-			name = Release;
-		};
-		1F9281A0145C11050033BC34 /* Debug */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					armv6,
-					"$(ARCHS_STANDARD_32_BIT)",
-				);
-				COPY_PHASE_STRIP = NO;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
-				);
-				GCC_DYNAMIC_NO_PIC = NO;
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "CoreParse/CoreParse-Prefix.pch";
-				GCC_PREPROCESSOR_DEFINITIONS = (
-					"DEBUG=1",
-					"$(inherited)",
-				);
-				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
-				GCC_THUMB_SUPPORT = NO;
-				INFOPLIST_FILE = "CoreParseTests/CoreParseTests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-all_load",
-				);
-				PRODUCT_NAME = CoreParseTests;
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				WRAPPER_EXTENSION = octest;
-			};
-			name = Debug;
-		};
-		1F9281A1145C11050033BC34 /* Release */ = {
-			isa = XCBuildConfiguration;
-			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					armv6,
-					"$(ARCHS_STANDARD_32_BIT)",
-				);
-				COPY_PHASE_STRIP = YES;
-				FRAMEWORK_SEARCH_PATHS = (
-					"$(SDKROOT)/Developer/Library/Frameworks",
-					"$(DEVELOPER_LIBRARY_DIR)/Frameworks",
-				);
-				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "CoreParse/CoreParse-Prefix.pch";
-				GCC_THUMB_SUPPORT = NO;
-				INFOPLIST_FILE = "CoreParseTests/CoreParseTests-Info.plist";
-				IPHONEOS_DEPLOYMENT_TARGET = 5.0;
-				OTHER_LDFLAGS = (
-					"-ObjC",
-					"-all_load",
-				);
-				PRODUCT_NAME = CoreParseTests;
-				SDKROOT = iphoneos;
-				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				VALIDATE_PRODUCT = YES;
-				WRAPPER_EXTENSION = octest;
+				VALID_ARCHS = "armv7 armv7s x86_x64";
 			};
 			name = Release;
 		};
@@ -1376,15 +1283,6 @@
 			buildConfigurations = (
 				1F92819E145C11050033BC34 /* Debug */,
 				1F92819F145C11050033BC34 /* Release */,
-			);
-			defaultConfigurationIsVisible = 0;
-			defaultConfigurationName = Release;
-		};
-		1F9281A3145C11050033BC34 /* Build configuration list for PBXNativeTarget "iOSCoreParseTests" */ = {
-			isa = XCConfigurationList;
-			buildConfigurations = (
-				1F9281A0145C11050033BC34 /* Debug */,
-				1F9281A1145C11050033BC34 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;

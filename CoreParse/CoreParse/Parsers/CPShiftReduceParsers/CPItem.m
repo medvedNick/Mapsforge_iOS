@@ -31,8 +31,8 @@
     
     if (nil != self)
     {
-        [self setRule:initRule];
-        [self setPosition:initPosition];
+        rule = [initRule retain];
+        position = initPosition;
     }
     
     return self;
@@ -40,7 +40,7 @@
 
 - (id)copyWithZone:(NSZone *)zone
 {
-    return [[CPItem allocWithZone:zone] initWithRule:[self rule] position:[self position]];
+    return [[CPItem allocWithZone:zone] initWithRule:rule position:position];
 }
 
 - (void)dealloc
@@ -76,14 +76,19 @@
     return [c autorelease];
 }
 
+- (BOOL)isItem
+{
+    return YES;
+}
+
 - (BOOL)isEqual:(id)object
 {
-    if ([object isKindOfClass:[CPItem class]])
-    {
-        CPItem *other = (CPItem *)object;
-        return [other position] == position && [other rule] == rule;
-    }
-    return NO;
+    return [object isItem] && ((CPItem *)object)->position == position && ((CPItem *)object)->rule == rule;
+}
+
+- (BOOL)isEqualToItem:(CPItem *)item
+{
+    return item != nil && item->position == position && item->rule == rule;
 }
 
 - (NSUInteger)hash
@@ -110,6 +115,15 @@
         [desc appendString:@"•"];
     }
     return desc;
+}
+
+@end
+
+@implementation NSObject (CPIsItem)
+
+- (BOOL)isItem
+{
+    return NO;
 }
 
 @end

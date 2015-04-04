@@ -97,7 +97,8 @@
                                   @"13 elements ::= <value>;"
                                   @"14 elements ::= <value> ',' <elements>;"
                                   @"15 boolean  ::= 'true';"
-                                  @"16 boolean  ::= 'false';"];
+                                  @"16 boolean  ::= 'false';"
+                                                       error:NULL];
         jsonParser = [[CPSLRParser parserWithGrammar:jsonGrammar] retain];
         [jsonParser setDelegate:self];
     }
@@ -126,7 +127,7 @@
 
 - (NSArray *)tokeniser:(CPTokeniser *)tokeniser willProduceToken:(CPToken *)token
 {
-    if ([token isKindOfClass:[CPWhiteSpaceToken class]])
+    if ([token isWhiteSpaceToken])
     {
         return [NSArray array];
     }

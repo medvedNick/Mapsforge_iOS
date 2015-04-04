@@ -30,4 +30,12 @@
 
 - (NSString *)descriptionWithGrammar:(CPGrammar *)g;
 
+- (BOOL)isEqualToShiftReduceAction:(CPShiftReduceAction *)object;
+
+@end
+
+@interface NSObject (CPIsShiftReduceAction)
+
+- (BOOL)isShiftReduceAction;
+
 @end

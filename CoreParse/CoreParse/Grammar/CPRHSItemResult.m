@@ -8,9 +8,14 @@
 
 #import "CPRHSItemResult.h"
 
+#import "CPRule+Internal.h"
+
 @implementation CPRHSItemResult
 
-@synthesize contents;
+@synthesize contents = _contents;
+@synthesize tagNames = _tagNames;
+@synthesize shouldCollapse = _shouldCollapse;
+@synthesize tagValues = _tagValues;
 
 - (id)initWithSyntaxTree:(CPSyntaxTree *)syntaxTree
 {
@@ -19,8 +24,9 @@
     if (nil != self)
     {
         NSArray *children = [syntaxTree children];
+        CPRule *r = [syntaxTree rule];
         
-        switch ([[syntaxTree rule] tag])
+        switch ([r tag])
         {
             case 0:
                 [self setContents:[NSMutableArray array]];
@@ -41,10 +47,13 @@
                 break;
             }
             default:
-                [self release];
-                self = nil;
+                [self setContents:[[children mutableCopy] autorelease]];
                 break;
         }
+        
+        [self setTagValues:[syntaxTree tagValues]];
+        [self setTagNames:[r tagNames]];
+        [self setShouldCollapse:[r shouldCollapse]];
     }
     
     return self;
@@ -52,8 +61,25 @@
 
 - (void)dealloc
 {
-    [contents release];
+    [_contents release];
+    [_tagNames release];
+    [_tagValues release];
+    
     [super dealloc];
+}
+
+- (BOOL)isRHSItemResult
+{
+    return YES;
+}
+
+@end
+
+@implementation NSObject(CPIsRHSItemResult)
+
+- (BOOL)isRHSItemResult
+{
+    return NO;
 }
 
 @end

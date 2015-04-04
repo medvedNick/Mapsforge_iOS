@@ -9,10 +9,13 @@
 #import "CPGrammarInternal.h"
 #import "CPGrammarPrivate.h"
 
+#import "CPRule+Internal.h"
+
 #import "CPItem.h"
 #import "CPLR1Item.h"
 
 #import "CPRHSItem.h"
+#import "CPRHSItem+Private.h"
 #import "CPRHSItemResult.h"
 
 #import "NSSetFunctional.h"
@@ -38,7 +41,7 @@
     NSUInteger idx = 0;
     for (CPRule *r in ordered)
     {
-        [s appendFormat:@"%3d %@\n", idx, r];
+        [s appendFormat:@"%3ld %@\n", (long)idx, r];
         idx++;
     }
     
@@ -79,9 +82,9 @@
 {
     return [[i objectsPassingTest:^ BOOL (CPItem *item, BOOL *stop)
              {
-                 return [symbol isEqual:[item nextSymbol]];
+                 return [symbol isEqualToGrammarSymbol:[item nextSymbol]];
              }]
-            map:^ id (CPItem *item)
+            cp_map:^ id (CPItem *item)
             {
                 return [item itemByMovingDotRight];
             }];
@@ -98,7 +101,7 @@
     {
         NSSet *kernel = [processingQueue objectAtIndex:0];
         NSSet *itemSet = [self lr0Closure:kernel];
-        NSSet *validNexts = [itemSet map:^ id (CPItem *item) { return [item nextSymbol]; }];
+        NSSet *validNexts = [itemSet cp_map:^ id (CPItem *item) { return [item nextSymbol]; }];
         
         for (CPGrammarSymbol *s in validNexts)
         {
@@ -158,9 +161,9 @@
 {
     return [[i objectsPassingTest:^ BOOL (CPItem *item, BOOL *stop)
              {
-                 return [symbol isEqual:[item nextSymbol]];
+                 return [symbol isEqualToGrammarSymbol:[item nextSymbol]];
              }]
-            map:^ id (CPItem *item)
+            cp_map:^ id (CPItem *item)
             {
                 return [item itemByMovingDotRight];
             }];
@@ -238,8 +241,18 @@
     return testName;
 }
 
-- (NSArray *)tidyRightHandSides:(NSArray *)oldRules
+- (NSArray *)tidyRightHandSides:(NSArray *)oldRules error:(NSError **)error
 {
+    NSError *invalidRuleError = [self checkRulesForErrors:oldRules];
+    if (nil != invalidRuleError)
+    {
+        if (NULL != error)
+        {
+            *error = invalidRuleError;
+        }
+        return nil;
+    }
+    
     NSMutableSet *rhsElements = [NSMutableSet set];
     for (CPRule *r in oldRules)
     {
@@ -251,16 +264,67 @@
     return [self addRHSRules:names toRules:oldRules];
 }
 
+- (NSError *)checkRulesForErrors:(NSArray *)rules
+{
+    NSError *error = nil;
+    for (CPRule *rule in rules)
+    {
+        NSArray *rightHandSide = [rule rightHandSideElements];
+        NSMutableSet *tagNames = [NSMutableSet set];
+        for (id element in rightHandSide)
+        {
+            if ([element isRHSItem])
+            {
+                NSSet *newTagNames = [(CPRHSItem *)element tagNamesWithError:&error];
+                if (nil != error)
+                {
+                    return error;
+                }
+                NSMutableSet *duplicateTags = [[tagNames mutableCopy] autorelease];
+                [duplicateTags intersectSet:newTagNames];
+                if ([duplicateTags count] > 0)
+                {
+                    return [NSError errorWithDomain:CPEBNFParserErrorDomain
+                                               code:CPErrorCodeDuplicateTag
+                                           userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                     [NSString stringWithFormat:@"Duplicate tag names %@ in same part of alternative is not allowed in \"%@\".", duplicateTags, rule], NSLocalizedDescriptionKey,
+                                                     nil]];
+                }
+                [tagNames unionSet:newTagNames];
+                NSSet *tns = [(CPRHSItem *)element tags];
+                if (nil != tns)
+                {
+                    if ([tagNames intersectsSet:tns])
+                    {
+                        NSMutableSet *intersection = [[tagNames mutableCopy] autorelease];
+                        [intersection intersectSet:tns];
+                        return [NSError errorWithDomain:CPEBNFParserErrorDomain
+                                                   code:CPErrorCodeDuplicateTag
+                                               userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
+                                                         [NSString stringWithFormat:@"Duplicate tag names (%@) in same part of alternative is not allowed in \"%@\".", intersection, rule], NSLocalizedDescriptionKey,
+                                                         nil]];
+                    }
+                    [tagNames unionSet:tns];
+                }
+            }
+        }
+    }
+    
+    return nil;
+}
+
 - (NSSet *)collectRHSElementsForNewRules:(NSArray *)rightHandSide
 {
     NSMutableSet *ret = [NSMutableSet set];
-    Class itemClass = [CPRHSItem class];
     for (id element in rightHandSide)
     {
-        if ([element isKindOfClass:itemClass])
+        if ([element isRHSItem])
         {
             [ret addObject:element];
-            [ret unionSet:[self collectRHSElementsForNewRules:[(CPRHSItem *)element contents]]];
+            for (NSArray *contents in [(CPRHSItem *)element alternatives])
+            {
+                [ret unionSet:[self collectRHSElementsForNewRules:contents]];
+            }
         }
     }
     return ret;
@@ -273,7 +337,7 @@
     NSMutableDictionary *namedRules = [NSMutableDictionary dictionaryWithCapacity:[rhsElements count]];
     for (CPRHSItem *item in rhsElements)
     {
-        [namedRules setObject:[self symbolNameNotInSet:symbolNames basedOnName:[NSString stringWithFormat:@"RHS%d", name]] forKey:item];
+        [namedRules setObject:[self symbolNameNotInSet:symbolNames basedOnName:[NSString stringWithFormat:@"RHS%ld", (long)name]] forKey:item];
         name++;
     }
     return namedRules;
@@ -287,57 +351,76 @@
     for (CPRHSItem *item in newRules)
     {
         NSString *ruleName = [newRules objectForKey:item];
-        CPRule *rule;
-        if ([item mayNotExist])
-        {
-            rule = [[[CPRule alloc] initWithName:ruleName rightHandSideElements:[NSArray array]] autorelease];
-            [rule setTag:0];
-        }
-        else
-        {
-            rule = [[[CPRule alloc] initWithName:ruleName rightHandSideElements:[item contents]] autorelease];
-            [rule setTag:1];
-        }
-        [rule setRepresentitiveClass:rhsItemClass];
-        [rules addObject:rule];
         
-        if ([item repeats])
-        {
-            rule = [[[CPRule alloc] initWithName:ruleName rightHandSideElements:[[item contents] arrayByAddingObject:[CPGrammarSymbol nonTerminalWithName:ruleName]]] autorelease];
-            [rule setTag:2];
-        }
-        else if ([item mayNotExist])
-        {
-            rule = [[[CPRule alloc] initWithName:ruleName rightHandSideElements:[item contents]] autorelease];
-            [rule setTag:1];
-        }
-        else
-        {
-            rule = nil;
-        }
+        // We never generate a CPRHSItem which both repeats/mayNotExist, and has alternatives
+        // Cases where this happens are represented as two CPRHSItems, one inside another
+        // Because of this, we can deal with the two cases completely seperately.
         
-        if (nil != rule)
+        if ([[item alternatives] count] == 1)
         {
+            CPRule *rule;
+            
+            if ([item mayNotExist])
+            {
+                rule = [[[CPRule alloc] initWithName:ruleName rightHandSideElements:[NSArray array]] autorelease];
+                [rule setTag:0];
+            }
+            else
+            {
+                rule = [[[CPRule alloc] initWithName:ruleName rightHandSideElements:[[item alternatives] objectAtIndex:0]] autorelease];
+                [rule setTag:1];
+            }
+            [rule setShouldCollapse:[item shouldCollapse]];
+            [rule setTagNames:[item tags]];
             [rule setRepresentitiveClass:rhsItemClass];
             [rules addObject:rule];
+            
+            if ([item repeats])
+            {
+                rule = [[[CPRule alloc] initWithName:ruleName rightHandSideElements:[[[item alternatives] objectAtIndex:0] arrayByAddingObject:[CPGrammarSymbol nonTerminalWithName:ruleName]]] autorelease];
+                [rule setTag:2];
+            }
+            else if ([item mayNotExist])
+            {
+                rule = [[[CPRule alloc] initWithName:ruleName rightHandSideElements:[[item alternatives] objectAtIndex:0]] autorelease];
+                [rule setTag:1];
+            }
+            else
+            {
+                rule = nil;
+            }
+            
+            if (nil != rule)
+            {
+                [rule setShouldCollapse:[item shouldCollapse]];
+                [rule setTagNames:[item tags]];
+                [rule setRepresentitiveClass:rhsItemClass];
+                [rules addObject:rule];
+            }
+        }
+        else
+        {
+            NSUInteger i = 0;
+            for (NSArray *contents in [item alternatives])
+            {
+                CPRule *rule = [[[CPRule alloc] initWithName:ruleName rightHandSideElements:contents] autorelease];
+                [rule setTag:3 + i];
+                [rule setRepresentitiveClass:rhsItemClass];
+                [rule setShouldCollapse:[item shouldCollapse]];
+                [rule setTagNames:[item tags]];
+                [rules addObject:rule];
+                i++;
+            }
         }
     }
     
-    Class itemClass = [CPRHSItem class];
     for (CPRule *rule in rules)
     {
         NSArray *rhsElements = [rule rightHandSideElements];
         NSMutableArray *newRightHandSideElements = [NSMutableArray arrayWithCapacity:[rhsElements count]];
         for (id element in rhsElements)
         {
-            if ([element isKindOfClass:itemClass])
-            {
-                [newRightHandSideElements addObject:[CPGrammarSymbol nonTerminalWithName:[newRules objectForKey:element]]];
-            }
-            else
-            {
-                [newRightHandSideElements addObject:element];
-            }
+            [newRightHandSideElements addObject:[element isRHSItem] ? [CPGrammarSymbol nonTerminalWithName:[newRules objectForKey:element]] : element];
         }
         [rule setRightHandSideElements:newRightHandSideElements];
     }

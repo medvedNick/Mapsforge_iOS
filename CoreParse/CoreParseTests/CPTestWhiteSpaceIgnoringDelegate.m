@@ -8,7 +8,6 @@
 
 #import "CPTestWhiteSpaceIgnoringDelegate.h"
 
-
 @implementation CPTestWhiteSpaceIgnoringDelegate
 
 - (BOOL)tokeniser:(CPTokeniser *)tokeniser shouldConsumeToken:(CPToken *)token
@@ -16,13 +15,12 @@
     return YES;
 }
 
-- (NSArray *)tokeniser:(CPTokeniser *)tokeniser willProduceToken:(CPToken *)token
+- (void)tokeniser:(CPTokeniser *)tokeniser requestsToken:(CPToken *)token pushedOntoStream:(CPTokenStream *)stream
 {
-    if ([token isKindOfClass:[CPWhiteSpaceToken class]] || [[token name] isEqualToString:@"Comment"])
+    if (![token isWhiteSpaceToken])
     {
-        return [NSArray array];
+        [stream pushToken:token];
     }
-    return [NSArray arrayWithObject:token];
 }
 
 - (NSUInteger)tokeniser:(CPTokeniser *)tokeniser didNotFindTokenOnInput:(NSString *)input position:(NSUInteger)position error:(NSString **)errorMessage

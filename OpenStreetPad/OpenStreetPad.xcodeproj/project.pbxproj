@@ -292,13 +292,6 @@
 			remoteGlobalIDString = 1F92817F145C11050033BC34;
 			remoteInfo = iOSCoreParse;
 		};
-		1FCA08F714CAE5C2008889C3 /* PBXContainerItemProxy */ = {
-			isa = PBXContainerItemProxy;
-			containerPortal = 1FCA08E314CAE5C2008889C3 /* CoreParse.xcodeproj */;
-			proxyType = 2;
-			remoteGlobalIDString = 1F92818C145C11050033BC34;
-			remoteInfo = iOSCoreParseTests;
-		};
 		79ED3362153C4C2D0057392A /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = 79ED335B153C4C280057392A /* MapsforgeReader.xcodeproj */;
@@ -632,7 +625,6 @@
 				1FCA08F214CAE5C2008889C3 /* CoreParseTests.octest */,
 				1FCA08F414CAE5C2008889C3 /* CoreParse Documentation */,
 				1FCA08F614CAE5C2008889C3 /* libCoreParse.a */,
-				1FCA08F814CAE5C2008889C3 /* CoreParseTests.octest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -1032,13 +1024,6 @@
 			fileType = archive.ar;
 			path = libCoreParse.a;
 			remoteRef = 1FCA08F514CAE5C2008889C3 /* PBXContainerItemProxy */;
-			sourceTree = BUILT_PRODUCTS_DIR;
-		};
-		1FCA08F814CAE5C2008889C3 /* CoreParseTests.octest */ = {
-			isa = PBXReferenceProxy;
-			fileType = wrapper.cfbundle;
-			path = CoreParseTests.octest;
-			remoteRef = 1FCA08F714CAE5C2008889C3 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 		79ED3363153C4C2D0057392A /* libMapsforgeReader.a */ = {
@@ -1459,12 +1444,12 @@
 					"\"$(SDKROOT)/usr/lib/system\"",
 					/usr/lib,
 				);
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = "";
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				VALID_ARCHS = "armv7 armv6 i386 x86_64 armv7s";
+				VALID_ARCHS = "armv7 armv6 armv7s i386 x86_64";
 			};
 			name = Debug;
 		};
@@ -1490,12 +1475,12 @@
 					"\"$(SDKROOT)/usr/lib/system\"",
 					/usr/lib,
 				);
-				ONLY_ACTIVE_ARCH = NO;
-				OTHER_LDFLAGS = "";
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
-				VALID_ARCHS = "armv7 armv6 i386 x86_64 armv7s";
+				VALID_ARCHS = "armv7 armv6 armv7s i386 x86_64";
 			};
 			name = Release;
 		};
