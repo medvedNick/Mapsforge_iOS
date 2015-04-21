@@ -105,7 +105,6 @@
 		11EBA12218117BA4000B3EFF /* VectorMapTest-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "VectorMapTest-Info.plist"; sourceTree = "<group>"; };
 		11EBA12318117BA4000B3EFF /* VectorMapTest-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "VectorMapTest-Prefix.pch"; sourceTree = "<group>"; };
 		11EBA19B18118430000B3EFF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		11EBA1CF18128F6E000B3EFF /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		79E77153158B3BCC0095BF71 /* MoscowVector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoscowVector.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79E77157158B3BCC0095BF71 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		79E77159158B3BCC0095BF71 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -243,7 +242,6 @@
 			children = (
 				C86BF43A1AD698DB00393968 /* libiconv.2.dylib */,
 				C86BF4231AD6925B00393968 /* libz.1.2.5.dylib */,
-				11EBA1CF18128F6E000B3EFF /* libsqlite3.0.dylib */,
 				79E771BF158B41BB0095BF71 /* QuartzCore.framework */,
 				79E771BD158B41AC0095BF71 /* CoreText.framework */,
 				79E771BB158B41A60095BF71 /* CoreLocation.framework */,
