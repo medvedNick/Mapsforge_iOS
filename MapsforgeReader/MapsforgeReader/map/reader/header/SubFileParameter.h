@@ -22,57 +22,57 @@ extern char const BYTES_PER_INDEX_ENTRY;
   /**
    * Vertical amount of blocks in the grid.
  */
-  long long blocksHeight;
+  long blocksHeight;
 
   /**
    * Horizontal amount of blocks in the grid.
  */
-  long long blocksWidth;
+  long blocksWidth;
 
   /**
    * Y number of the tile at the bottom boundary in the grid.
  */
-  long long boundaryTileBottom;
+  long boundaryTileBottom;
 
   /**
    * X number of the tile at the left boundary in the grid.
  */
-  long long boundaryTileLeft;
+  long boundaryTileLeft;
 
   /**
    * X number of the tile at the right boundary in the grid.
  */
-  long long boundaryTileRight;
+  long boundaryTileRight;
 
   /**
    * Y number of the tile at the top boundary in the grid.
  */
-  long long boundaryTileTop;
+  long boundaryTileTop;
 
   /**
    * Absolute end address of the index in the enclosing file.
  */
-  long long indexEndAddress;
+  long indexEndAddress;
 
   /**
    * Absolute start address of the index in the enclosing file.
  */
-  long long indexStartAddress;
+  long indexStartAddress;
 
   /**
    * Total number of blocks in the grid.
  */
-  long long numberOfBlocks;
+  long numberOfBlocks;
 
   /**
    * Absolute start address of the sub-file in the enclosing file.
  */
-  long long startAddress;
+  long startAddress;
 
   /**
    * Size of the sub-file in bytes.
  */
-  long long subFileSize;
+  long subFileSize;
 
   /**
    * Maximum zoom level for which the block entries tables are made.

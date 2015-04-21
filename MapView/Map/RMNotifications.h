@@ -1,7 +1,7 @@
 //
 //  RMNofications.h
 //
-// Copyright (c) 2008-2009, Route-Me Contributors
+// Copyright (c) 2008-2013, Route-Me Contributors
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,5 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-static NSString* const RMSuspendNetworkOperations = @"RMSuspendNetworkOperations";
-static NSString* const RMResumeNetworkOperations = @"RMResumeNetworkOperations";
-static NSString* const RMMapImageRemovedFromScreenNotification = @"RMMapImageRemovedFromScreen";
-static NSString* const RMMapImageAddedToScreenNotification = @"RMMapImageAddedToScreen";
-static NSString* const RMSuspendExpensiveOperations = @"RMSuspendExpensiveOperations";
-static NSString* const RMResumeExpensiveOperations = @"RMResumeExpensiveOperations";
-static NSString* const RMTileRetrieved = @"RMTileRetrieved";
-static NSString* const RMTileRequested = @"RMTileRequested";
-static NSString* const RMTileError = @"RMTileError";
-static NSString* const RMMapImageLoadedNotification = @"RMMapImageLoaded";
-static NSString* const RMMapImageLoadingCancelledNotification = @"RMMapImageLoadingCancelled";
+static const NSString *RMSuspendNetworkOperations = @"RMSuspendNetworkOperations";
+static const NSString *RMResumeNetworkOperations = @"RMResumeNetworkOperations";

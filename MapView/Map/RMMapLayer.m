@@ -1,7 +1,7 @@
 //
 //  RMMapLayer.m
 //
-// Copyright (c) 2008-2009, Route-Me Contributors
+// Copyright (c) 2008-2013, Route-Me Contributors
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,47 +27,105 @@
 
 #import "RMMapLayer.h"
 #import "RMPixel.h"
+#import "RMAnnotation.h"
+#import "RMMapView.h"
+#import "RMMarker.h"
+
+@interface RMMapView (PrivateMethods)
+
+- (void)annotation:(RMAnnotation *)annotation didChangeDragState:(RMMapLayerDragState)newState fromOldState:(RMMapLayerDragState)oldState;
+
+@end
+
+#pragma mark -
 
 @implementation RMMapLayer
 
-- (id) init
+@synthesize annotation;
+@synthesize projectedLocation;
+@synthesize dragState=_dragState;
+@synthesize userInfo;
+@synthesize canShowCallout=_canShowCallout;
+@synthesize calloutOffset;
+@synthesize leftCalloutAccessoryView;
+@synthesize rightCalloutAccessoryView;
+
+- (id)init
 {
-	if (![super init])
+	if (!(self = [super init]))
 		return nil;
-	
+
+    self.annotation = nil;
+    self.calloutOffset = CGPointZero;
+
 	return self;
 }
 
 - (id)initWithLayer:(id)layer
 {
-	if (![super initWithLayer:layer])
-		return nil;
-	
-	return self;
+    if (!(self = [super initWithLayer:layer]))
+        return nil;
+
+    self.annotation = nil;
+    self.userInfo = nil;
+    self.calloutOffset = CGPointZero;
+
+    return self;
 }
 
-/// \bug why return nil for the "position" and "bounds" actionForKey? Does this do anything besides block Core Animation?
-- (id<CAAction>)actionForKey:(NSString *)key
+- (void)setCanShowCallout:(BOOL)canShowCallout
 {
-	if ([key isEqualToString:@"position"]
-		|| [key isEqualToString:@"bounds"])
-		return nil;
-	
-	else return [super actionForKey:key];
+    if (canShowCallout)
+    {
+        NSAssert([self isKindOfClass:[RMMarker class]],  @"Callouts are not supported on non-marker annotation layers");
+        NSAssert( ! self.annotation.isClusterAnnotation, @"Callouts are not supported on cluster annotation layers");
+    }
+
+    _canShowCallout = canShowCallout;
 }
 
-- (void)moveBy: (CGSize) delta
+- (void)setPosition:(CGPoint)position animated:(BOOL)animated
 {
-	self.position = RMTranslateCGPointBy(self.position, delta);
+    [self setPosition:position];
 }
 
-- (void)zoomByFactor: (float) zoomFactor near:(CGPoint) pivot
+- (void)setDragState:(RMMapLayerDragState)dragState
 {
-    // a empty layer has size=(0,0) which cause divide by 0 if scaled
-    if(self.bounds.size.width == 0.0 || self.bounds.size.height == 0.0)
-        return;
-	self.position = RMScaleCGPointAboutPoint(self.position, zoomFactor, pivot);
-	self.bounds = RMScaleCGRectAboutPoint(self.bounds, zoomFactor, self.anchorPoint);
+    [self setDragState:dragState animated:YES];
 }
+
+- (void)setDragState:(RMMapLayerDragState)dragState animated:(BOOL)animated
+{
+    RMMapLayerDragState oldDragState = _dragState;
+
+    if (dragState == RMMapLayerDragStateStarting)
+    {
+        _dragState = RMMapLayerDragStateDragging;
+    }
+    else if (dragState == RMMapLayerDragStateDragging)
+    {
+        _dragState = RMMapLayerDragStateDragging;
+    }
+    else if (dragState == RMMapLayerDragStateCanceling || dragState == RMMapLayerDragStateEnding)
+    {
+        _dragState = RMMapLayerDragStateNone;
+    }
+    else if (dragState == RMMapLayerDragStateNone)
+    {
+        _dragState = RMMapLayerDragStateNone;
+    }
+
+    if (_dragState != oldDragState)
+        [self.annotation.mapView annotation:self.annotation didChangeDragState:_dragState fromOldState:oldDragState];
+}
+
+/// return nil for certain animation keys to block core animation
+//- (id <CAAction>)actionForKey:(NSString *)key
+//{
+//    if ([key isEqualToString:@"position"] || [key isEqualToString:@"bounds"])
+//        return nil;
+//    else
+//        return [super actionForKey:key];
+//}
 
 @end

@@ -45,15 +45,13 @@
 	[mapDatabase executeQuery:tile mapDatabaseCallback:self];
 }
 
-- (void) addNode:(int)nodeId latitude:(int)latitude longitude:(int)longitude tags:(NSMutableDictionary *)tags
+- (void) addNode:(int)nodeId latitude:(double)latitude longitude:(double)longitude tags:(NSMutableDictionary *)tags
 {
 	static int nodes = 0;
 	nodes++;
 	if (nodes % 1000 == 0) NSLog(@"nodes: %d", nodes);
 	OSPNode *node = [[OSPNode alloc] init];
-
-	double NANODEG = 0.000001;
-	[node setLocation:CLLocationCoordinate2DMake(latitude*NANODEG, longitude*NANODEG)];
+	[node setLocation:CLLocationCoordinate2DMake(latitude, longitude)];
 	[node setIdentity:nodeId];
 	[node setTags:tags];
 	[node setMap:(OSPMap*)self.cache];
@@ -72,7 +70,6 @@
 	}
 	
 	OSPWay *way = [[OSPWay alloc] init];
-//	NSMutableArray *nodeIds = [NSMutableArray arrayWithCapacity:count];
 	
 	for (NSArray *waySegment in nodes)
 	{
@@ -80,14 +77,11 @@
 		{
 			int lat = [(NSNumber*)[waySegment objectAtIndex:i+1] longValue];
 			int lon = [(NSNumber*)[waySegment objectAtIndex:i] longValue];
-//			NSLog(@"%d, %d", lat, lon);
 			[self addNode:nodeId latitude:lat longitude:lon tags:[NSDictionary dictionary]];
-//			[nodeIds addObject:[NSNumber numberWithLong:nodeId]];
 			[way addNodeWithId:nodeId];
 			nodeId++;
 		}
 	}
-//	NSLog(@"Way length: %d", way.nodes.count);
 	[way setIdentity:wayId];
 	[way setTags:tags];
 	[way setMap:(OSPMap*)self.cache];

@@ -85,15 +85,19 @@ extern int const RF_LONGITUDE_MIN;
   return [FileOpenResult SUCCESS];
 }
 
+- (double) microDegreesToDegrees:(double)mdegrees {
+    return mdegrees / 1000000.0;
+}
+
 - (FileOpenResult *) readMapStartPosition:(ReadBuffer *)readBuffer {
   if (hasStartPosition) {
-    int mapStartLatitude = [readBuffer readInt];
+    double mapStartLatitude = [self microDegreesToDegrees:[readBuffer readInt]];
     if (mapStartLatitude < RF_LATITUDE_MIN || mapStartLatitude > RF_LATITUDE_MAX) {
-        return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid map start latitude: %d",mapStartLatitude]];// autorelease];
+        return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid map start latitude: %f",mapStartLatitude]];// autorelease];
     }
-    int mapStartLongitude = [readBuffer readInt];
+    double mapStartLongitude = [self microDegreesToDegrees:[readBuffer readInt]];
     if (mapStartLongitude < RF_LONGITUDE_MIN || mapStartLongitude > RF_LONGITUDE_MAX) {
-        return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid map start longitude: %d",mapStartLongitude]];// autorelease];
+        return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid map start longitude: %f",mapStartLongitude]];// autorelease];
     }
     startPosition = [[GeoPoint alloc] init:mapStartLatitude longitudeE6:mapStartLongitude];// autorelease];
   }

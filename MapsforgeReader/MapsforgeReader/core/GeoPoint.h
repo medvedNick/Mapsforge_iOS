@@ -7,12 +7,12 @@
   /**
    * The latitude value of this GeoPoint in microdegrees (degrees * 10^6).
  */
-  int latitudeE6;
+  double latitudeE6;
 
   /**
    * The longitude value of this GeoPoint in microdegrees (degrees * 10^6).
  */
-  int longitudeE6;
+  double longitudeE6;
 
   /**
    * The hash code of this object.
@@ -23,7 +23,7 @@
 @property(nonatomic, readonly) double latitude;
 @property(nonatomic, readonly) double longitude;
 - (id) init:(double)latitude longitude:(double)longitude;
-- (id) init:(int)latitudeE6 longitudeE6:(int)longitudeE6;
+- (id) init:(double)latitudeE6 longitudeE6:(double)longitudeE6;
 - (int) compareTo:(GeoPoint *)geoPoint;
 - (BOOL) isEqualTo:(NSObject *)obj;
 - (int) hash;

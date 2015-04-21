@@ -1,7 +1,7 @@
 //
 //  RMCircle.h
 //
-// Copyright (c) 2008-2010, Route-Me Contributors
+// Copyright (c) 2008-2013, Route-Me Contributors
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,44 +27,50 @@
 
 #import <Foundation/Foundation.h>
 #import "RMFoundation.h"
-#import "RMLatLong.h"
 #import "RMMapLayer.h"
 
-@class RMMapContents;
+@class RMMapView;
 
+/** An RMCircle is used to represent a perfect circle shape on a map view. An RMCircle changes visible size in response to map zooms in order to consistently represent coverage of the same geographic area. */
+@interface RMCircle : RMMapLayer
+{
+	RMMapView *mapView;
+	CAShapeLayer *shapeLayer;
 
-@interface RMCircle : RMMapLayer <RMMovingMapLayer> {
-@private
-	RMMapContents* mapContents;
-	CAShapeLayer* shapeLayer;
-	
-	RMLatLong latLong;
-	RMProjectedPoint projectedLocation;
-	BOOL enableDragging;
-	BOOL enableRotation;
-	
-	UIColor* lineColor;
-	UIColor* fillColor;
+	UIColor *lineColor;
+	UIColor *fillColor;
 	CGFloat radiusInMeters;
 	CGFloat lineWidthInPixels;
 	BOOL scaleLineWidth;
-	
+
 	CGMutablePathRef circlePath;
 }
 
-@property (nonatomic, retain) CAShapeLayer* shapeLayer;
-@property (nonatomic, assign) RMProjectedPoint projectedLocation;
-@property (assign) BOOL enableDragging;
-@property (assign) BOOL enableRotation;
-@property (nonatomic, retain) UIColor* lineColor;
-@property (nonatomic, retain) UIColor* fillColor;
+/** @name Accessing Drawing Properties */
+
+/** The circle's underlying shape layer. */
+@property (nonatomic, strong) CAShapeLayer *shapeLayer;
+
+/** The circle's line color. Defaults to black. */
+@property (nonatomic, strong) UIColor *lineColor;
+
+/** The circle's fill color. Defaults to blue with a 25% alpha value. */
+@property (nonatomic, strong) UIColor *fillColor;
+
+/** The fill pattern image of the circle. If set, the fillColor is set to `nil`. */
+@property (nonatomic, strong) UIImage *fillPatternImage;
+
+/** The radius of the circle in projected meters. Regardless of map zoom, the circle will change visible size to continously represent this radius on the map. */
 @property (nonatomic, assign) CGFloat radiusInMeters;
+
+/** The circle's line width. Defaults to 2.0. */
 @property (nonatomic, assign) CGFloat lineWidthInPixels;
 
-- (id)initWithContents:(RMMapContents*)aContents radiusInMeters:(CGFloat)newRadiusInMeters latLong:(RMLatLong)newLatLong;
-- (void)moveToLatLong:(RMLatLong)newLatLong;
+/** @name Creating Circle Objects */
 
-- (void)updateCirclePath;
-- (void)bouncesCirclePath;
+/** Initializes and returns a newly allocated RMCircle for the specified map view.
+*   @param aMapView The map view the shape should be drawn on.
+*   @param newRadiusInMeters The radius of the circle object in projected meters. Regardless of map zoom, the circle will change visible size to continously represent this radius on the map. */
+- (id)initWithView:(RMMapView *)aMapView radiusInMeters:(CGFloat)newRadiusInMeters;
 
 @end

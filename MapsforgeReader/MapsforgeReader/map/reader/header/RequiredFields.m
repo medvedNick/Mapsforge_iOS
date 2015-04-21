@@ -53,28 +53,29 @@ int const RF_LONGITUDE_MIN = -180000000;
 
 @implementation RequiredFields
 
+
 + (FileOpenResult *) readBoundingBox:(ReadBuffer *)readBuffer mapFileInfoBuilder:(MapFileInfoBuilder *)mapFileInfoBuilder {
-  int minLatitude = [readBuffer readInt];
+  double minLatitude = [MercatorProjection microDegreesToDegrees:[readBuffer readInt]];
   if (minLatitude < RF_LATITUDE_MIN || minLatitude > RF_LATITUDE_MAX) {
-	  return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid minimum latitude: %d",minLatitude]];// autorelease];
+	  return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid minimum latitude: %f",minLatitude]];// autorelease];
   }
-  int minLongitude = [readBuffer readInt];
+  double minLongitude = [MercatorProjection microDegreesToDegrees:[readBuffer readInt]];
   if (minLongitude < RF_LONGITUDE_MIN || minLongitude > RF_LONGITUDE_MAX) {
-      return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid minimum longitude: %d", minLongitude]];// autorelease];
+      return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid minimum longitude: %f", minLongitude]];// autorelease];
   }
-  int maxLatitude = [readBuffer readInt];
+  double maxLatitude = [MercatorProjection microDegreesToDegrees:[readBuffer readInt]];
   if (maxLatitude < RF_LATITUDE_MIN || maxLatitude > RF_LATITUDE_MAX) {
-      return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid maximum latitude: %d",maxLatitude]];// autorelease];
+      return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid maximum latitude: %f",maxLatitude]];// autorelease];
   }
-  int maxLongitude = [readBuffer readInt];
+  double maxLongitude = [MercatorProjection microDegreesToDegrees:[readBuffer readInt]];
   if (maxLongitude < RF_LONGITUDE_MIN || maxLongitude > RF_LONGITUDE_MAX) {
-      return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid maximum longitude: %d", maxLongitude]];// autorelease];
+      return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid maximum longitude: %f", maxLongitude]];// autorelease];
   }
   if (minLatitude > maxLatitude) {
-      return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid latitude range: %d, %d", minLatitude, maxLatitude]];// autorelease];
+      return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid latitude range: %f, %f", minLatitude, maxLatitude]];// autorelease];
   }
    else if (minLongitude > maxLongitude) {
-       return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid longitude range: %d, %d", minLongitude, maxLongitude]] ;//autorelease];
+       return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid longitude range: %f, %f", minLongitude, maxLongitude]] ;//autorelease];
   }
   mapFileInfoBuilder->boundingBox = [[BoundingBox alloc] init:minLatitude minLongitudeE6:minLongitude maxLatitudeE6:maxLatitude maxLongitudeE6:maxLongitude];//autorelease];
   return [FileOpenResult SUCCESS];
@@ -99,7 +100,7 @@ int const RF_LONGITUDE_MIN = -180000000;
 }
 
 + (FileOpenResult *) readMagicByte:(ReadBuffer *)readBuffer {
-  int magicByteLength = [BINARY_OSM_MAGIC_BYTE length];
+  long magicByteLength = [BINARY_OSM_MAGIC_BYTE length];
   if (![readBuffer readFromFile:magicByteLength + 4]) {
       return [[FileOpenResult alloc]initWithErrorMessage:[NSString stringWithFormat:@"reading magic byte has failed"]];//autorelease];
   }

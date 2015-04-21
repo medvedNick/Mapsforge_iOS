@@ -32,8 +32,8 @@
   NSString * signatureBlock;
   NSString * signaturePoi;
   NSString * signatureWay;
-  int tileLatitude;
-  int tileLongitude;
+  double tileLatitude;
+  double tileLongitude;
 }
 
 @property(nonatomic, retain, readonly) MapFileInfo * mapFileInfo;

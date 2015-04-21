@@ -1,7 +1,7 @@
 //
 //  RMTileSource.h
 //
-// Copyright (c) 2008-2009, Route-Me Contributors
+// Copyright (c) 2008-2013, Route-Me Contributors
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -26,47 +26,86 @@
 // POSSIBILITY OF SUCH DAMAGE.
 
 #import <Foundation/Foundation.h>
+
 #import "RMTile.h"
-#import "RMLatLong.h"
 #import "RMFoundation.h"
+#import "RMGlobalConstants.h"
 
-@class RMTileImage;
-@class RMFractalTileProjection;
-@class RMTileLoader;
-@class RMTiledLayerController;
-@class RMTileCache;
+#define RMTileRequested @"RMTileRequested"
+#define RMTileRetrieved @"RMTileRetrieved"
+
+@class RMFractalTileProjection, RMTileCache, RMProjection, RMTileImage, RMTileCache;
+
 @protocol RMMercatorToTileProjection;
-@class RMProjection;
 
+#pragma mark -
+
+/** The RMTileSource protocol describes the general interface for map tile sources. Whether retrieved from network sources or provided locally, tile sources must provide some specific minimum properties. */
 @protocol RMTileSource <NSObject>
 
--(RMTileImage *) tileImage: (RMTile) tile;
--(NSString *) tileURL: (RMTile) tile;
--(NSString *) tileFile: (RMTile) tile;
--(NSString *) tilePath;
--(id<RMMercatorToTileProjection>) mercatorToTileProjection;
--(RMProjection*) projection;
+/** @name Configuring the Supported Zoom Levels */
 
--(float) minZoom;
--(float) maxZoom;
+/** The minimum zoom level supported by the tile source. */
+@property (nonatomic, assign) float minZoom;
 
--(void) setMinZoom:(NSUInteger) aMinZoom;
--(void) setMaxZoom:(NSUInteger) aMaxZoom;
+/** The maximum zoom level supported by the tile source. */
+@property (nonatomic, assign) float maxZoom;
 
--(RMSphericalTrapezium) latitudeLongitudeBoundingBox;
+/** A Boolean value indicating whether the tiles from this source should be cached. */
+@property (nonatomic, assign, getter=isCacheable) BOOL cacheable;
 
--(void) didReceiveMemoryWarning;
+/** A Boolean value indicating whether the tiles from this source are opaque. Setting this correctly is important when using RMCompositeSource so that alpha transparency can be preserved when compositing tile images. */
+@property (nonatomic, assign, getter=isOpaque) BOOL opaque;
 
--(NSString *)uniqueTilecacheKey;
+@property (nonatomic, readonly) RMFractalTileProjection *mercatorToTileProjection;
+@property (nonatomic, readonly) RMProjection *projection;
 
--(NSString *)shortName;
--(NSString *)longDescription;
--(NSString *)shortAttribution;
--(NSString *)longAttribution;
+/** @name Querying the Bounds */
 
-/*! \brief clear all images from the in-memory and on-disk image caches
- \bug This method belongs on RMCachedTileSource, not on RMTileSource, because an RMTileSource doesn't have a cache.
- */
--(void)removeAllCachedImages;
+/** The bounding box that the tile source provides coverage for. */
+@property (nonatomic, readonly) RMSphericalTrapezium latitudeLongitudeBoundingBox;
+
+/** @name Configuring Caching */
+
+/** A unique string representing the tile source in the cache in order to distinguish it from other tile sources. */
+@property (nonatomic, readonly) NSString *uniqueTilecacheKey;
+
+/** @name Configuring Tile Size */
+
+/** The number of pixels along the side of a tile image for this source. */
+@property (nonatomic, readonly) NSUInteger tileSideLength;
+
+/** @name Configuring Descriptive Properties */
+
+/** A short version of the tile source's name. */
+@property (nonatomic, readonly) NSString *shortName;
+
+/** An extended version of the tile source's description. */
+@property (nonatomic, readonly) NSString *longDescription;
+
+/** A short version of the tile source's attribution string. */
+@property (nonatomic, readonly) NSString *shortAttribution;
+
+/** An extended version of the tile source's attribution string. */
+@property (nonatomic, readonly) NSString *longAttribution;
+
+#pragma mark -
+
+/** @name Supplying Tile Images */
+
+/** Provide an image for a given tile location using a given cache.
+*   @param tile The map tile in question.
+*   @param tileCache A tile cache to check first when providing the image.
+*   @return An image to display. */
+- (UIImage *)imageForTile:(RMTile)tile inCache:(RMTileCache *)tileCache;
+
+/** Check if the tile source can provide the requested tile.
+ *  @param tile The map tile in question.
+ *  @return A Boolean value indicating whether the tile source can provide the requested tile. */
+- (BOOL)tileSourceHasTile:(RMTile)tile;
+
+- (void)cancelAllDownloads;
+
+- (void)didReceiveMemoryWarning;
 
 @end

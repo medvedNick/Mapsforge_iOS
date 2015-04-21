@@ -12,6 +12,8 @@
   long long toBlockX;
   long long toBlockY;
   BOOL useTileBitmask;
+    long x;
+    long y;
 }
 
 - (NSString *) description;

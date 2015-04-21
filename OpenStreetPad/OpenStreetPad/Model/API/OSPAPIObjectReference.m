@@ -18,7 +18,7 @@
 
 @synthesize type;
 
-+ (id)apiObjectReferenceWithType:(OSPMemberType)type identity:(NSInteger)identity
+/*+ (id)apiObjectReferenceWithType:(OSPMemberType)type identity:(NSInteger)identity
 {
     return [[self alloc] initWithType:type identity:identity];
 }
@@ -34,7 +34,7 @@
     }
     
     return self;
-}
+}*/
 
 - (OSPMemberType)memberType
 {

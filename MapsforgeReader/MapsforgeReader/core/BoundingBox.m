@@ -4,7 +4,6 @@
 /**
  * Conversion factor from degrees to microdegrees.
  */
-double const CONVERSION_FACTOR = 1000000.0;
 extern long const serialVersionUID;// = 1L;
 
 @implementation BoundingBox
@@ -30,7 +29,7 @@ extern long const serialVersionUID;// = 1L;
  * @param maxLongitudeE6
  * the maximum longitude in microdegrees (degrees * 10^6).
  */
-- (id) init:(int)_minLatitudeE6 minLongitudeE6:(int)_minLongitudeE6 maxLatitudeE6:(int)_maxLatitudeE6 maxLongitudeE6:(int)_maxLongitudeE6 {
+- (id) init:(double)_minLatitudeE6 minLongitudeE6:(double)_minLongitudeE6 maxLatitudeE6:(double)_maxLatitudeE6 maxLongitudeE6:(double)_maxLongitudeE6 {
   if (self = [super init]) {
     minLatitudeE6 = _minLatitudeE6;
     minLongitudeE6 = _minLongitudeE6;
@@ -79,8 +78,8 @@ extern long const serialVersionUID;// = 1L;
  * @return the GeoPoint at the horizontal and vertical center of this BoundingBox.
  */
 - (GeoPoint *) centerPoint {
-  int latitudeOffset = (maxLatitudeE6 - minLatitudeE6) / 2;
-  int longitudeOffset = (maxLongitudeE6 - minLongitudeE6) / 2;
+  double latitudeOffset = (maxLatitudeE6 - minLatitudeE6) / 2;
+  double longitudeOffset = (maxLongitudeE6 - minLongitudeE6) / 2;
     return [[GeoPoint alloc] init:minLatitudeE6 + latitudeOffset longitudeE6:minLongitudeE6 + longitudeOffset];// autorelease];
 }
 
@@ -89,7 +88,7 @@ extern long const serialVersionUID;// = 1L;
  * @return the maximum latitude value of this BoundingBox in degrees.
  */
 - (double) maxLatitude {
-  return maxLatitudeE6 / CONVERSION_FACTOR;
+  return maxLatitudeE6;
 }
 
 
@@ -97,7 +96,7 @@ extern long const serialVersionUID;// = 1L;
  * @return the maximum longitude value of this BoundingBox in degrees.
  */
 - (double) maxLongitude {
-  return maxLongitudeE6 / CONVERSION_FACTOR;
+  return maxLongitudeE6;
 }
 
 
@@ -105,7 +104,7 @@ extern long const serialVersionUID;// = 1L;
  * @return the minimum latitude value of this BoundingBox in degrees.
  */
 - (double) minLatitude {
-  return minLatitudeE6 / CONVERSION_FACTOR;
+  return minLatitudeE6;
 }
 
 
@@ -113,7 +112,7 @@ extern long const serialVersionUID;// = 1L;
  * @return the minimum longitude value of this BoundingBox in degrees.
  */
 - (double) minLongitude {
-  return minLongitudeE6 / CONVERSION_FACTOR;
+  return minLongitudeE6;
 }
 
 - (int) hash {
@@ -121,7 +120,7 @@ extern long const serialVersionUID;// = 1L;
 }
 
 - (NSString *) description {
-  NSString *desc = [NSString stringWithFormat:@"BoundingBox [minLatitudeE6=%d, minLongitudeE6=%d, maxLatitudeE6=%d, maxLongitudeE6=%d]", minLatitudeE6, minLongitudeE6, maxLatitudeE6, maxLongitudeE6];
+  NSString *desc = [NSString stringWithFormat:@"BoundingBox [minLatitudeE6=%f, minLongitudeE6=%f, maxLatitudeE6=%f, maxLongitudeE6=%f]", minLatitudeE6, minLongitudeE6, maxLatitudeE6, maxLongitudeE6];
 
 	return desc;
 }

@@ -8,8 +8,8 @@
 #endif
 
 #if DEBUG
-#define RMLog(args...)    NSLog(@"%@", [NSString stringWithFormat: args])
-#define LogMethod() NSLog(@"logged method call: -[%@ %@] (line %d)", self, NSStringFromSelector(_cmd), __LINE__)
+#define RMLog(args...) //   NSLog(@"%@", [NSString stringWithFormat: args])
+#define LogMethod() //NSLog(@"logged method call: -[%@ %@] (line %d)", self, NSStringFromSelector(_cmd), __LINE__)
 #define WarnDeprecated() NSLog(@"***** WARNING: deprecated method call: -[%@ %@] (line %d)", self, NSStringFromSelector(_cmd), __LINE__)
 #else  
 // DEBUG not defined:
@@ -17,6 +17,6 @@
 #define RMLog(args...)    // do nothing.
 #define LogMethod() 
 #define WarnDeprecated() 
-#define NS_BLOCK_ASSERTIONS 1
+#define NS_BLOCK_ASSERTIONS 0
 #endif
 

@@ -66,9 +66,9 @@
     
     if (nil != self)
     {
-        [self setDataSource:[OSPOpenStreetMapPBFFile osmFileWithPath:[[NSBundle mainBundle] pathForResource:@"TestData" ofType:@"pbf"]]];
+        //[self setDataSource:[OSPOpenStreetMapPBFFile osmFileWithPath:[[NSBundle mainBundle] pathForResource:@"TestData" ofType:@"pbf"]]];
         //[self setDataSource:[OSPOpenStreetMapXMLFile osmFileWithPath:[[NSBundle mainBundle] pathForResource:@"TestData" ofType:@"xml"]]];
-        //[self setDataSource:[OSPMapServer serverWithURL:[NSURL URLWithString:@"http://api.openstreetmap.org"]]];
+        [self setDataSource:[OSPMapServer serverWithURL:[NSURL URLWithString:@"http://api.openstreetmap.org"]]];
         [self setMapArea:OSPMapAreaMake(OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(43.73602,7.42166)), 17.0)];
         
         [self commonInit];
@@ -235,8 +235,8 @@
     NSAssert([[self bottomRight] frame].origin.y < [[self topRight] frame].origin.y, @"bottom right is not below top right");
 }
 
-#define kMinZoom 14.0f
-#define kMaxZoom 20.0f
+#define kMinZoom 12.0f  //14
+#define kMaxZoom 26.0f //20
 
 - (void)zoom:(UIPinchGestureRecognizer *)sender
 {

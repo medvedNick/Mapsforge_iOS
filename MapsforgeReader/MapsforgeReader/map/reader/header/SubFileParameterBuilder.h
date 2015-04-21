@@ -7,9 +7,9 @@
 @public
   Byte baseZoomLevel;
   BoundingBox * boundingBox;
-  long long indexStartAddress;
-  long long startAddress;
-  long long subFileSize;
+  long indexStartAddress;
+  long startAddress;
+  long subFileSize;
   Byte zoomLevelMax;
   Byte zoomLevelMin;
 }

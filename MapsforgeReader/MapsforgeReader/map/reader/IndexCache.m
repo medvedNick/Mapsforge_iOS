@@ -53,20 +53,20 @@ int const SIZE_OF_INDEX_BLOCK = 128/*INDEX_ENTRIES_PER_BLOCK*/ * 5/*BYTES_PER_IN
  * the number of the block in the map file.
  * @return the index entry or -1 if the block number is invalid.
  */
-- (long) getIndexEntry:(SubFileParameter *)subFileParameter blockNumber:(long)blockNumber {
+- (long long) getIndexEntry:(SubFileParameter *)subFileParameter blockNumber:(long)blockNumber {
 
   @try {
     if (blockNumber >= subFileParameter->numberOfBlocks) {
       return -1;
     }
-    long long indexBlockNumber = blockNumber / INDEX_ENTRIES_PER_BLOCK;
+    long indexBlockNumber = blockNumber / INDEX_ENTRIES_PER_BLOCK;
 //    IndexCacheEntryKey * indexCacheEntryKey = [[IndexCacheEntryKey alloc] init:subFileParameter indexBlockNumber:indexBlockNumber];//autorelease];
 //    Byte * indexBlock;// = [map get:indexCacheEntryKey]; TODO: should be cached
       NSData *data = nil;// [map objectForKey:indexCacheEntryKey];
     if (/*indexBlock*/data == nil) {
-      long long indexBlockPosition = subFileParameter->indexStartAddress + indexBlockNumber * SIZE_OF_INDEX_BLOCK;
-      long long remainingIndexSize = (long long)(subFileParameter->indexEndAddress - indexBlockPosition);
-      long long indexBlockSize = MIN(SIZE_OF_INDEX_BLOCK,remainingIndexSize);
+    long indexBlockPosition = subFileParameter->indexStartAddress + indexBlockNumber * SIZE_OF_INDEX_BLOCK;
+      long remainingIndexSize = (long)(subFileParameter->indexEndAddress - indexBlockPosition);
+      long indexBlockSize = MIN(SIZE_OF_INDEX_BLOCK,remainingIndexSize);
 //      indexBlock = (Byte*)malloc(sizeof(Byte)*indexBlockSize);
 //        NSData *d = [NSData dataWithContentsOfFile:randomAccessFile options:NSDataReadingMappedIfSafe error:nil];
 //      data = [d subdataWithRange:NSMakeRange(indexBlockPosition, indexBlockSize)];
@@ -83,8 +83,8 @@ int const SIZE_OF_INDEX_BLOCK = 128/*INDEX_ENTRIES_PER_BLOCK*/ * 5/*BYTES_PER_IN
 //      [map put:indexCacheEntryKey param1:indexBlock];
 //        if (data != nil) [map setObject:data forKey:indexCacheEntryKey];
     }
-    long long indexEntryInBlock = blockNumber % INDEX_ENTRIES_PER_BLOCK;
-    long long addressInIndexBlock = (long long)(indexEntryInBlock * BYTES_PER_INDEX_ENTRY);
+    long indexEntryInBlock = blockNumber % INDEX_ENTRIES_PER_BLOCK;
+    long addressInIndexBlock = (indexEntryInBlock * BYTES_PER_INDEX_ENTRY);
 //      NSLog(@"offset: %lld", addressInIndexBlock);
     return [Deserializer getFiveBytesLong:(Byte*)data.bytes offset:addressInIndexBlock];
   }

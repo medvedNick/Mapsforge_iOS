@@ -221,8 +221,8 @@
     }
     else
     {
-        CPToken *t = [tokenStream peekToken];
-        NSLog(@"%d:%d: parse error.  Expected %@, found %@", [t lineNumber], [t columnNumber], acceptableTokens, t);
+        //CPToken *t = [tokenStream peekToken];
+        //NSLog(@"%lu:%d: parse error.  Expected %@, found %@", (unsigned long)[t lineNumber], [t columnNumber], acceptableTokens, t);
         return nil;
     }
 }

@@ -173,7 +173,7 @@
 
 - (NSUInteger)tokeniser:(CPTokeniser *)tokeniser didNotFindTokenOnInput:(NSString *)input position:(NSUInteger)position error:(NSString *__autoreleasing *)errorMessage
 {
-    NSLog(@"Argh");
+    NSLog(@"Cloud not find CSS Token %@.", input);
     return 1;
 }
 

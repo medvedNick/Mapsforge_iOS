@@ -284,6 +284,8 @@
 		1FC18286139BA47D0027F597 /* CoreParse-template.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = "CoreParse-template.md"; sourceTree = "<group>"; };
 		1FE77D551375AE6F00879A41 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		1FE77D821375EA8F00879A41 /* CoreParse Documentation */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = "CoreParse Documentation"; sourceTree = BUILT_PRODUCTS_DIR; };
+		549B67AB187F187100EF4A6E /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		549B67AE187F187100EF4A6E /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/InfoPlist.strings; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -682,7 +684,7 @@
 			name = CoreParseTests;
 			productName = CoreParseTests;
 			productReference = 1F0E890B130462F300537D04 /* CoreParseTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 		1F92817E145C11050033BC34 /* iOSCoreParse */ = {
 			isa = PBXNativeTarget;
@@ -718,7 +720,7 @@
 			name = iOSCoreParseTests;
 			productName = iOSCoreParseTests;
 			productReference = 1F92818C145C11050033BC34 /* CoreParseTests.octest */;
-			productType = "com.apple.product-type.bundle";
+			productType = "com.apple.product-type.bundle.ocunit-test";
 		};
 		1FE77D811375EA8F00879A41 /* CoreParse Documentation */ = {
 			isa = PBXNativeTarget;
@@ -741,7 +743,7 @@
 		1F0E88EC130462F300537D04 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0460;
+				LastUpgradeCheck = 0620;
 				ORGANIZATIONNAME = "In The Beginning...";
 			};
 			buildConfigurationList = 1F0E88EF130462F300537D04 /* Build configuration list for PBXProject "CoreParse" */;
@@ -750,6 +752,7 @@
 			hasScannedForEncodings = 0;
 			knownRegions = (
 				en,
+				de,
 			);
 			mainGroup = 1F0E88EA130462F300537D04;
 			productRefGroup = 1F0E88F7130462F300537D04 /* Products */;
@@ -971,6 +974,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				1F0E8903130462F300537D04 /* en */,
+				549B67AB187F187100EF4A6E /* de */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -979,6 +983,7 @@
 			isa = PBXVariantGroup;
 			children = (
 				1F0E8914130462F300537D04 /* en */,
+				549B67AE187F187100EF4A6E /* de */,
 			);
 			name = InfoPlist.strings;
 			sourceTree = "<group>";
@@ -989,9 +994,14 @@
 		1F0E891B130462F300537D04 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1022,7 +1032,7 @@
 				GCC_WARN_UNUSED_LABEL = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				MACOSX_DEPLOYMENT_TARGET = 10.6;
-				ONLY_ACTIVE_ARCH = YES;
+				ONLY_ACTIVE_ARCH = NO;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = macosx;
@@ -1033,9 +1043,14 @@
 		1F0E891C130462F300537D04 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
 				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
 				CLANG_WARN_ENUM_CONVERSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
@@ -1103,9 +1118,13 @@
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "CoreParse/CoreParse-Info.plist";
+				ONLY_ACTIVE_ARCH = YES;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TEST_AFTER_BUILD = YES;
+				VALID_ARCHS = "armv7 armv7s arm64";
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Debug;
@@ -1141,9 +1160,13 @@
 				GCC_WARN_SIGN_COMPARE = YES;
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				INFOPLIST_FILE = "CoreParse/CoreParse-Info.plist";
+				ONLY_ACTIVE_ARCH = NO;
 				OTHER_CFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos";
 				TEST_AFTER_BUILD = YES;
+				VALID_ARCHS = "armv7 armv7s arm64";
 				WRAPPER_EXTENSION = framework;
 			};
 			name = Release;
@@ -1196,7 +1219,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = NO;
 				COPY_PHASE_STRIP = NO;
 				DSTROOT = /tmp/iOSCoreParse.dst;
@@ -1218,7 +1240,7 @@
 				SDKROOT = iphoneos;
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
-				VALID_ARCHS = "armv6 armv7 armv7s";
+				VALID_ARCHS = "armv6 armv7 armv7s arm64";
 			};
 			name = Debug;
 		};
@@ -1226,7 +1248,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD)";
 				CLANG_ENABLE_OBJC_ARC = NO;
 				COPY_PHASE_STRIP = YES;
 				DSTROOT = /tmp/iOSCoreParse.dst;
@@ -1243,7 +1264,7 @@
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				VALIDATE_PRODUCT = YES;
-				VALID_ARCHS = "armv6 armv7 armv7s";
+				VALID_ARCHS = "armv6 armv7 armv7s arm64";
 			};
 			name = Release;
 		};
@@ -1251,10 +1272,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					armv6,
-					"$(ARCHS_STANDARD_32_BIT)",
-				);
 				COPY_PHASE_STRIP = NO;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -1286,10 +1303,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = (
-					armv6,
-					"$(ARCHS_STANDARD_32_BIT)",
-				);
 				COPY_PHASE_STRIP = YES;
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(SDKROOT)/Developer/Library/Frameworks",
@@ -1316,7 +1329,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = NO;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;
@@ -1331,7 +1343,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_64_BIT)";
 				COPY_PHASE_STRIP = YES;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				GCC_ENABLE_OBJC_EXCEPTIONS = YES;

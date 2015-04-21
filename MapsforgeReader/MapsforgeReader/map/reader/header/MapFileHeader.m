@@ -4,7 +4,7 @@
 /**
  * Maximum valid base zoom level of a sub-file.
  */
-int const BASE_ZOOM_LEVEL_MAX = 20;
+int const BASE_ZOOM_LEVEL_MAX = 26;
 
 /**
  * Minimum size of the file header in bytes.
@@ -150,19 +150,19 @@ extern unichar const SPACE;// = ' ';
     if (zoomLevelMin > zoomLevelMax) {
 		return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid zooom level:%d", zoomLevelMax]];// autorelease];
     }
-    long long startAddress = [readBuffer readLong];
+    long startAddress = [readBuffer readLong];
     if (startAddress < HEADER_SIZE_MIN || startAddress >= fileSize) {
-        return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid start address:%lld", startAddress]];// autorelease];
+        return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid start address:%ld", startAddress]];// autorelease];
     }
     subFileParameterBuilder->startAddress = startAddress;
-    long long indexStartAddress = startAddress;
+    long indexStartAddress = startAddress;
     if (mapFileInfoBuilder->optionalFields->isDebugFile) {
       indexStartAddress += SIGNATURE_LENGTH_INDEX;
     }
     subFileParameterBuilder->indexStartAddress = indexStartAddress;
-    long long subFileSize = [readBuffer readLong];
+    long subFileSize = [readBuffer readLong];
     if (subFileSize < 1) {
-		return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid sub-file size: %lld",subFileSize]];// autorelease];
+		return [[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"invalid sub-file size: %ld",subFileSize]];// autorelease];
     }
     subFileParameterBuilder->subFileSize = subFileSize;
     subFileParameterBuilder->boundingBox = mapFileInfoBuilder->boundingBox;

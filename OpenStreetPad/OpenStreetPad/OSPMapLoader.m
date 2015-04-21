@@ -8,7 +8,6 @@
 
 #import "OSPMapLoader.h"
 #import "OSPWay.h"
-#import "OSPNode.h"
 
 @interface OSPMapLoader()
 {
@@ -52,6 +51,11 @@
 //	[tile release];
 }
 
+
+- (MapDatabase *)getMapDatabase {
+    return mapDatabase;
+}
+
 - (void) renderPointOfInterest:(char)layer latitude:(int)latitude longitude:(int)longitude tags:(NSMutableArray *)tags
 {
 	
@@ -69,19 +73,10 @@
 
 - (void) addNode:(int)nodeId latitude:(int)latitude longitude:(int)longitude tags:(NSMutableDictionary *)tags
 {
-	@try {
-        OSPNode *node = [[OSPNode alloc] init];
-        node.identity=nodeId;
-		node.tags=tags;
-        node.location=CLLocationCoordinate2DMake(latitude, longitude);
-        [mapObjects addObject:node];
-    }
-    @catch (NSException *exception) {
-        NSLog(@"Exception while adding nodes");
-    }
+	
 }
 
-- (void) addWay:(int)wayId nodes:(int **)nodes length:(int*)length labelPosition:(float *)labelPosition tags:(NSMutableDictionary *)tags layer:(int)layer
+- (void) addWay:(int)wayId nodes:(long double **)nodes length:(int*)length labelPosition:(float *)labelPosition tags:(NSMutableDictionary *)tags layer:(int)layer x:(long)x y:(long)y
 {
 	@try {
 
@@ -175,7 +170,7 @@
 		}
 		
 		OSPWay *way = [[OSPWay alloc] init];
-
+		
 		way->name = [tags objectForKey:@"name"];// retain];
 		way->cNodes = nodes;
 		way->cLength = length;
@@ -184,6 +179,9 @@
 		
 		[way setIdentity:wayId];
 		way.tags = tags;
+        way.zoomLevel = _zoom;
+        way.x = x;
+        way.y = y;
 		
 		//	way->intTags = (int*)malloc(40*sizeof(int));
 		//	for (int i = 0; i < 40; i++)

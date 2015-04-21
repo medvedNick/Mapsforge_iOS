@@ -130,7 +130,8 @@ ENTRY1(utm, en)
 	int zone;
 
 	if (!P->es) E_ERROR(-34);
-	P->y0 = pj_param(P->params, "bsouth").i ? 10000000. : 0.;
+	//P->y0 = pj_param(P->params, "bsouth").i ? 10000000. : 0.;
+    P->y0 = pj_param(P->params, "bsouth").i ? 1000000. : 0.;
 	P->x0 = 500000.;
 	if (pj_param(P->params, "tzone").i) /* zone input ? */
 		if ((zone = pj_param(P->params, "izone").i) > 0 && zone <= 60)

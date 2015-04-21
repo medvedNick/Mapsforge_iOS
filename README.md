@@ -5,6 +5,10 @@ Annotations
 =============
 In the original Mapsforge library for iOS by medvednick <medvednick@yandex.ru>, a mistake in the mercator projection caused an issue while showing offline maps at a high ground resolution.
 
+Rebased the project to the current development-Tree of the Mapbox-IOS-SDK for much better performance, new Annotation system and general error correction (https://github.com/mapbox/mapbox-ios-sdk).
+
+Added AES256 encryption support for map files.
+
 In this fork, the mercator projection error is fixed and a very minimalistic theme was applied.
  
 If you have questions regarding the changes, feel free to contagt me via email (stephan@contagt.com).

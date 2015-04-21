@@ -42,7 +42,7 @@
 typedef struct {
 	CLLocationCoordinate2D northeast;
 	CLLocationCoordinate2D southwest;
-} RMSphericalTrapezium;
+} RMSphericalTrapeziumOld;
 
 #else
 
@@ -81,9 +81,9 @@ typedef struct {
 typedef CLLocationCoordinate2D RMLatLong;
 
 /// \bug magic numbers
-static const double kRMMinLatitude = -kMaxLat;
+/*static const double kRMMinLatitude = -kMaxLat;
 static const double kRMMaxLatitude = kMaxLat;
 static const double kRMMinLongitude = -kMaxLong;
-static const double kRMMaxLongitude = kMaxLong;
+static const double kRMMaxLongitude = kMaxLong;*/
 
 #endif
