@@ -55,17 +55,29 @@ NSString * dbkey = @"supersecretkey2";
     RMOSPTileSource * tileSource = [[RMOSPTileSource alloc] initWithMapFile:filePath andBuilding:0 andFloorlevel:0];
 
     CGRect rect = [self getDisplayBoundsInCurrentOrientationMode];
+    float aspect_x,aspect_y;
+    if (rect.size.width < rect.size.height) {
+        aspect_x = 0.3 + rect.size.height / rect.size.width;
+        aspect_y =  0.7 + rect.size.width / rect.size.height;
+    } else {
+        aspect_x = 0.7 + rect.size.height / rect.size.width;
+        aspect_y =  0.3 + rect.size.width / rect.size.height;
+    }
+    rect.origin.x = 0 - (((rect.size.width * aspect_x) - rect.size.width) / 2);
+    rect.origin.y = 0 - (((rect.size.height * aspect_y) - rect.size.height) / 2);
+    rect.size.width = rect.size.width * aspect_x;
+    rect.size.height = rect.size.height * aspect_y;
     
     RMMapView * offlineMap = [[RMMapView alloc] initWithFrame:rect andTilesource:tileSource];
     
     [offlineMap setCenterCoordinate:startingPoint];
     [offlineMap setTileSource:tileSource];
     
-    [offlineMap setMinZoom:19];
+    [offlineMap setMinZoom:10];
     [offlineMap setMaxZoom:26];
     [offlineMap setZoom:18];
     [offlineMap setDraggingEnabled:YES];
-    
+    [offlineMap setCenterCoordinate: CLLocationCoordinate2DMake(55.754529,37.625224)];
     
     NSLog(@"Applied Tile Source to the Map - Finished loading.");
     

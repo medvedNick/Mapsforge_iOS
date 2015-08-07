@@ -12,6 +12,7 @@
 //#import "RMMapContents.h"
 
 #import "../../fmdb/FMDatabase.h"
+#import "../../fmdb/FMDatabaseQueue.h"
 
 //#import "OSPRenderer.h"
 
@@ -19,7 +20,7 @@
 #define kOSPDefaultMinTileZoom 12
 #define kOSPDefaultMaxTileZoom 21
 
-@class OSPRenderer, FMDatabase, Guide, Showplace;
+@class OSPRenderer, cFMDatabase, Guide, Showplace;
 
 @interface RMOSPTileSource : RMAbstractContagtTileSource//, OSPObjectsLoader>
 {
@@ -33,7 +34,7 @@
 -(id) initWithMapFile:(NSString*)mapFile andBuilding:(long)building_id andFloorlevel:(int) floorlevel;
 
 +(OSPRenderer*) newRendererForResource:(NSString*)resource;
-+(FMDatabase*) newCacheDataBaseForResource:(NSString*)resource;
++(FMDatabaseQueue*) newCacheDataBaseForResource:(NSString*)resource;
 
 +(UIImage*) renderImageForTile:(RMTile)tile withRenderer:(OSPRenderer *)renderer andDatabase:(FMDatabase *)cacheDatabase building:(long)bid floor:(int)floor shouldCache:(BOOL*)shouldCache;
 

@@ -17,9 +17,9 @@
 
 #import "OSPRenderer.h"
 
-
-#import "../../fmdb/FMDatabase.h"
-#import "../../fmdb/FMDatabaseAdditions.h"
+#import "FMDatabase.h"
+#import "FMDatabaseQueue.h"
+#import "FMDatabaseAdditions.h"
 
 #define kCacheThresh 6000
 #define kCacheInternalThresh 400
@@ -30,7 +30,7 @@ BOOL runInBackground;
 {
     RMFractalTileProjection *tileProjection;
     OSPRenderer *renderer;
-    FMDatabase *cacheDatabase;
+    FMDatabaseQueue *cacheDatabase;
     LruCache *imagesCache;
     NSLock *cacheLock;
 }
@@ -67,31 +67,34 @@ BOOL runInBackground;
     return [[OSPRenderer alloc] initWithFile:resource];
 }
 
-+ (FMDatabase*) newCacheDataBaseForResource:(NSString*)resource
++ (FMDatabaseQueue*) newCacheDataBaseForResource:(NSString*)resource
 {
     
     resource = [RMOSPTileSource getDBPath];
     BOOL databaseExists = [[NSFileManager defaultManager] fileExistsAtPath:resource];
     
-    FMDatabase *_cacheDatabase = [[FMDatabase alloc] initWithPath:resource];
+    __block FMDatabaseQueue *_cacheDatabase = [[FMDatabaseQueue alloc] initWithPath:resource];
     
-    if (![_cacheDatabase open])
+    /*if (![_cacheDatabase open])
     {
         NSLog(@"cached database could not be opened!");
         return nil;
-    }
+    }*/
     
+    [_cacheDatabase inDatabase:^(FMDatabase *db) {
     if (!databaseExists)
     {
-        [_cacheDatabase executeUpdate:@"CREATE TABLE OSPCachedTiles (building_id integer, floor integer, x double, y double, zoom double, tileData blob)"];
-        [_cacheDatabase executeUpdate:@"CREATE INDEX osp_tile_index ON OSPCachedTiles (building_id, floor, x, y, zoom)"];
+        [db executeUpdate:@"CREATE TABLE OSPCachedTiles (building_id integer, floor integer, x double, y double, zoom double, tileData blob)"];
+        [db executeUpdate:@"CREATE INDEX osp_tile_index ON OSPCachedTiles (building_id, floor, x, y, zoom)"];
     }
     
-    if ([_cacheDatabase hadError])
+    if ([db hadError])
     {
-        NSLog(@"%@", [_cacheDatabase lastErrorMessage]);
-        return nil;
+        NSLog(@"%@", [db lastErrorMessage]);
+        _cacheDatabase = nil;
+        return;
     }
+    }];
     
     return _cacheDatabase;
 }
@@ -118,7 +121,7 @@ BOOL runInBackground;
     RMLatLong latLon = [RMOSPTileSource tileToLatLon:tile];
     OSPMapArea mapArea = OSPMapAreaMake(OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(latLon.latitude, latLon.longitude), tile.zoom, tile.x, tile.y), tile.zoom);
     
-    BOOL _shouldCache = NO;
+    BOOL _shouldCache = YES;
     
     [renderer setMapArea:mapArea];
     
@@ -153,15 +156,17 @@ BOOL runInBackground;
     
     runInBackground = NO;
     //UIImage *tileImage = [RMTileImage missingTile];//[[RMTileImage alloc] initWithTile:tile];
-    UIImage *image  = [RMTileImage missingTile];
-    BOOL shouldCache = YES;
+    __block UIImage *image  = [RMTileImage missingTile];
+    __block BOOL shouldCache = YES;
     @try {
         
         NSString * key = [NSString stringWithFormat:@"%d%d%d%ld%d", tile.x, tile.y, tile.zoom, building_id, floorLevel];
         image = [imagesCache get:key];
         
         if (image == nil) {
-            image = [RMOSPTileSource renderImageForTile:tile withRenderer:renderer andDatabase:cacheDatabase building:building_id floor:floorLevel shouldCache:&shouldCache];
+            [cacheDatabase inDatabase:^(FMDatabase *db) {
+                image = [RMOSPTileSource renderImageForTile:tile withRenderer:renderer andDatabase:db building:building_id floor:floorLevel shouldCache:&shouldCache];
+            }];
             
             if (shouldCache)
             {
