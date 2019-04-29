@@ -4,6 +4,9 @@
 #import "MapDatabaseCallback.h"
 #import "FileOpenResult.h"
 #import "ReadBuffer.h"
+#import "../../../../crypto/NSData+CommonCrypto.h"
+
+extern NSString * dbkey;
 
 /**
  * Bitmask to extract the block offset from an index entry.
@@ -165,12 +168,13 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
 //extern int const MAXIMUM_BUFFER_SIZE;
 
 @interface MapDatabase ()
-- (void)createWayCoordinates:(int***)wayCoordinates
+- (void)createWayCoordinates:(long double***)wayCoordinates
       andProcessWayDataBlock:(BOOL)doubleDeltaEncoding
                    andLength:(int**)length;
 - (int)createAndReadZoomTable:(int***)zoomTable
          withSubFileParameter:(SubFileParameter *)subFileParameter;
-- (void)free2DArray:(int**)array withNumberOfRows:(int)rows;
+- (void)free2DArrayInt:(int**)array withNumberOfRows:(int)rows;
+- (void)free2DArray:(long double**)array withNumberOfRows:(int)rows;
 @end
 
 @implementation MapDatabase
@@ -202,6 +206,8 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
 }
 
 
+
+
 /**
  * Starts a database query with the given parameters.
  * 
@@ -217,6 +223,8 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
 //    readBuffer = [[ReadBuffer alloc] initWithInputFile:inputFile];
     QueryParameters * queryParameters = [[QueryParameters alloc] init];//autorelease];
     queryParameters->queryZoomLevel = [mapFileHeader getQueryZoomLevel:tile->zoomLevel];
+      queryParameters->x = tile->tileX;
+      queryParameters->y = tile->tileY;
     SubFileParameter * subFileParameter = [mapFileHeader getSubFileParameter:queryParameters->queryZoomLevel];
     if (subFileParameter == nil) {
 		NSLog(@"no sub-file for zoom level: %d", queryParameters->queryZoomLevel);
@@ -280,7 +288,17 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
 //      return [[[FileOpenResult alloc] init:[@"cannot read file: " stringByAppendingString:mapFile]];//autorelease];
 //    }
     inputFile = mapFile; //[[[RandomAccessFile alloc] init:mapFile param1:READ_ONLY_MODE];//autorelease];
-    inputData = [[NSData alloc] initWithContentsOfFile:inputFile options:NSDataReadingMappedAlways error:nil];
+    
+    // For AES-Encryption, enable this and provied encrypted mapfile ...
+      //  NSError * e;
+    //inputData = [[[NSData alloc] initWithContentsOfFile:inputFile options:NSDataReadingMappedAlways error:nil] decryptedAES256DataUsingKey:dbkey error:&e];
+      
+      
+      
+      
+      
+      
+    inputData = [[NSData alloc] initWithContentsOfFile:inputFile];
     fileSize = /*((NSData*)[NSData dataWithContentsOfFile:inputFile options:NSMappedRead error:nil])*/inputData.length;
     readBuffer = [[ReadBuffer alloc] initWithInputFile:inputData];//autorelease];
     mapFileHeader = [[MapFileHeader alloc] init];//autorelease];
@@ -293,29 +311,50 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
   }
   @catch (NSException * e) {
     [self closeFile];
+      NSLog(@"%@", e);
       return NO;//[[FileOpenResult alloc] initWithErrorMessage:[NSString stringWithFormat:@"Exception while opening file: %@, %@",e.name, e.reason]];//autorelease];
   }
 }
 
-- (void) decodeWayNodesDoubleDelta:(int *)waySegment length:(int)length{
-  int wayNodeLatitude = tileLatitude + [readBuffer readSignedInt];
-  int wayNodeLongitude = tileLongitude + [readBuffer readSignedInt];
+- (long double) getFlooredPrice:(long double) passedPrice {
+    
+    NSString *floatPassedPriceString = [NSString stringWithFormat:@"%Lf", passedPrice];
+    NSArray *floatArray = [floatPassedPriceString componentsSeparatedByString:@"."];
+    NSString *fixedPart = [floatArray objectAtIndex:0];
+    NSString *decimalPart = @"";
+    if ([floatArray count] > 1) {
+        NSString *decimalPartWhole = [floatArray objectAtIndex:1];
+        if (decimalPartWhole.length > 4) {
+            decimalPart = [decimalPartWhole substringToIndex:4];
+        } else {
+            decimalPart = decimalPartWhole;
+        }
+    }
+    NSString *wholeNumber = [NSString stringWithFormat:@"%@.%@", fixedPart, decimalPart];
+    
+    return [wholeNumber doubleValue];
+    
+}
+
+- (void) decodeWayNodesDoubleDelta:(long double *)waySegment length:(int)length{
+    long double wayNodeLatitude = (tileLatitude) + [MercatorProjection microDegreesToDegrees:[readBuffer readLongerSignedInt]];
+    long double wayNodeLongitude = (tileLongitude) + [MercatorProjection microDegreesToDegrees:[readBuffer readLongerSignedInt]];
 //  [waySegment replaceObjectAtIndex:0 withObject:[NSNumber numberWithLong:wayNodeLongitude]];
 //  [waySegment replaceObjectAtIndex:1 withObject:[NSNumber numberWithLong:wayNodeLatitude]];
   waySegment[1] = wayNodeLatitude;
   waySegment[0] = wayNodeLongitude;
-  int previousSingleDeltaLatitude = 0;
-  int previousSingleDeltaLongitude = 0;
+  long double previousSingleDeltaLatitude = 0;
+  long double previousSingleDeltaLongitude = 0;
 
   for (int wayNodesIndex = 2; wayNodesIndex < length; wayNodesIndex += 2) {
-    int doubleDeltaLatitude = [readBuffer readSignedInt];
-    int doubleDeltaLongitude = [readBuffer readSignedInt];
-    int singleDeltaLatitude = doubleDeltaLatitude + previousSingleDeltaLatitude;
-    int singleDeltaLongitude = doubleDeltaLongitude + previousSingleDeltaLongitude;
-    wayNodeLatitude = wayNodeLatitude + singleDeltaLatitude;
-    wayNodeLongitude = wayNodeLongitude + singleDeltaLongitude;
-    waySegment[wayNodesIndex + 1] = wayNodeLatitude;
-    waySegment[wayNodesIndex] = wayNodeLongitude;
+    long double doubleDeltaLatitude = [MercatorProjection microDegreesToDegrees:[readBuffer readSignedInt]];
+    long double doubleDeltaLongitude = [MercatorProjection microDegreesToDegrees:[readBuffer readSignedInt]];
+    long double singleDeltaLatitude = doubleDeltaLatitude + previousSingleDeltaLatitude;
+    long double singleDeltaLongitude = doubleDeltaLongitude + previousSingleDeltaLongitude;
+     wayNodeLatitude = wayNodeLatitude + singleDeltaLatitude;
+     wayNodeLongitude = wayNodeLongitude + singleDeltaLongitude;
+     waySegment[wayNodesIndex + 1] = wayNodeLatitude;
+     waySegment[wayNodesIndex] = wayNodeLongitude;
 //    [waySegment replaceObjectAtIndex:wayNodesIndex withObject:[NSNumber numberWithLong:wayNodeLongitude]];
 //    [waySegment replaceObjectAtIndex:wayNodesIndex+1 withObject:[NSNumber numberWithLong:wayNodeLatitude]];
     previousSingleDeltaLatitude = singleDeltaLatitude;
@@ -324,17 +363,17 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
 
 }
 
-- (void) decodeWayNodesSingleDelta:(int *)waySegment length:(int)length {
-  int wayNodeLatitude = tileLatitude + [readBuffer readSignedInt];
-  int wayNodeLongitude = tileLongitude + [readBuffer readSignedInt];
+- (void) decodeWayNodesSingleDelta:(long double *)waySegment length:(int)length {
+    long double wayNodeLatitude = tileLatitude + [MercatorProjection microDegreesToDegrees:[readBuffer readSignedInt]];
+    long double wayNodeLongitude = tileLongitude + [MercatorProjection microDegreesToDegrees:[readBuffer readSignedInt]];
   waySegment[1] = wayNodeLatitude;
-  waySegment[0] = wayNodeLongitude;
+    waySegment[0] = wayNodeLongitude;
 //  [waySegment replaceObjectAtIndex:0 withObject:[NSNumber numberWithLong:wayNodeLongitude]];
 //  [waySegment replaceObjectAtIndex:1 withObject:[NSNumber numberWithLong:wayNodeLatitude]];
 
-  for (int wayNodesIndex = 2; wayNodesIndex < length; wayNodesIndex += 2) {
-    wayNodeLatitude = wayNodeLatitude + [readBuffer readSignedInt];
-    wayNodeLongitude = wayNodeLongitude + [readBuffer readSignedInt];
+ for (int wayNodesIndex = 2; wayNodesIndex < length; wayNodesIndex += 2) {
+    wayNodeLatitude = wayNodeLatitude + [MercatorProjection microDegreesToDegrees:[readBuffer readLongerSignedInt]];
+    wayNodeLongitude = wayNodeLongitude + [MercatorProjection microDegreesToDegrees:[readBuffer readLongerSignedInt]];
     waySegment[wayNodesIndex + 1] = wayNodeLatitude;
     waySegment[wayNodesIndex] = wayNodeLongitude;
 //    [waySegment replaceObjectAtIndex:wayNodesIndex withObject:[NSNumber numberWithLong:wayNodeLongitude]];
@@ -377,13 +416,13 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
     int** zoomTable;
     int numRowsInZoomTable = [self createAndReadZoomTable:&zoomTable withSubFileParameter:subFileParameter];
   if (numRowsInZoomTable == 0) {
-      [self free2DArray:zoomTable withNumberOfRows:numRowsInZoomTable];
+      [self free2DArrayInt:zoomTable withNumberOfRows:numRowsInZoomTable];
     return;
   }
   int zoomTableRow = queryParameters->queryZoomLevel - subFileParameter->zoomLevelMin;
   int poisOnQueryZoomLevel = zoomTable[zoomTableRow][0];
   int waysOnQueryZoomLevel = zoomTable[zoomTableRow][1];
-    [self free2DArray:zoomTable withNumberOfRows:numRowsInZoomTable];
+    [self free2DArrayInt:zoomTable withNumberOfRows:numRowsInZoomTable];
     int firstWayOffset = [readBuffer readUnsignedInt];
   if (firstWayOffset < 0) {
       NSLog(@"warning in -processBlock in MapDatabase.m: invalid firstWayOffset: %d", firstWayOffset);
@@ -471,8 +510,10 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
       }
       double tileLatitudeDeg = [MercatorProjection tileYToLatitude:subFileParameter->boundaryTileTop + row zoomLevel:subFileParameter->baseZoomLevel];
       double tileLongitudeDeg = [MercatorProjection tileXToLongitude:subFileParameter->boundaryTileLeft + column zoomLevel:subFileParameter->baseZoomLevel];
-      tileLatitude = (int)(tileLatitudeDeg * 1000000);
-      tileLongitude = (int)(tileLongitudeDeg * 1000000);
+        tileLatitude = 0;
+        tileLongitude = 0;
+        tileLatitude = tileLatitudeDeg;//[self getFlooredPrice:tileLatitudeDeg];
+        tileLongitude = tileLongitudeDeg;//[self getFlooredPrice:tileLongitudeDeg];
 
       @try {
         [self processBlock:queryParameters subFileParameter:subFileParameter mapDatabaseCallback:mapDatabaseCallback];
@@ -500,10 +541,10 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
   if ([mapFileHeader mapFileInfo]->debugFile) {
     signatureBlock = [readBuffer readUTF8EncodedString:SIGNATURE_LENGTH_BLOCK];
       //TODO: check for correct beginning of signature, may be useful
-//    if (![signatureBlock startsWith:@"###TileStart"]) {
-//      NSLog(@"invalid block signature: %@", signatureBlock);
-//      return NO;
-//    }
+    if (![signatureBlock hasPrefix:@"###TileStart"]) {
+      NSLog(@"invalid block signature: %@", signatureBlock);
+      return NO;
+    }
   }
   return YES;
 }
@@ -519,59 +560,62 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
  * @return true if the POIs could be processed successfully, false otherwise.
  */
 - (BOOL) processPOIs:(id<MapDatabaseCallback>)mapDatabaseCallback numberOfPois:(int)numberOfPois {
-    NSMutableDictionary *tags = [[NSMutableDictionary alloc] init];
-    NSArray * poiTags = [mapFileHeader mapFileInfo]->poiTags;
+//  NSMutableArray * tags = [[NSMutableArray alloc] init];//autorelease];
+  NSArray * poiTags = [mapFileHeader mapFileInfo]->poiTags;
 
-    for (int elementCounter = numberOfPois; elementCounter != 0; --elementCounter) {
+  for (int elementCounter = numberOfPois; elementCounter != 0; --elementCounter) {
+    if ([mapFileHeader mapFileInfo]->debugFile) {
+      signaturePoi = [readBuffer readUTF8EncodedString:SIGNATURE_LENGTH_POI];
+        // TODO: another checking for correct signature
+//      if (![signaturePoi startsWith:@"***POIStart"]) {
+//        NSLog(@"invalid POI signature: %@", signaturePoi);
+//        NSLog(@"warning in -processBlock in MapDatabase.m: debugSignatureBlock: %@", signatureBlock);
+//        return NO;
+//      }
+    }
+    double latitude = tileLatitude + [readBuffer readSignedInt];
+    double longitude = tileLongitude + [readBuffer readSignedInt];
+    Byte specialByte = [readBuffer readByte];
+    //Byte layer = (Byte)((specialByte & POI_LAYER_BITMASK) >> POI_LAYER_SHIFT);
+    Byte numberOfTags = (Byte)(specialByte & POI_NUMBER_OF_TAGS_BITMASK);
+//    [tags removeAllObjects];
+
+    for (char tagIndex = numberOfTags; tagIndex != 0; --tagIndex) {
+      int tagId = [readBuffer readUnsignedInt];
+      if (tagId < 0 || tagId >= poiTags.count) {
+        NSLog(@"warning in -processPOIs in MapDatabase.m: invalid POI tag ID: %d", tagId);
         if ([mapFileHeader mapFileInfo]->debugFile) {
-            signaturePoi = [readBuffer readUTF8EncodedString:SIGNATURE_LENGTH_POI];
+           NSLog(@"warning in -processPOIs in MapDatabase.m: debug signature POI: %@", signaturePoi);
+           NSLog(@"warning in -processPOIs in MapDatabase.m: debug signature block: %@", signatureBlock);
         }
-        int latitude = tileLatitude + [readBuffer readSignedInt];
-        int longitude = tileLongitude + [readBuffer readSignedInt];
-        Byte specialByte = [readBuffer readByte];
-        //Byte layer = (Byte)((specialByte & POI_LAYER_BITMASK) >> POI_LAYER_SHIFT);
-        Byte numberOfTags = (Byte)(specialByte & POI_NUMBER_OF_TAGS_BITMASK);
-
-        for (char tagIndex = numberOfTags; tagIndex != 0; --tagIndex){
-            int tagId = [readBuffer readUnsignedInt];
-            if (tagId < 0 || tagId >= poiTags.count) {
-                NSLog(@"warning in -processPOIs in MapDatabase.m: invalid POI tag ID: %d", tagId);
-
-                if ([mapFileHeader mapFileInfo]->debugFile) {
-                    NSLog(@"warning in -processPOIs in MapDatabase.m: debug signature POI: %@", signaturePoi);
-                    NSLog(@"warning in -processPOIs in MapDatabase.m: debug signature block: %@", signatureBlock);
-                }
-                return NO;
-            }
-
-            MFTag *currTag = [poiTags objectAtIndex:tagId];
-            [tags setValue:currTag->value forKey:currTag->key];
-        }
-
-        Byte featureByte = [readBuffer readByte];
-        BOOL featureName = (featureByte & POI_FEATURE_NAME) != 0;
-        BOOL featureHouseNumber = (featureByte & POI_FEATURE_HOUSE_NUMBER) != 0;
-        BOOL featureElevation = (featureByte & POI_FEATURE_ELEVATION) != 0;
-        if (featureName) {
-            MFTag *currTag = [[MFTag alloc] init:TAG_KEY_NAME value:[readBuffer readUTF8EncodedString]];
-            [tags setValue:currTag->value forKey:currTag->key];
-        }
-        if (featureHouseNumber) {
-            MFTag *currTag = [[MFTag alloc] init:TAG_KEY_HOUSE_NUMBER value:[readBuffer readUTF8EncodedString]];
-            [tags setValue:currTag->value forKey:currTag->key];
-        }
-        if (featureElevation) {
-            MFTag *currTag = [[MFTag alloc] init:TAG_KEY_ELE value:[NSString stringWithFormat:@"%d",[readBuffer readSignedInt]]];
-            [tags setValue:currTag->value forKey:currTag->key];
-        }
-        static int nodeId = 666;
-        [mapDatabaseCallback addNode:nodeId++ latitude:latitude longitude:longitude tags:tags];
+        return NO;
+      }
+//      [tags addObject:[poiTags objectAtIndex:tagId]];
     }
 
-    return YES;
+    Byte featureByte = [readBuffer readByte];
+    BOOL featureName = (featureByte & POI_FEATURE_NAME) != 0;
+    BOOL featureHouseNumber = (featureByte & POI_FEATURE_HOUSE_NUMBER) != 0;
+    BOOL featureElevation = (featureByte & POI_FEATURE_ELEVATION) != 0;
+    if (featureName) {
+        [readBuffer readUTF8EncodedString];
+//      [tags addObject:[[MFTag alloc] init:TAG_KEY_NAME value:[readBuffer readUTF8EncodedString]]];//autorelease]];
+    }
+    if (featureHouseNumber) {
+        [readBuffer readUTF8EncodedString];
+//      [tags addObject:[[MFTag alloc] init:TAG_KEY_HOUSE_NUMBER value:[readBuffer readUTF8EncodedString]]];//autorelease]];
+    }
+    if (featureElevation) {
+		[readBuffer readSignedInt];
+//      [tags addObject:[[MFTag alloc] init:TAG_KEY_ELE value:[NSString stringWithFormat:@"%d",[readBuffer readSignedInt]]]];
+    }
+//    [mapDatabaseCallback renderPointOfInterest:layer latitude:latitude longitude:longitude tags:tags];
+  }
+
+  return YES;
 }
 
-- (void)createWayCoordinates:(int***)wayCoordinates
+- (void)createWayCoordinates:(long double***)wayCoordinates
       andProcessWayDataBlock:(BOOL)doubleDeltaEncoding
                    andLength:(int**)length {
     int numberOfWayCoordinateBlocks = [readBuffer readUnsignedInt];
@@ -582,7 +626,7 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
         return;
     }
     
-    *wayCoordinates = (int**)malloc(numberOfWayCoordinateBlocks * sizeof(int*));
+    *wayCoordinates = (long double**)malloc(numberOfWayCoordinateBlocks * sizeof(long double*));
     
     *length = (int*)malloc((numberOfWayCoordinateBlocks + 1) * sizeof(int));
     (*length)[0] = 1;//numberOfWayCoordinateBlocks;
@@ -605,7 +649,7 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
         }
         
         int wayNodesSequenceLength = numberOfWayNodes * 2;
-        int * waySegment = (int*)malloc(wayNodesSequenceLength * sizeof(int));
+        long double * waySegment = (long double*)malloc(wayNodesSequenceLength * sizeof(long double));
         //      NSMutableArray *waySegment = [NSMutableArray arrayWithCapacity:wayNodesSequenceLength];
         //      for (int i = 0; i < wayNodesSequenceLength; ++i)
         //      {
@@ -640,7 +684,7 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
  * how many ways should be processed.
  * @return true if the ways could be processed successfully, false otherwise.
  */
-- (BOOL) processWays:(QueryParameters *)queryParameters mapDatabaseCallback:(id<MapDatabaseCallback>)mapDatabaseCallback numberOfWays:(int)numberOfWays {
+- (BOOL) processWays:(QueryParameters *)queryParameters mapDatabaseCallback:(id<MapDatabaseCallback>)mapDatabaseCallback numberOfWays:(int)numberOfWays  {
 //  NSMutableArray * tags = [[NSMutableArray alloc] init];//autorelease];
   NSArray * wayTags = [mapFileHeader mapFileInfo]->wayTags;
 
@@ -648,11 +692,11 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
     if ([mapFileHeader mapFileInfo]->debugFile) {
       signatureWay = [readBuffer readUTF8EncodedString:SIGNATURE_LENGTH_WAY];
 //		TODO:        
-//      if (![signatureWay startsWith:@"---WayStart"]) {
-//        NSLog(@"warning in -processWays in MapDatabase.m: invalid way signature: %@", signatureWay);
-//        NSLog(@"warning in -processWays in MapDatabase.m: debug signature block: %@", signatureBlock);
-//        return NO;
-//      }
+      if (![signatureWay hasPrefix:@"---WayStart"]) {
+          NSLog(@"warning in -processWays in MapDatabase.m: invalid way signature: %@", signatureWay);
+        NSLog(@"warning in -processWays in MapDatabase.m: debug signature block: %@", signatureBlock);
+        return NO;
+      }
     }
     int wayDataSize = [readBuffer readUnsignedInt];
     if (wayDataSize < 0) {
@@ -728,7 +772,7 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
 
     for (int wayDataBlock = 0; wayDataBlock < wayDataBlocks; ++wayDataBlock) {
       //int ** wayNodes = [self processWayDataBlock:featureWayDoubleDeltaEncoding andLength:&wayLength];
-        int **wayNodes;
+        long double **wayNodes;
         [self createWayCoordinates:&wayNodes
             andProcessWayDataBlock:featureWayDoubleDeltaEncoding
                          andLength:&wayLength];
@@ -737,7 +781,7 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
         return NO;
       }
         if (wayDataBlock == 0) {
-            [mapDatabaseCallback addWay:wayId++ nodes:wayNodes length:wayLength labelPosition:labelPosition tags:tagsDict layer:layer];
+            [mapDatabaseCallback addWay:wayId++ nodes:wayNodes length:wayLength labelPosition:labelPosition tags:tagsDict layer:layer x:queryParameters->x y:queryParameters->y];
         } else {
             [self free2DArray:wayNodes withNumberOfRows:*wayLength];
             free(wayLength);
@@ -782,7 +826,7 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
       if ([mapFileHeader mapFileInfo]->debugFile) {
         NSLog(@"warning in -processWays in MapDatabase.m: debug signature block: %@", signatureBlock);
       }
-        [self free2DArray:*zoomTable withNumberOfRows:row + 1];
+        [self free2DArrayInt:*zoomTable withNumberOfRows:row + 1];
       return 0;
     }
      else if (cumulatedNumberOfWays < 0 || cumulatedNumberOfWays > MAXIMUM_ZOOM_TABLE_OBJECTS) {
@@ -790,7 +834,7 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
       if ([mapFileHeader mapFileInfo]->debugFile) {
         NSLog(@"warning in -processWays in MapDatabase.m: debug signature block: %@", signatureBlock);
       }
-         [self free2DArray:*zoomTable withNumberOfRows:row + 1];
+         [self free2DArrayInt:*zoomTable withNumberOfRows:row + 1];
       return 0;
     }
     (*zoomTable)[row][0] = cumulatedNumberOfPois;
@@ -800,7 +844,13 @@ int const WAY_NUMBER_OF_TAGS_BITMASK = 0x0f;
   return rows;
 }
 
-- (void)free2DArray:(int**)array withNumberOfRows:(int)rows {
+- (void)free2DArray:(long double**)array withNumberOfRows:(int)rows {
+    for (int i = 0; i < rows; i++) {
+        free(array[i]);
+    }
+    free(array);
+}
+- (void)free2DArrayInt:(int**)array withNumberOfRows:(int)rows {
     for (int i = 0; i < rows; i++) {
         free(array[i]);
     }

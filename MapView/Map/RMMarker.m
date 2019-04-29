@@ -1,7 +1,7 @@
 //
 //  RMMarker.m
 //
-// Copyright (c) 2008-2009, Route-Me Contributors
+// Copyright (c) 2008-2013, Route-Me Contributors
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -28,274 +28,297 @@
 #import "RMMarker.h"
 
 #import "RMPixel.h"
+#import "RMConfiguration.h"
 
 @implementation RMMarker
 
-@synthesize projectedLocation;
-@synthesize enableDragging;
-@synthesize enableRotation;
-@synthesize data;
 @synthesize label;
 @synthesize textForegroundColor;
 @synthesize textBackgroundColor;
 
 #define defaultMarkerAnchorPoint CGPointMake(0.5, 0.5)
 
+#define kCachesPath [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES) objectAtIndex:0]
+
 + (UIFont *)defaultFont
 {
-	return [UIFont systemFontOfSize:15];
+    return [UIFont systemFontOfSize:15];
 }
 
 // init
 - (id)init
 {
-    if (self = [super init]) {
-        label = nil;
-        textForegroundColor = [UIColor blackColor];
-        textBackgroundColor = [UIColor clearColor];
-		enableDragging = YES;
-		enableRotation = YES;
-    }
+    if (!(self = [super init]))
+        return nil;
+
+    label = nil;
+    textForegroundColor = [UIColor blackColor];
+    textBackgroundColor = [UIColor clearColor];
+
     return self;
 }
 
-- (id) initWithUIImage: (UIImage*) image
+- (id)initWithUIImage:(UIImage *)image
 {
-	return [self initWithUIImage:image anchorPoint: defaultMarkerAnchorPoint];
+    return [self initWithUIImage:image anchorPoint:defaultMarkerAnchorPoint];
 }
 
-- (id) initWithUIImage: (UIImage*) image anchorPoint: (CGPoint) _anchorPoint
+- (id)initWithUIImage:(UIImage *)image anchorPoint:(CGPoint)_anchorPoint
 {
-	if (![self init])
-		return nil;
-	
-	self.contents = (id)[image CGImage];
-	self.bounds = CGRectMake(0,0,image.size.width,image.size.height);
-	self.anchorPoint = _anchorPoint;
-	
-	self.masksToBounds = NO;
-	self.label = nil;
-	
-	return self;
+    if (!(self = [self init]))
+        return nil;
+
+    self.contents = (id)[image CGImage];
+    self.contentsScale = image.scale;
+    self.bounds = CGRectMake(0, 0, image.size.width, image.size.height);
+    self.anchorPoint = _anchorPoint;
+
+    self.masksToBounds = NO;
+    self.label = nil;
+
+    return self;
 }
 
-- (void) replaceUIImage: (UIImage*) image
+- (id)initWithMapboxMarkerImage
 {
-	[self replaceUIImage:image anchorPoint:defaultMarkerAnchorPoint];
+    return [self initWithMapboxMarkerImage:nil tintColor:nil size:RMMarkerMapboxImageSizeMedium];
 }
 
-- (void) replaceUIImage: (UIImage*) image
-			anchorPoint: (CGPoint) _anchorPoint
+- (id)initWithMapboxMarkerImage:(NSString *)symbolName
 {
-	self.contents = (id)[image CGImage];
-	self.bounds = CGRectMake(0,0,image.size.width,image.size.height);
-	self.anchorPoint = _anchorPoint;
-	
-	self.masksToBounds = NO;
+    return [self initWithMapboxMarkerImage:symbolName tintColor:nil size:RMMarkerMapboxImageSizeMedium];
 }
 
-- (void) setLabel:(UIView*)aView
+- (id)initWithMapboxMarkerImage:(NSString *)symbolName tintColor:(UIColor *)color
 {
-	if (label == aView) {
-		return;
-	}
-
-	if (label != nil)
-	{
-		[[label layer] removeFromSuperlayer];
-		[label release];
-		label = nil;
-	}
-	
-	if (aView != nil)
-	{
-		label = [aView retain];
-		[self addSublayer:[label layer]];
-	}
+    return [self initWithMapboxMarkerImage:symbolName tintColor:color size:RMMarkerMapboxImageSizeMedium];
 }
 
-- (void) changeLabelUsingText: (NSString*)text
+- (id)initWithMapboxMarkerImage:(NSString *)symbolName tintColor:(UIColor *)color size:(RMMarkerMapboxImageSize)size
 {
-	CGPoint position = CGPointMake([self bounds].size.width / 2 - [text sizeWithFont:[RMMarker defaultFont]].width / 2, 4);
-/// \bug hardcoded font name
-	[self changeLabelUsingText:text position:position font:[RMMarker defaultFont] foregroundColor:[self textForegroundColor] backgroundColor:[self textBackgroundColor]];
-}
-
-- (void) changeLabelUsingText: (NSString*)text position:(CGPoint)position
-{
-	[self changeLabelUsingText:text position:position font:[RMMarker defaultFont] foregroundColor:[self textForegroundColor] backgroundColor:[self textBackgroundColor]];
-}
-
-- (void) changeLabelUsingText: (NSString*)text font:(UIFont*)font foregroundColor:(UIColor*)textColor backgroundColor:(UIColor*)backgroundColor
-{
-	CGPoint position = CGPointMake([self bounds].size.width / 2 - [text sizeWithFont:font].width / 2, 4);
-	[self setTextForegroundColor:textColor];
-	[self setTextBackgroundColor:backgroundColor];
-	[self changeLabelUsingText:text  position:position font:font foregroundColor:textColor backgroundColor:backgroundColor];
-}
-
-- (void) changeLabelUsingText: (NSString*)text position:(CGPoint)position font:(UIFont*)font foregroundColor:(UIColor*)textColor backgroundColor:(UIColor*)backgroundColor
-{
-	CGSize textSize = [text sizeWithFont:font];
-	CGRect frame = CGRectMake(position.x,
-							  position.y,
-							  textSize.width+4,
-							  textSize.height+4);
-	
-	UILabel *aLabel = [[UILabel alloc] initWithFrame:frame];
-	[self setTextForegroundColor:textColor];
-	[self setTextBackgroundColor:backgroundColor];
-	[aLabel setNumberOfLines:0];
-	[aLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-	[aLabel setBackgroundColor:backgroundColor];
-	[aLabel setTextColor:textColor];
-	[aLabel setFont:font];
-	[aLabel setTextAlignment:UITextAlignmentCenter];
-	[aLabel setText:text];
-	
-	[self setLabel:aLabel];
-	[aLabel release];
-}
-
-- (void) toggleLabel
-{
-	if (self.label == nil) {
-		return;
-	}
-	
-	if ([self.label isHidden]) {
-		[self showLabel];
-	} else {
-		[self hideLabel];
-	}
-}
-
-- (void) showLabel
-{
-	if ([self.label isHidden]) {
-		// Using addSublayer will animate showing the label, whereas setHidden is not animated
-		[self addSublayer:[self.label layer]];
-		[self.label setHidden:NO];
-	}
-}
-
-- (void) hideLabel
-{
-	if (![self.label isHidden]) {
-		// Using removeFromSuperlayer will animate hiding the label, whereas setHidden is not animated
-		[[self.label layer] removeFromSuperlayer];
-		[self.label setHidden:YES];
-	}
-}
-
-#define TITLE_FONT_SIZE  17
-#define SUBTITLE_FONT_SIZE  12
-
-#define CALLOUT_LEFT_IMAGE [[UIImage imageNamed:@"callout_left.png"] stretchableImageWithLeftCapWidth:17 topCapHeight:0]
-#define CALLOUT_CENTER_IMAGE [UIImage imageNamed:@"callout_center.png"]
-#define CALLOUT_RIGHT_IMAGE [[UIImage imageNamed:@"callout_right.png"] stretchableImageWithLeftCapWidth:1 topCapHeight:0]
-
-//
-//Стас: добавил BOOL disclosure, чтобы можно было выбирать нужна ли нам кнопка в callout или нет.
-//
-
-- (void)showBallonWithTitle:(NSString *)title subtitle:(NSString *)subtitle disclosure:(BOOL)disclosure
-{
-    float maxWidth = self.superlayer.bounds.size.width - 80;
-    CGSize size = [title sizeWithFont:[UIFont fontWithName:@"Helvetica-Bold" size:TITLE_FONT_SIZE]];
-    size.width = MIN(maxWidth, size.width);
-    float width = (disclosure) ? size.width + 50 : size.width + 30;
-    NSLog(@"width %f", width);
-    float leftWidth = width / 2;
-    float rightWidth = width / 2;
+    NSString *sizeString = nil;
     
-    if (leftWidth > self.position.x - 10) {
-        leftWidth = MAX(20, self.position.x - 10);
-        rightWidth = width - leftWidth;
-    } else if (rightWidth > self.superlayer.bounds.size.width - self.position.x - 10) {
-        rightWidth = MAX(20, self.superlayer.bounds.size.width - self.position.x - 10);
-        leftWidth = width - rightWidth;
-    }
-    
-    NSLog(@"leftWidth %f", leftWidth);
-    NSLog(@"rightWidth %f", rightWidth);
-
-    self.label = [[[UIView alloc] initWithFrame:CGRectMake(-leftWidth + 10, -60, width, 70)] autorelease];
-    
-    label.backgroundColor = [UIColor clearColor];
-    label.userInteractionEnabled = YES;
-    
-    UIImageView *calloutLeft = [[UIImageView alloc] initWithFrame:CGRectMake(-15, 0, leftWidth , 70)];
-    calloutLeft.image = CALLOUT_LEFT_IMAGE;
-    [label addSubview:calloutLeft];
-    [calloutLeft release];
-    
-    UIImageView *calloutCenter = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(calloutLeft.frame) , 0, 30, 70)];
-    calloutCenter.image = CALLOUT_CENTER_IMAGE;
-    [label addSubview:calloutCenter];
-    [calloutCenter release];
-    
-    UIImageView *calloutRight = [[UIImageView alloc] initWithFrame:CGRectMake(CGRectGetMaxX(calloutCenter.frame)  , 0, rightWidth , 70)];
-    calloutRight.image = CALLOUT_RIGHT_IMAGE;
-    [label addSubview:calloutRight];
-    [calloutRight release];
-    
-    UILabel *calloutLabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 13, size.width, 22)];
-    calloutLabel.font = [UIFont fontWithName:@"Helvetica-Bold" size:TITLE_FONT_SIZE];
-    calloutLabel.text = title;
-    calloutLabel.textColor = [UIColor whiteColor];
-    calloutLabel.backgroundColor = [UIColor clearColor];
-    calloutLabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
-    calloutLabel.shadowOffset = CGSizeMake(0, -1);
-    
-    
-    if (![subtitle isEqualToString:@""]) {
-        calloutLabel.frame = CGRectMake(15, 6, size.width, 22);
-        
-        UILabel *calloutSublabel = [[UILabel alloc] initWithFrame:CGRectMake(15, 27, size.width, 15)];
-        calloutSublabel.font = [UIFont systemFontOfSize:SUBTITLE_FONT_SIZE];
-        calloutSublabel.text = subtitle;
-        calloutSublabel.textColor = [UIColor whiteColor];
-        calloutSublabel.backgroundColor = [UIColor clearColor];
-        calloutSublabel.shadowColor = [[UIColor blackColor] colorWithAlphaComponent:0.5];
-        calloutSublabel.shadowOffset = CGSizeMake(0, -1);
-        [label addSubview:calloutSublabel];
-        [calloutSublabel release];
-    }
-    [label addSubview:calloutLabel];
-    [calloutLabel release];
-    
-    if (disclosure) 
+    switch (size)
     {
-        UIButton *button = [[UIButton buttonWithType:UIButtonTypeDetailDisclosure] retain];
-        button.frame = CGRectMake(CGRectGetMaxX(calloutLabel.frame) , 9, 34, 34);
-        button.userInteractionEnabled = NO;
-        [label addSubview:button];
+        case RMMarkerMapboxImageSizeSmall:
+            sizeString = @"small";
+            break;
+        
+        case RMMarkerMapboxImageSizeMedium:
+        default:
+            sizeString = @"medium";
+            break;
+        
+        case RMMarkerMapboxImageSizeLarge:
+            sizeString = @"large";
+            break;
+    }
+    
+    NSString *colorHex = nil;
+    
+    if (color)
+    {
+        CGFloat white, red, green, blue, alpha;
+
+        if ([color getRed:&red green:&green blue:&blue alpha:&alpha])
+        {
+            colorHex = [NSString stringWithFormat:@"%02lx%02lx%02lx", (unsigned long)(red * 255), (unsigned long)(green * 255), (unsigned long)(blue * 255)];
+        }
+        else if ([color getWhite:&white alpha:&alpha])
+        {
+            colorHex = [NSString stringWithFormat:@"%02lx%02lx%02lx", (unsigned long)(white * 255), (unsigned long)(white * 255), (unsigned long)(white * 255)];
+        }
+    }
+    
+    return [self initWithMapboxMarkerImage:symbolName tintColorHex:colorHex sizeString:sizeString];
+}
+
+- (id)initWithMapboxMarkerImage:(NSString *)symbolName tintColorHex:(NSString *)colorHex
+{
+    return [self initWithMapboxMarkerImage:symbolName tintColorHex:colorHex sizeString:@"medium"];
+}
+
+- (id)initWithMapboxMarkerImage:(NSString *)symbolName tintColorHex:(NSString *)colorHex sizeString:(NSString *)sizeString
+{
+    BOOL useRetina = ([[UIScreen mainScreen] scale] > 1.0);
+
+    NSURL *imageURL = [NSURL URLWithString:[NSString stringWithFormat:@"https://api.tiles.mapbox.com/v4/marker/pin-%@%@%@%@.png%@",
+                                               (sizeString ? [sizeString substringToIndex:1] : @"m"),
+                                               (symbolName ? [@"-" stringByAppendingString:symbolName] : @""),
+                                               (colorHex   ? [@"+" stringByAppendingString:[colorHex stringByReplacingOccurrencesOfString:@"#" withString:@""]] : @"+ff0000"),
+                                               (useRetina  ? @"@2x" : @""),
+                                               [@"?access_token=" stringByAppendingString:[[RMConfiguration sharedInstance] accessToken]]]];
+
+    UIImage *image = nil;
+    
+    NSString *cachePath = [NSString stringWithFormat:@"%@/%@", kCachesPath, [imageURL lastPathComponent]];
+    
+    if ((image = [UIImage imageWithData:[NSData dataWithContentsOfFile:cachePath] scale:(useRetina ? 2.0 : 1.0)]) && image)
+        return [self initWithUIImage:image];
+    
+    [[NSFileManager defaultManager] createFileAtPath:cachePath contents:[NSData brandedDataWithContentsOfURL:imageURL] attributes:nil];
+    
+    return [self initWithUIImage:[UIImage imageWithData:[NSData dataWithContentsOfFile:cachePath] scale:(useRetina ? 2.0 : 1.0)]];
+}
+
++ (void)clearCachedMapboxMarkers
+{
+    for (NSString *filePath in [[NSFileManager defaultManager] contentsOfDirectoryAtPath:kCachesPath error:nil])
+        if ([[filePath lastPathComponent] hasPrefix:@"pin-"] && [[filePath lastPathComponent] hasSuffix:@".png"])
+            [[NSFileManager defaultManager] removeItemAtPath:[NSString stringWithFormat:@"%@/%@", kCachesPath, filePath] error:nil];
+}
+
+#pragma mark -
+
+- (void)replaceUIImage:(UIImage *)image
+{
+    [self replaceUIImage:image anchorPoint:defaultMarkerAnchorPoint];
+}
+
+- (void)replaceUIImage:(UIImage *)image anchorPoint:(CGPoint)_anchorPoint
+{
+    self.contents = (id)[image CGImage];
+    self.bounds = CGRectMake(0, 0, image.size.width, image.size.height);
+    self.anchorPoint = _anchorPoint;
+
+    self.masksToBounds = NO;
+}
+
+- (void)setLabel:(UIView *)aView
+{
+    if (label == aView)
+        return;
+
+    if (label != nil)
+        [[label layer] removeFromSuperlayer];
+
+    if (aView != nil)
+    {
+        label = aView;
+        [self addSublayer:[label layer]];
     }
 }
 
-- (void) dealloc 
+- (void)setTextBackgroundColor:(UIColor *)newTextBackgroundColor
 {
-    self.data = nil;
-    //TODO Тимур. если обнулять label имеет свойство падать с адресного контролла при добавление места. потом проверить удаляется память или нет
-   // self.label = nil;
-    self.textForegroundColor = nil;
-    self.textBackgroundColor = nil;
-	[super dealloc];
+    textBackgroundColor = newTextBackgroundColor;
+
+    self.label.backgroundColor = textBackgroundColor;
 }
 
-- (void)zoomByFactor: (float) zoomFactor near:(CGPoint) center
+- (void)setTextForegroundColor:(UIColor *)newTextForegroundColor
 {
-	if(enableDragging){
-		self.position = RMScaleCGPointAboutPoint(self.position, zoomFactor, center);
-	}
+    textForegroundColor = newTextForegroundColor;
+
+    if ([self.label respondsToSelector:@selector(setTextColor:)])
+        ((UILabel *)self.label).textColor = textForegroundColor;
 }
 
-- (void)moveBy: (CGSize) delta
+- (void)changeLabelUsingText:(NSString *)text
 {
-	if(enableDragging){
-		[super moveBy:delta];
-	}
+    CGPoint position = CGPointMake([self bounds].size.width / 2 - [text sizeWithFont:[RMMarker defaultFont]].width / 2, 4);
+    [self changeLabelUsingText:text position:position font:[RMMarker defaultFont] foregroundColor:[self textForegroundColor] backgroundColor:[self textBackgroundColor]];
+}
+
+- (void)changeLabelUsingText:(NSString*)text position:(CGPoint)position
+{
+    [self changeLabelUsingText:text position:position font:[RMMarker defaultFont] foregroundColor:[self textForegroundColor] backgroundColor:[self textBackgroundColor]];
+}
+
+- (void)changeLabelUsingText:(NSString *)text font:(UIFont *)font foregroundColor:(UIColor *)textColor backgroundColor:(UIColor *)backgroundColor
+{
+    CGPoint position = CGPointMake([self bounds].size.width / 2 - [text sizeWithFont:font].width / 2, 4);
+    [self setTextForegroundColor:textColor];
+    [self setTextBackgroundColor:backgroundColor];
+    [self changeLabelUsingText:text  position:position font:font foregroundColor:textColor backgroundColor:backgroundColor];
+}
+
+- (void)changeLabelUsingText:(NSString *)text position:(CGPoint)position font:(UIFont *)font foregroundColor:(UIColor *)textColor backgroundColor:(UIColor *)backgroundColor
+{
+    CGSize textSize = [text sizeWithFont:font];
+    CGRect frame = CGRectMake(position.x, position.y, textSize.width+4, textSize.height+4);
+
+    UILabel *aLabel = [[UILabel alloc] initWithFrame:frame];
+    [self setTextForegroundColor:textColor];
+    [self setTextBackgroundColor:backgroundColor];
+    [aLabel setNumberOfLines:0];
+    [aLabel setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+    [aLabel setBackgroundColor:backgroundColor];
+    [aLabel setTextColor:textColor];
+    [aLabel setFont:font];
+    [aLabel setTextAlignment:NSTextAlignmentCenter];
+    [aLabel setText:text];
+
+    [self setLabel:aLabel];
+}
+
+- (void)toggleLabel
+{
+    if (self.label == nil)
+        return;
+
+    if ([self.label isHidden])
+        [self showLabel];
+    else
+        [self hideLabel];
+}
+
+- (void)showLabel
+{
+    if ([self.label isHidden])
+    {
+        // Using addSublayer will animate showing the label, whereas setHidden is not animated
+        [self addSublayer:[self.label layer]];
+        [self.label setHidden:NO];
+    }
+}
+
+- (void)hideLabel
+{
+    if (![self.label isHidden])
+    {
+        // Using removeFromSuperlayer will animate hiding the label, whereas setHidden is not animated
+        [[self.label layer] removeFromSuperlayer];
+        [self.label setHidden:YES];
+    }
+}
+
+- (void)setDragState:(RMMapLayerDragState)dragState animated:(BOOL)animated
+{
+    if (dragState == RMMapLayerDragStateStarting)
+    {
+        [CATransaction begin];
+        [CATransaction setAnimationDuration:(animated ? 0.3 : 0)];
+
+        self.opacity -= 0.1;
+        self.transform = CATransform3DScale(self.transform, 1.3, 1.3, 1.0);
+
+        [CATransaction setCompletionBlock:^(void)
+        {
+            [super setDragState:RMMapLayerDragStateDragging animated:animated];
+        }];
+
+        [CATransaction commit];
+    }
+    else if (dragState == RMMapLayerDragStateCanceling || dragState == RMMapLayerDragStateEnding)
+    {
+        [CATransaction begin];
+        [CATransaction setAnimationDuration:(animated ? 0.3 : 0)];
+
+        self.opacity += 0.1;
+        self.transform = CATransform3DScale(self.transform, 1.0/1.3, 1.0/1.3, 1.0);
+
+        [CATransaction setCompletionBlock:^(void)
+        {
+             [super setDragState:RMMapLayerDragStateNone animated:animated];
+        }];
+
+        [CATransaction commit];
+    }
+    else
+    {
+        [super setDragState:dragState animated:animated];
+    }
 }
 
 @end

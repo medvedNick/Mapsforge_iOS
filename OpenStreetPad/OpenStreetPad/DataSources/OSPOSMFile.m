@@ -59,20 +59,20 @@
 {
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^()
-    {
-        NSInputStream *stream = [NSInputStream inputStreamWithFileAtPath:[self path]];
-        [self setParser:[[OSPOSMParser alloc] initWithStream:stream]];
-        [[self parser] setDelegate:self];
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^()
-                       {
-                           @try {
-							   [[self parser] parse];
-						   }
-						   @catch (NSException *exception) {
-							   NSLog(@"Exception in loadObjecstInBounds: %@", exception.reason);
-						   }
-                       });
-    });
+                  {
+                      NSInputStream *stream = [NSInputStream inputStreamWithFileAtPath:[self path]];
+                      [self setParser:[[OSPOSMParser alloc] initWithStream:stream]];
+                      [[self parser] setDelegate:self];
+                      dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^()
+                                     {
+                                         @try {
+                                             [[self parser] parse];
+                                         }
+                                         @catch (NSException *exception) {
+                                             NSLog(@"Exception in loadObjecstInBounds: %@", exception.reason);
+                                         }
+                                     });
+                  });
 }
 
 - (void)parser:(OSPOSMParser *)parser didFindAPIObject:(OSPAPIObject *)object

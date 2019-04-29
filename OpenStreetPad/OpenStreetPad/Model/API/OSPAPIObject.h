@@ -40,9 +40,9 @@ typedef enum
 
 @property (nonatomic, readonly) OSPMemberType memberType;
 
-- (id)initUnsafely;
+/*- (id)initUnsafely;
 
-- (BOOL)isEqualToAPIObject:(OSPAPIObject *)object;
+- (BOOL)isEqualToAPIObject:(OSPAPIObject *)object;*/
 
 - (NSSet *)childObjects;
 - (void)addParent:(OSPAPIObjectReference *)newParent;

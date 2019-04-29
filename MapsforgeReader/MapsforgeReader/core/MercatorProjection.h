@@ -43,6 +43,8 @@ extern double const LONGITUDE_MIN;
 + (long) pixelXToTileX:(double)pixelX zoomLevel:(char)zoomLevel;
 + (double) pixelYToLatitude:(double)pixelY zoomLevel:(char)zoomLevel;
 + (long) pixelYToTileY:(double)pixelY zoomLevel:(char)zoomLevel;
-+ (double) tileXToLongitude:(long)tileX zoomLevel:(char)zoomLevel;
-+ (double) tileYToLatitude:(long)tileY zoomLevel:(char)zoomLevel;
++ (long double) tileXToLongitude:(long)tileX zoomLevel:(char)zoomLevel;
++ (long double) tileYToLatitude:(long)tileY zoomLevel:(char)zoomLevel;
++ (long) tileToPixel:(long) tileNumber;
++ (long double) microDegreesToDegrees:(long double)mdegrees;
 @end

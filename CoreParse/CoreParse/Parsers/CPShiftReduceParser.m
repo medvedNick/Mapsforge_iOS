@@ -253,8 +253,8 @@
     }
     else
     {
-        CPToken *t = [tokenStream peekToken];
-        NSLog(@"%ld:%ld: parse error.  Expected %@, found %@", (long)[t lineNumber] + 1, (long)[t columnNumber] + 1, acceptableTokens, t);
+        //CPToken *t = [tokenStream peekToken];
+        //NSLog(@"%lu:%d: parse error.  Expected %@, found %@", (unsigned long)[t lineNumber], [t columnNumber], acceptableTokens, t);
         return nil;
     }
 }

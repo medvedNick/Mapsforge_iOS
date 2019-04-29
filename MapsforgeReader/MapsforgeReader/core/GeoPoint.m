@@ -4,7 +4,6 @@
 /**
  * Conversion factor from degrees to microdegrees.
  */
-extern double const CONVERSION_FACTOR;// = 1000000;
 extern long const serialVersionUID;// = 1L;
 
 @implementation GeoPoint
@@ -22,9 +21,9 @@ extern long const serialVersionUID;// = 1L;
 - (id) init:(double)_latitude longitude:(double)_longitude {
   if (self = [super init]) {
     double limitLatitude = [MercatorProjection limitLatitude:_latitude];
-    latitudeE6 = (int)(limitLatitude * CONVERSION_FACTOR);
+    latitudeE6 = (limitLatitude);
     double limitLongitude = [MercatorProjection limitLongitude:_longitude];
-    longitudeE6 = (int)(limitLongitude * CONVERSION_FACTOR);
+    longitudeE6 = (limitLongitude);
     hashCodeValue = [self calculateHashCode];
   }
   return self;
@@ -37,8 +36,8 @@ extern long const serialVersionUID;// = 1L;
  * @param longitudeE6
  * the longitude in microdegrees (degrees * 10^6), will be limited to the possible longitude range.
  */
-- (id) init:(int)_latitudeE6 longitudeE6:(int)_longitudeE6 {
-  if (self = [self init:_latitudeE6 / CONVERSION_FACTOR longitude:_longitudeE6 / CONVERSION_FACTOR]) {
+- (id) init:(double)_latitudeE6 longitudeE6:(double)_longitudeE6 {
+  if (self = [self init:_latitudeE6 longitude:_longitudeE6]) {
   }
   return self;
 }
@@ -81,7 +80,7 @@ extern long const serialVersionUID;// = 1L;
  * @return the latitude value of this GeoPoint in degrees.
  */
 - (double) latitude {
-  return latitudeE6 / CONVERSION_FACTOR;
+  return latitudeE6;
 }
 
 
@@ -89,7 +88,7 @@ extern long const serialVersionUID;// = 1L;
  * @return the longitude value of this GeoPoint in degrees.
  */
 - (double) longitude {
-  return longitudeE6 / CONVERSION_FACTOR;
+  return longitudeE6;
 }
 
 - (int) hash {
@@ -97,7 +96,7 @@ extern long const serialVersionUID;// = 1L;
 }
 
 - (NSString *) description {
-	NSString *desc = [NSString stringWithFormat:@"GeoPoint [latitudeE6=%d, longitudeE6=%d]", latitudeE6, longitudeE6];
+	NSString *desc = [NSString stringWithFormat:@"GeoPoint [latitudeE6=%f, longitudeE6=%f]", latitudeE6, longitudeE6];
 	return desc;
 }
 

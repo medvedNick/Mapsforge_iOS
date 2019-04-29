@@ -25,7 +25,6 @@
 		11EBA13318117BA4000B3EFF /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 11EBA12118117BA4000B3EFF /* main.m */; };
 		11EBA13418117BA4000B3EFF /* VectorMapTest-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 11EBA12218117BA4000B3EFF /* VectorMapTest-Info.plist */; };
 		11EBA19C18118430000B3EFF /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 11EBA19B18118430000B3EFF /* Images.xcassets */; };
-		11EBA1D018128F6E000B3EFF /* libsqlite3.0.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = 11EBA1CF18128F6E000B3EFF /* libsqlite3.0.dylib */; };
 		79E77158158B3BCC0095BF71 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E77157158B3BCC0095BF71 /* UIKit.framework */; };
 		79E7715A158B3BCC0095BF71 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E77159158B3BCC0095BF71 /* Foundation.framework */; };
 		79E7715C158B3BCC0095BF71 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E7715B158B3BCC0095BF71 /* CoreGraphics.framework */; };
@@ -34,6 +33,9 @@
 		79E771BC158B41A60095BF71 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E771BB158B41A60095BF71 /* CoreLocation.framework */; };
 		79E771BE158B41AC0095BF71 /* CoreText.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E771BD158B41AC0095BF71 /* CoreText.framework */; };
 		79E771C0158B41BB0095BF71 /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 79E771BF158B41BB0095BF71 /* QuartzCore.framework */; };
+		C86BF4241AD6925B00393968 /* libz.1.2.5.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = C86BF4231AD6925B00393968 /* libz.1.2.5.dylib */; };
+		C86BF4391AD698BD00393968 /* libsqlcipher.a in Frameworks */ = {isa = PBXBuildFile; fileRef = C86BF4361AD6985B00393968 /* libsqlcipher.a */; };
+		C86BF43D1AD6A19100393968 /* iceland.map in Sources */ = {isa = PBXBuildFile; fileRef = C86BF43C1AD6A19100393968 /* iceland.map */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +67,20 @@
 			remoteGlobalIDString = 2BF3078F0F8AC5C0007014EE;
 			remoteInfo = "Unit Tests";
 		};
+		C86BF4351AD6985B00393968 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C86BF4301AD6985A00393968 /* sqlcipher.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = D2AAC046055464E500DB518D;
+			remoteInfo = sqlcipher;
+		};
+		C86BF4371AD6986500393968 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = C86BF4301AD6985A00393968 /* sqlcipher.xcodeproj */;
+			proxyType = 1;
+			remoteGlobalIDString = D2AAC045055464E500DB518D;
+			remoteInfo = sqlcipher;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -89,7 +105,6 @@
 		11EBA12218117BA4000B3EFF /* VectorMapTest-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "VectorMapTest-Info.plist"; sourceTree = "<group>"; };
 		11EBA12318117BA4000B3EFF /* VectorMapTest-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "VectorMapTest-Prefix.pch"; sourceTree = "<group>"; };
 		11EBA19B18118430000B3EFF /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		11EBA1CF18128F6E000B3EFF /* libsqlite3.0.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libsqlite3.0.dylib; path = usr/lib/libsqlite3.0.dylib; sourceTree = SDKROOT; };
 		79E77153158B3BCC0095BF71 /* MoscowVector.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoscowVector.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		79E77157158B3BCC0095BF71 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		79E77159158B3BCC0095BF71 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -99,6 +114,10 @@
 		79E771BB158B41A60095BF71 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		79E771BD158B41AC0095BF71 /* CoreText.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreText.framework; path = System/Library/Frameworks/CoreText.framework; sourceTree = SDKROOT; };
 		79E771BF158B41BB0095BF71 /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = System/Library/Frameworks/QuartzCore.framework; sourceTree = SDKROOT; };
+		C86BF4231AD6925B00393968 /* libz.1.2.5.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libz.1.2.5.dylib; path = usr/lib/libz.1.2.5.dylib; sourceTree = SDKROOT; };
+		C86BF4301AD6985A00393968 /* sqlcipher.xcodeproj */ = {isa = PBXFileReference; lastKnownFileType = "wrapper.pb-project"; name = sqlcipher.xcodeproj; path = sqlcipher/sqlcipher.xcodeproj; sourceTree = "<group>"; };
+		C86BF43A1AD698DB00393968 /* libiconv.2.dylib */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.dylib"; name = libiconv.2.dylib; path = usr/lib/libiconv.2.dylib; sourceTree = SDKROOT; };
+		C86BF43C1AD6A19100393968 /* iceland.map */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = "sourcecode.module-map"; path = iceland.map; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,7 +125,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				11EBA1D018128F6E000B3EFF /* libsqlite3.0.dylib in Frameworks */,
+				C86BF4391AD698BD00393968 /* libsqlcipher.a in Frameworks */,
+				C86BF4241AD6925B00393968 /* libz.1.2.5.dylib in Frameworks */,
 				79E771C0158B41BB0095BF71 /* QuartzCore.framework in Frameworks */,
 				79E771BE158B41AC0095BF71 /* CoreText.framework in Frameworks */,
 				79E771BC158B41A60095BF71 /* CoreLocation.framework in Frameworks */,
@@ -147,6 +167,7 @@
 		11EBA10F18117BA4000B3EFF /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				C86BF43C1AD6A19100393968 /* iceland.map */,
 				11EBA11018117BA4000B3EFF /* moscow.map */,
 				11EBA11118117BA4000B3EFF /* rules */,
 			);
@@ -200,6 +221,7 @@
 		79E77148158B3BCC0095BF71 = {
 			isa = PBXGroup;
 			children = (
+				C86BF4301AD6985A00393968 /* sqlcipher.xcodeproj */,
 				79E77177158B3C910095BF71 /* MapView.xcodeproj */,
 				11EBA10818117BA4000B3EFF /* VectorMapTest */,
 				79E77156158B3BCC0095BF71 /* Frameworks */,
@@ -218,7 +240,8 @@
 		79E77156158B3BCC0095BF71 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				11EBA1CF18128F6E000B3EFF /* libsqlite3.0.dylib */,
+				C86BF43A1AD698DB00393968 /* libiconv.2.dylib */,
+				C86BF4231AD6925B00393968 /* libz.1.2.5.dylib */,
 				79E771BF158B41BB0095BF71 /* QuartzCore.framework */,
 				79E771BD158B41AC0095BF71 /* CoreText.framework */,
 				79E771BB158B41A60095BF71 /* CoreLocation.framework */,
@@ -240,6 +263,14 @@
 			name = Products;
 			sourceTree = "<group>";
 		};
+		C86BF4311AD6985A00393968 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				C86BF4361AD6985B00393968 /* libsqlcipher.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -254,6 +285,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				C86BF4381AD6986500393968 /* PBXTargetDependency */,
 				11EBA13618117D10000B3EFF /* PBXTargetDependency */,
 			);
 			name = VectorMapTest;
@@ -289,6 +321,10 @@
 					ProductGroup = 79E77178158B3C910095BF71 /* Products */;
 					ProjectRef = 79E77177158B3C910095BF71 /* MapView.xcodeproj */;
 				},
+				{
+					ProductGroup = C86BF4311AD6985A00393968 /* Products */;
+					ProjectRef = C86BF4301AD6985A00393968 /* sqlcipher.xcodeproj */;
+				},
 			);
 			projectRoot = "";
 			targets = (
@@ -317,6 +353,13 @@
 			fileType = wrapper.application;
 			path = "RM Unit Tests.app";
 			remoteRef = 79E77197158B3C920095BF71 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
+		C86BF4361AD6985B00393968 /* libsqlcipher.a */ = {
+			isa = PBXReferenceProxy;
+			fileType = archive.ar;
+			path = libsqlcipher.a;
+			remoteRef = C86BF4351AD6985B00393968 /* PBXContainerItemProxy */;
 			sourceTree = BUILT_PRODUCTS_DIR;
 		};
 /* End PBXReferenceProxy section */
@@ -354,6 +397,7 @@
 				11EBA12518117BA4000B3EFF /* ViewController.m in Sources */,
 				11EBA13318117BA4000B3EFF /* main.m in Sources */,
 				11EBA12418117BA4000B3EFF /* AppDelegate.m in Sources */,
+				C86BF43D1AD6A19100393968 /* iceland.map in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -364,6 +408,11 @@
 			isa = PBXTargetDependency;
 			name = MapView;
 			targetProxy = 11EBA13518117D10000B3EFF /* PBXContainerItemProxy */;
+		};
+		C86BF4381AD6986500393968 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			name = sqlcipher;
+			targetProxy = C86BF4371AD6986500393968 /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
@@ -383,7 +432,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -398,7 +450,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -408,7 +460,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
-				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				ARCHS = (
+					"$(ARCHS_STANDARD)",
+					armv7s,
+				);
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				COPY_PHASE_STRIP = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
@@ -416,7 +471,7 @@
 				GCC_WARN_ABOUT_MISSING_PROTOTYPES = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
-				IPHONEOS_DEPLOYMENT_TARGET = 5.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 5.1.1;
 				OTHER_CFLAGS = "-DNS_BLOCK_ASSERTIONS=1";
 				SDKROOT = iphoneos;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -453,6 +508,7 @@
 				PRODUCT_NAME = MoscowVector;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -486,6 +542,7 @@
 				PRODUCT_NAME = MoscowVector;
 				PROVISIONING_PROFILE = "";
 				TARGETED_DEVICE_FAMILY = "1,2";
+				VALID_ARCHS = "armv7 armv7s arm64";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

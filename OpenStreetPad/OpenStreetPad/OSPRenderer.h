@@ -12,16 +12,19 @@
 #import "OSPMapArea.h"
 #import "OSPTagDictionary.h"
 
+@class MapDatabase;
+
 @interface OSPRenderer : NSObject
 
 @property (readwrite, nonatomic, retain/*strong*/) OSPMapCSSStyleSheet *stylesheet;
 @property (nonatomic) OSPMapArea mapArea;
-@property (nonatomic) int objectsNumber;
+@property (nonatomic) long objectsNumber;
 @property (nonatomic, retain) NSString *resource;
 
 - (id) initWithFile:(NSString*)path;
 
 - (UIImage*) imageForTileX:(int)x Y:(int)y zoom:(int)zoom;
 - (UIImage *) renderImageAtZoom:(int)zoom;
+- (MapDatabase*)getMapDatabase;
 
 @end

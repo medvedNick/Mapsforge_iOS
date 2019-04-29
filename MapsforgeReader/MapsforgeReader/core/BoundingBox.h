@@ -10,22 +10,22 @@
   /**
    * The maximum latitude value of this BoundingBox in microdegrees (degrees * 10^6).
  */
-  int maxLatitudeE6;
+  double maxLatitudeE6;
 
   /**
    * The maximum longitude value of this BoundingBox in microdegrees (degrees * 10^6).
  */
-  int maxLongitudeE6;
+  double maxLongitudeE6;
 
   /**
    * The minimum latitude value of this BoundingBox in microdegrees (degrees * 10^6).
  */
-  int minLatitudeE6;
+  double minLatitudeE6;
 
   /**
    * The minimum longitude value of this BoundingBox in microdegrees (degrees * 10^6).
  */
-  int minLongitudeE6;
+  double minLongitudeE6;
 
   /**
    * The hash code of this object.
@@ -38,7 +38,7 @@
 @property(nonatomic, readonly) double maxLongitude;
 @property(nonatomic, readonly) double minLatitude;
 @property(nonatomic, readonly) double minLongitude;
-- (id) init:(int)minLatitudeE6 minLongitudeE6:(int)minLongitudeE6 maxLatitudeE6:(int)maxLatitudeE6 maxLongitudeE6:(int)maxLongitudeE6;
+- (id) init:(double)minLatitudeE6 minLongitudeE6:(double)minLongitudeE6 maxLatitudeE6:(double)maxLatitudeE6 maxLongitudeE6:(double)maxLongitudeE6;
 - (BOOL) contains:(GeoPoint *)geoPoint;
 - (BOOL) isEqualTo:(NSObject *)obj;
 - (int) hash;

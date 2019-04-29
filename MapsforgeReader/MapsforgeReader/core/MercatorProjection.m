@@ -53,8 +53,9 @@ double const LONGITUDE_MIN = -LONGITUDE_MAX;
  * @return the pixel Y coordinate of the latitude value.
  */
 + (double) latitudeToPixelY:(double)latitude zoomLevel:(char)zoomLevel {
-  double sinLatitude = sin(latitude * (M_PI / 180));
-  return (0.5 - log((1 + sinLatitude) / (1 - sinLatitude)) / (4 * M_PI)) * ((long)TILE_SIZE << zoomLevel);
+    double sinLatitude = sin(latitude * (M_PI / 180));
+    double pixelY = (0.5 - log((1 + sinLatitude) / (1 - sinLatitude)) / (4 * M_PI)) * ((long)256 << zoomLevel);
+    return MIN(MAX(0, pixelY), ((long)256 << zoomLevel));
 }
 
 
@@ -186,7 +187,7 @@ double const LONGITUDE_MIN = -LONGITUDE_MAX;
  * the zoom level at which the number should be converted.
  * @return the longitude value of the tile X number.
  */
-+ (double) tileXToLongitude:(long)tileX zoomLevel:(char)zoomLevel {
++ (long double) tileXToLongitude:(long)tileX zoomLevel:(char)zoomLevel {
   return [self pixelXToLongitude:tileX * TILE_SIZE zoomLevel:zoomLevel];
 }
 
@@ -200,15 +201,24 @@ double const LONGITUDE_MIN = -LONGITUDE_MAX;
  * the zoom level at which the number should be converted.
  * @return the latitude value of the tile Y number.
  */
-+ (double) tileYToLatitude:(long)tileY zoomLevel:(char)zoomLevel {
++ (long double) tileYToLatitude:(long)tileY zoomLevel:(char)zoomLevel {
   return [self pixelYToLatitude:tileY * TILE_SIZE zoomLevel:zoomLevel];
 }
+
++ (long) tileToPixel:(long) tileNumber {
+    return tileNumber * TILE_SIZE;
+}
+
 
 - (id) init {
   if (self = [super init]) {
 	  [NSException raise:@"IllegalStateException!" format:@"Exception in MercatorProjection.m"];
   }
   return self;
+}
+
++ (long double) microDegreesToDegrees:(long double)mdegrees {
+    return mdegrees / 1000000.0;
 }
 
 @end

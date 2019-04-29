@@ -17,10 +17,7 @@ inline OSPMapArea OSPMapAreaMake(OSPCoordinate2D centre, float zoomLevel)
 
 inline OSPCoordinateRect OSPRectForMapAreaInRect(OSPMapArea area, CGRect bounds)
 {
-    double coveragePerPixel = 1.0 / (pow(2.0, area.zoomLevel) * OSPTileSize);
     double width = CGRectGetWidth(bounds);
     double height = CGRectGetHeight(bounds);
-    double projectedWidth = coveragePerPixel * width;
-    double projectedHeight = coveragePerPixel * height;
-    return OSPCoordinateRectMake(area.centre.x - projectedWidth * 0.5, area.centre.y - projectedHeight * 0.5, projectedWidth, projectedHeight);
+    return OSPCoordinateRectMake(area.centre.x - width * 0.5, area.centre.y - height * 0.5, width, height);
 }

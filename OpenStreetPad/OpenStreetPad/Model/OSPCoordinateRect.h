@@ -28,8 +28,12 @@ typedef struct
     uint8_t zoom;
 } OSPTile;
 
+
+double longitudeToPixelX(double longitude, short zoomLevel);
+double latitudeToPixelY(double latitude, short zoomLevel);
+long tileToPixel(long tileNumber);
 OSPCoordinate2D OSPCoordinate2DMake(double x, double y);
-OSPCoordinate2D OSPCoordinate2DProjectLocation(CLLocationCoordinate2D l);
+OSPCoordinate2D OSPCoordinate2DProjectLocation(CLLocationCoordinate2D l, short zoomLevel, long tileX, long tileY);
 CLLocationCoordinate2D OSPCoordinate2DUnproject(OSPCoordinate2D l);
 NSString *NSStringFromOSPCoordinate2D(OSPCoordinate2D l);
 

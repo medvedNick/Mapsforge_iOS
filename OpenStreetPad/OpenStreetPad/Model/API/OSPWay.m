@@ -11,8 +11,6 @@
 #import "OSPNode.h"
 #import "OSPMap.h"
 
-const double NANODEG = 0.000001;
-
 @interface OSPWay ()
 
 - (void)createEdgeLengthsIfNeeded;
@@ -35,6 +33,9 @@ const double NANODEG = 0.000001;
 
 //@synthesize area;
 @synthesize name;
+@synthesize zoomLevel = _zoomLevel;
+@synthesize x = _x;
+@synthesize y = _y;
 
 - (NSArray *)nodes
 {
@@ -168,11 +169,11 @@ const double NANODEG = 0.000001;
 
 - (OSPCoordinate2D)projectedCentroid
 {
-    float cx = 0.0f;
-    float cy = 0.0f;
-    float fs = 0.0f;
-    float ox = 0.0f;
-    float oy = 0.0f;
+    double cx = 0.0f;
+    double cy = 0.0f;
+    double fs = 0.0f;
+    double ox = 0.0f;
+    double oy = 0.0f;
     
 //    NSArray *nodeObjs = [self nodeObjects];
     NSUInteger numNodes = [self nodesCount];//[nodeObjs count];
@@ -182,9 +183,9 @@ const double NANODEG = 0.000001;
         {
 //            OSPNode *node = [nodeObjs objectAtIndex:0];
 //            OSPCoordinate2D nip = [node projectedLocation];
-			float lastLat = cNodes[0][0+1] * NANODEG;
-			float lastLon = cNodes[0][0] * NANODEG;
-			OSPCoordinate2D nip = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lastLat, lastLon));
+			long double lastLat = cNodes[0][0+1];
+			long double lastLon = cNodes[0][0];
+			OSPCoordinate2D nip = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lastLat, lastLon), _zoomLevel, _x, _y);
 
             ox = nip.x;
             oy = nip.y;
@@ -196,12 +197,12 @@ const double NANODEG = 0.000001;
 			{
 				for (int node = 0; node < cLength[block+1]; node += 2)
 				{
-					float lat = cNodes[block][node+1] * NANODEG;
-					float lon = cNodes[block][node] * NANODEG;
+					long double lat = cNodes[block][node+1];
+					long double lon = cNodes[block][node];
 					
-					OSPCoordinate2D ni1p = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon));
+					OSPCoordinate2D ni1p = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon), _zoomLevel, _x, _y);
                 
-                float f = (nip.x - ox) * (ni1p.y - oy) - (ni1p.x - ox) * (nip.y - oy);
+                double f = (nip.x - ox) * (ni1p.y - oy) - (ni1p.x - ox) * (nip.y - oy);
                 cx += (nip.x + ni1p.x - 2.0f * ox) * f;
                 cy += (nip.y + ni1p.y - 2.0f * oy) * f;
                 fs += f;
@@ -263,21 +264,21 @@ const double NANODEG = 0.000001;
 //        OSPCoordinate2D currentLoc = [currentNode projectedLocation];
 
 	edgeLengths = malloc(([self nodesCount] - 1) * sizeof(double));
-	float lastLat = cNodes[0][0+1] * NANODEG;
-	float lastLon = cNodes[0][0] * NANODEG;
-	OSPCoordinate2D lastLoc = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lastLat, lastLon));
+	double lastLat = cNodes[0][1] ;
+	double lastLon = cNodes[0][0] ;
+	OSPCoordinate2D lastLoc = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lastLat, lastLon), _zoomLevel, _x, _y);
 	NSUInteger i = 0;
     for (int block = 0; block < cLength[0]; block++)
 	{
 		for (int node = 0; node < cLength[block+1]; node += 2)
 		{
 			if (node == 0 && block == 0) continue;
-			float lat = cNodes[block][node+1] * NANODEG;
-			float lon = cNodes[block][node] * NANODEG;
+			long double lat = cNodes[block][node+1] ;
+			long double lon = cNodes[block][node] ;
 			
-			OSPCoordinate2D currentLoc = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon));
-			double dx = currentLoc.x - lastLoc.x;
-			double dy = currentLoc.y - lastLoc.y;
+			OSPCoordinate2D currentLoc = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon), _zoomLevel, _x, _y);
+			long double dx = currentLoc.x - lastLoc.x;
+			long double dy = currentLoc.y - lastLoc.y;
 			edgeLengths[i] = sqrt(dx * dx + dy * dy);
 
 	        i++;
@@ -318,19 +319,19 @@ const double NANODEG = 0.000001;
 		{
 			for (int node = 0; node < cLength[block+1]; node += 2)
 			{
-				float lat = cNodes[block][node+1] * NANODEG;
-				float lon = cNodes[block][node] * NANODEG;
+				long double lat = cNodes[block][node+1] ;
+				long double lon = cNodes[block][node] ;
 
-				OSPCoordinate2D nodeLoc = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon));
+				OSPCoordinate2D nodeLoc = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon), _zoomLevel, _x, _y);
             if (nodesConsumed >= 2)
             {
                 double dx1 = oneLocBack.x - twoLocsBack.x;
                 double dy1 = oneLocBack.y - twoLocsBack.y;
                 double dx2 = nodeLoc.x - oneLocBack.x;
                 double dy2 = nodeLoc.y - oneLocBack.y;
-                float lastAngle = dx1 == 0.0 ? (dy1 > 0.0 ? M_PI_2 : 3 * M_PI_2) : atanf(dy1 / dx1);
-                float thisAngle = dx2 == 0.0 ? (dx2 > 0.0 ? M_PI_2 : 3 * M_PI_2) : atanf(dy2 / dx2);
-                float angleDelta = thisAngle - lastAngle;
+                double lastAngle = dx1 == 0.0 ? (dy1 > 0.0 ? M_PI_2 : 3 * M_PI_2) : atanf(dy1 / dx1);
+                double thisAngle = dx2 == 0.0 ? (dx2 > 0.0 ? M_PI_2 : 3 * M_PI_2) : atanf(dy2 / dx2);
+                double angleDelta = thisAngle - lastAngle;
                 if (fabs(angleDelta > M_PI_2 * 0.3333))
                 {
                     sharpCornerPositions[numberOfSharpCorners] = l;
@@ -399,17 +400,17 @@ const double NANODEG = 0.000001;
 				{
 					if (number == pointNumber)
 					{
-						float lat = cNodes[block][node+1] * NANODEG;
-						float lon = cNodes[block][node] * NANODEG;
+						long double lat = cNodes[block][node+1] ;
+						long double lon = cNodes[block][node] ;
 
-						nextPointLocation = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon));
+						nextPointLocation = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon), _zoomLevel, _x, _y);
 					}
 					else if (number == pointNumber+1)
 					{
-						float lat = cNodes[block][node+1] * NANODEG;
-						float lon = cNodes[block][node] * NANODEG;
+						long double lat = cNodes[block][node+1] ;
+						long double lon = cNodes[block][node] ;
 						
-						prevPointLocation = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon));
+						prevPointLocation = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon), _zoomLevel, _x, _y);
 						yes = YES;
 					}
 					number++;
@@ -441,18 +442,18 @@ const double NANODEG = 0.000001;
 				{
 					if (number == pointNumber+1)
 					{
-						float lat = cNodes[block][node+1] * NANODEG;
-						float lon = cNodes[block][node] * NANODEG;
+						long double lat = cNodes[block][node+1] ;
+						long double lon = cNodes[block][node] ;
 						
-						nextPointLocation = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon));
+						nextPointLocation = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon), _zoomLevel, _x, _y);
 						yes = YES;
 					}
 					else if (number == pointNumber)
 					{
-						float lat = cNodes[block][node+1] * NANODEG;
-						float lon = cNodes[block][node] * NANODEG;
+						long double lat = cNodes[block][node+1] ;
+						long double lon = cNodes[block][node] ;
 						
-						prevPointLocation = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon));
+						prevPointLocation = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon), _zoomLevel, _x, _y);
 					}
 					number++;
 				}
@@ -497,17 +498,17 @@ const double NANODEG = 0.000001;
 				{
 					if (number == pointNumber)
 					{
-						float lat = cNodes[block][node+1] * NANODEG;
-						float lon = cNodes[block][node] * NANODEG;
+						long double lat = cNodes[block][node+1] ;
+						long double lon = cNodes[block][node] ;
 						
-						nextPointLocation = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon));
+						nextPointLocation = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon), _zoomLevel, _x, _y);
 					}
 					else if (number == pointNumber+1)
 					{
-						float lat = cNodes[block][node+1] * NANODEG;
-						float lon = cNodes[block][node] * NANODEG;
+						long double lat = cNodes[block][node+1] ;
+						long double lon = cNodes[block][node] ;
 						
-						prevPointLocation = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon));
+						prevPointLocation = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon), _zoomLevel, _x, _y);
 						yes = YES;
 					}
 				}
@@ -535,18 +536,18 @@ const double NANODEG = 0.000001;
 				{
 					if (number == pointNumber+1)
 					{
-						float lat = cNodes[block][node+1] * NANODEG;
-						float lon = cNodes[block][node] * NANODEG;
+						long double lat = cNodes[block][node+1] ;
+						long double lon = cNodes[block][node] ;
 						
-						nextPointLocation = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon));
+						nextPointLocation = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon), _zoomLevel, _x, _y);
 						yes = YES;
 					}
 					else if (number == pointNumber)
 					{
-						float lat = cNodes[block][node+1] * NANODEG;
-						float lon = cNodes[block][node] * NANODEG;
+						long double lat = cNodes[block][node+1] ;
+						long double lon = cNodes[block][node] ;
 						
-						prevPointLocation = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon));
+						prevPointLocation = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon), _zoomLevel, _x, _y);
 					}
 				}
 			}

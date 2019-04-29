@@ -29,14 +29,24 @@
 #import "RMTile.h"
 #import "RMTileCache.h"
 
-@interface RMMemoryCache : NSObject<RMTileCache> {
-	NSMutableDictionary *cache;
-	NSLock *lock;
-	int capacity;
-}
+/** An RMMemoryCache object represents memory-based caching of map tile images. Since memory is constrained in the iOS environment, this cache is relatively small, but useful for increasing performance. */
+@interface RMMemoryCache : NSObject <RMTileCache>
 
--(id)initWithCapacity: (NSUInteger) _capacity;
-/// Remove the least-recently used image from cache, if cache is at or over capacity. Removes only 1 image.
--(void)makeSpaceInCache;
+/** @name Initializing Memory Caches */
+
+/** Initializes and returns a newly allocated memory cache object with the specified tile count capacity.
+*   @param aCapacity The maximum number of tiles to be held in the cache.
+*   @return An initialized memory cache object or `nil` if the object couldn't be created. */
+- (id)initWithCapacity:(NSUInteger)aCapacity;
+
+/** @name Cache Capacity */
+
+/** The capacity, in number of tiles, that the memory cache can hold. */
+@property (nonatomic, readonly, assign) NSUInteger capacity;
+
+/** @name Making Space in the Cache */
+
+/** Remove the least-recently used image from the cache if the cache is at or over capacity. This removes a single image from the cache. */
+- (void)makeSpaceInCache;
 
 @end

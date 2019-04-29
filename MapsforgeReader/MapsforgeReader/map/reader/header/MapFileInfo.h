@@ -39,7 +39,7 @@
   /**
    * The size of the map file, measured in bytes.
  */
-  long fileSize;
+  long long fileSize;
 
   /**
    * The file version number of the map file.
@@ -59,7 +59,7 @@
   /**
    * The date of the map data in milliseconds since January 1, 1970.
  */
-  long mapDate;
+  long long mapDate;
 
   /**
    * The number of sub-files in the map file.

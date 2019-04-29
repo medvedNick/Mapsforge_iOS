@@ -21,12 +21,12 @@
 - (id) initWithFile:(NSString*)path;
 
 - (void) executeQueryForTileX:(int)x Y:(int)y Zoom:(int)zoom;
-
+- (MapDatabase *)getMapDatabase;
 - (void) renderPointOfInterest:(char)layer latitude:(int)latitude longitude:(int)longitude tags:(NSMutableArray *)tags;
 - (void) renderWaterBackground;
 - (void) renderWay:(char)layer labelPosition:(float *)labelPosition tags:(NSMutableArray *)tags wayNodes:(float**)wayNodes;
 
 - (void) addNode:(int)nodeId latitude:(int)latitude longitude:(int)longitude tags:(NSMutableDictionary *)tags;
-- (void) addWay:(int)wayId nodes:(int **)nodes length:(int*)length labelPosition:(float *)labelPosition tags:(NSMutableDictionary *)tags layer:(int)layer;
+- (void) addWay:(int)wayId nodes:(long double **)nodes length:(int*)length labelPosition:(float *)labelPosition tags:(NSMutableDictionary *)tags layer:(int)layer x:(long)x y:(long)y;
 
 @end

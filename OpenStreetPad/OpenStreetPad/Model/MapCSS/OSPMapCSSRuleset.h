@@ -14,7 +14,7 @@
 
 @protocol CPParseResult;
 
-@interface OSPMapCSSRuleset : NSObject <CPParseResult>
+@interface OSPMapCSSRuleset : NSObject /*<CPParseResult>*/
 
 @property (nonatomic, readwrite, retain/*copy*/) NSArray *rules;
 

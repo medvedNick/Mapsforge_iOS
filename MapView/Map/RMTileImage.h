@@ -25,68 +25,12 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#import <TargetConditionals.h>
-#if TARGET_OS_IPHONE
-	#import <UIKit/UIKit.h>
-#else
-	#import <Cocoa/Cocoa.h>
-typedef NSImage UIImage;
-#endif
+@interface RMTileImage : NSObject
 
-#import "RMFoundation.h"
-#import "RMNotifications.h"
-#import "RMTile.h"
-#import "RMTileProxy.h"
-#import "FMDatabase.h"
++ (UIImage *)errorTile;
++ (UIImage *)missingTile;
 
-@class RMTileImage;
-@class NSData;
-
-@interface RMTileImage : NSObject {
-	// I know this is a bit nasty.
-	RMTile tile;
-	CGRect screenLocation;
-	
-	/// Used by cache
-	NSDate *lastUsedTime;
-	
-	/// \bug placing the "layer" on the RMTileImage implicitly assumes that a particular RMTileImage will be used in only 
-	/// one UIView. Might see some interesting crashes if you have two RMMapViews using the same tile source.
-	// Only used when appropriate
-	CALayer *layer;
-}
-
-- (id) initWithTile: (RMTile)tile;
-
-+ (RMTileImage*) dummyTile: (RMTile)tile;
-
-//- (void)drawInRect:(CGRect)rect;
-- (void)draw;
-
-+ (RMTileImage*)imageForTile: (RMTile) tile withURL: (NSString*)url;
-+ (RMTileImage*)imageForTile: (RMTile) tile fromFile: (NSString*)filename;
-+ (RMTileImage*)imageForTile: (RMTile) tile withData: (NSData*)data;
-+ (RMTileImage*)imageForTile: (RMTile) tile fromDB: (FMDatabase*)db;
-
-- (void)moveBy: (CGSize) delta;
-- (void)zoomByFactor: (float) zoomFactor near:(CGPoint) center;
-
-- (void)makeLayer;
-
-- (void)cancelLoading;
-
-- (void)updateImageUsingData: (NSData*) data;
-- (void)updateImageUsingImage: (UIImage*) image;
-
-- (void)touch;
-
-- (BOOL)isLoaded;
-
-- (void) displayProxy:(UIImage*)img;
-
-@property (readwrite, assign) CGRect screenLocation;
-@property (readonly, assign) RMTile tile;
-@property (readonly) CALayer *layer;
-@property (readonly) NSDate *lastUsedTime;
++ (void)setErrorTile:(UIImage *)newErrorTile;
++ (void)setMissingTile:(UIImage *)newMissingTile;
 
 @end

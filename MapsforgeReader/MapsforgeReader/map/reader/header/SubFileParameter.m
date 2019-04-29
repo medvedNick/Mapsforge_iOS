@@ -8,7 +8,7 @@ char const BYTES_PER_INDEX_ENTRY = 5;
 /**
  * Divisor for converting coordinates stored as integers to double values.
  */
-double const COORDINATES_DIVISOR = 1000000.0;
+double const COORDINATES_DIVISOR = 1.0; //1000000.0
 
 @implementation SubFileParameter
 
@@ -21,10 +21,10 @@ double const COORDINATES_DIVISOR = 1000000.0;
     zoomLevelMin = subFileParameterBuilder->zoomLevelMin;
     zoomLevelMax = subFileParameterBuilder->zoomLevelMax;
     hashCodeValue = [self calculateHashCode];
-    boundaryTileBottom = [MercatorProjection latitudeToTileY:subFileParameterBuilder->boundingBox->minLatitudeE6 / COORDINATES_DIVISOR zoomLevel:baseZoomLevel];
-    boundaryTileLeft = [MercatorProjection longitudeToTileX:subFileParameterBuilder->boundingBox->minLongitudeE6 / COORDINATES_DIVISOR zoomLevel:baseZoomLevel];
-    boundaryTileTop = [MercatorProjection latitudeToTileY:subFileParameterBuilder->boundingBox->maxLatitudeE6 / COORDINATES_DIVISOR zoomLevel:baseZoomLevel];
-    boundaryTileRight = [MercatorProjection longitudeToTileX:subFileParameterBuilder->boundingBox->maxLongitudeE6 / COORDINATES_DIVISOR zoomLevel:baseZoomLevel];
+    boundaryTileBottom = [MercatorProjection latitudeToTileY:subFileParameterBuilder->boundingBox->minLatitudeE6 zoomLevel:baseZoomLevel];
+    boundaryTileLeft = [MercatorProjection longitudeToTileX:subFileParameterBuilder->boundingBox->minLongitudeE6 zoomLevel:baseZoomLevel];
+    boundaryTileTop = [MercatorProjection latitudeToTileY:subFileParameterBuilder->boundingBox->maxLatitudeE6 zoomLevel:baseZoomLevel];
+    boundaryTileRight = [MercatorProjection longitudeToTileX:subFileParameterBuilder->boundingBox->maxLongitudeE6 zoomLevel:baseZoomLevel];
     blocksWidth = boundaryTileRight - boundaryTileLeft + 1;
     blocksHeight = boundaryTileBottom - boundaryTileTop + 1;
     numberOfBlocks = blocksWidth * blocksHeight;
@@ -58,7 +58,7 @@ double const COORDINATES_DIVISOR = 1000000.0;
 }
 
 - (NSString *) description {
-	return [NSString stringWithFormat:@"SubFileParameter [baseZoomLevel=%d, blocksHeight=%lld, blocksWidth=%lld, boundaryTileBottom=%lld, boundaryTileLeft=%lld, boundaryTileRight=%lld, boundaryTileTop=%lld, indexStartAddress=%lld, numberOfBlocks=%lld, startAddress=%lld, subFileSize=%lld, zoomLevelMax=%d, zoomLevelMin=%d]", baseZoomLevel,blocksHeight,blocksWidth,boundaryTileBottom,boundaryTileLeft,boundaryTileRight,boundaryTileTop,indexStartAddress,numberOfBlocks,startAddress,subFileSize,zoomLevelMax,zoomLevelMin];
+	return [NSString stringWithFormat:@"SubFileParameter [baseZoomLevel=%d, blocksHeight=%ld, blocksWidth=%ld, boundaryTileBottom=%ld, boundaryTileLeft=%ld, boundaryTileRight=%ld, boundaryTileTop=%ld, indexStartAddress=%ld, numberOfBlocks=%ld, startAddress=%ld, subFileSize=%ld, zoomLevelMax=%d, zoomLevelMin=%d]", baseZoomLevel,blocksHeight,blocksWidth,boundaryTileBottom,boundaryTileLeft,boundaryTileRight,boundaryTileTop,indexStartAddress,numberOfBlocks,startAddress,subFileSize,zoomLevelMax,zoomLevelMin];
 }
 
 

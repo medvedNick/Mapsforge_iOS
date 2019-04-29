@@ -22,7 +22,7 @@
 - (void) renderWaterBackground;
 - (void) renderWay:(char)layer labelPosition:(float *)labelPosition tags:(NSMutableArray *)tags wayNodes:(float**)wayNodes;
 
-- (void) addNode:(int)nodeId latitude:(int)latitude longitude:(int)longitude tags:(NSMutableDictionary *)tags;
+- (void) addNode:(int)nodeId latitude:(double)latitude longitude:(double)longitude tags:(NSMutableDictionary *)tags;
 - (void) addWay:(int)wayId nodes:(NSMutableArray *)nodeIds tags:(NSMutableDictionary *)tags;
 
 -(void) loadObjectsForTileX:(int)x Y:(int)y zoom:(int)zoom;

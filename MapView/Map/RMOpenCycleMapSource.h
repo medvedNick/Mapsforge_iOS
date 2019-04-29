@@ -1,7 +1,7 @@
 //
 //  OpenCycleMapSource.h
 //
-// Copyright (c) 2008, Route-Me Contributors
+// Copyright (c) 2008-2013, Route-Me Contributors
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,8 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#import "RMAbstractMercatorWebSource.h"
+#import "RMAbstractWebMapSource.h"
 
-/*! 
- \brief Subclass of RMAbstractMercatorWebSource for access to the Open Cycle Map project's development server.
- 
- Provides key-based access to tiles from the Open Cycle Map project. 
- */
-@interface RMOpenCycleMapSource : RMAbstractMercatorWebSource <RMAbstractMercatorWebSource>{
-}
+@interface RMOpenCycleMapSource : RMAbstractWebMapSource
 
 @end

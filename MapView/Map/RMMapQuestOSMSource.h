@@ -1,7 +1,7 @@
 //
 //  RMMapQuestOSMSource.h
 //
-// Copyright (c) 2008-2011, Route-Me Contributors
+// Copyright (c) 2008-2013, Route-Me Contributors
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -25,14 +25,15 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#import "RMAbstractMercatorWebSource.h"
+//
+// !!!!!!
+//
+// Please note the MapQuest Terms of Use for attribution and limitations before using this tile source:
+// http://developer.mapquest.com/web/products/open/map#terms
+//
 
-/*! 
- \brief Subclass of RMAbstractMercatorWebSource for access to MapQuest's version of OpenStreetMap.
- 
- Provides key-based access to tiles from MapQuest project. 
- */
-@interface RMMapQuestOSMSource : RMAbstractMercatorWebSource <RMAbstractMercatorWebSource>{
-}
+#import "RMAbstractWebMapSource.h"
+
+@interface RMMapQuestOSMSource : RMAbstractWebMapSource
 
 @end

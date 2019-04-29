@@ -14,9 +14,15 @@
 #import "CPGrammar.h"
 
 @interface CPShiftReduceActionTable : NSObject <NSCoding>
-{}
+{
+@private
+    
+    NSMutableDictionary * table;
+    int64_t capacity;
 
-- (id)initWithCapacity:(NSUInteger)capacity;
+}
+
+- (id)initWithCapacity:(int64_t)capacity;
 
 - (BOOL)setAction:(CPShiftReduceAction *)action forState:(NSUInteger)state name:(NSString *)token;
 

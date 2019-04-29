@@ -13,392 +13,262 @@
 #import "RMFractalTileProjection.h"
 #import "RMFoundation.h"
 
+#import "LRUCache.h"
+
 #import "OSPRenderer.h"
 
 #import "FMDatabase.h"
+#import "FMDatabaseQueue.h"
 #import "FMDatabaseAdditions.h"
 
-#define kCacheThresh 300
+#define kCacheThresh 6000
+#define kCacheInternalThresh 400
 
 BOOL runInBackground;
 
 @implementation RMOSPTileSource
 {
-	RMFractalTileProjection *tileProjection;
-	OSPRenderer *renderer;
-	FMDatabase *cacheDatabase;
-	NSMutableArray *imagesCache;
-	NSLock *cacheLock;
+    RMFractalTileProjection *tileProjection;
+    OSPRenderer *renderer;
+    FMDatabaseQueue *cacheDatabase;
+    LruCache *imagesCache;
+    NSLock *cacheLock;
 }
 
-@synthesize contents;
+//@synthesize contents;
 
--(id) initWithMapFile:(NSString*)mapFile
+
++ (NSString *) getDBPath {
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSCachesDirectory , NSUserDomainMask, YES);
+    NSString *documentsDir = [paths objectAtIndex:0];
+    return [documentsDir stringByAppendingPathComponent:@"tilecache.sqlite3"];
+}
+
+-(id) initWithMapFile:(NSString*)mapFile andBuilding:(long)bid andFloorlevel:(int) flvl
 {
-	self = [super init];
-	if (self)
-	{
-		renderer = [RMOSPTileSource newRendererForResource:mapFile];
-		cacheDatabase = nil;
-		tileProjection = [[RMFractalTileProjection alloc] initFromProjection:[self projection] 
-															  tileSideLength:kOSPDefaultTileSize 
-																	 maxZoom:kOSPDefaultMaxTileZoom 
-																	 minZoom:kOSPDefaultMinTileZoom];
-		imagesCache = [[NSMutableArray alloc] initWithCapacity:10];
-		cacheLock = [[NSLock alloc] init];
-	}
-	return self;	
+    self = [super init];
+    if (self)
+    {
+        building_id = bid;
+        floorLevel = flvl;
+        
+        renderer = [RMOSPTileSource newRendererForResource:mapFile];
+        NSString *dbresource = [RMOSPTileSource getDBPath];
+        cacheDatabase = [RMOSPTileSource newCacheDataBaseForResource:dbresource];
+        imagesCache = [[LruCache alloc] initWithMaxSize:kCacheInternalThresh];// Check if this Capacity is okay
+        cacheLock = [[NSLock alloc] init];
+    }
+    return self;
 }
 
--(id) initWithMapFileInFolder:(NSString*)folder andId:(NSInteger)cityId
-{
-	self = [super init];
-	if (self)
-	{
-		NSString *resource = [NSString stringWithFormat:@"%@/%d.map", folder, cityId];
-		NSString *dbresource = [NSString stringWithFormat:@"%@/%dcache.sqlite3", folder, cityId];
-		renderer = [RMOSPTileSource newRendererForResource:resource];
-		cacheDatabase = [RMOSPTileSource newCacheDataBaseForResource:dbresource];
-		tileProjection = [[RMFractalTileProjection alloc] initFromProjection:[self projection] 
-															  tileSideLength:kOSPDefaultTileSize 
-																	 maxZoom:kOSPDefaultMaxTileZoom 
-																	 minZoom:kOSPDefaultMinTileZoom];
-		imagesCache = [[NSMutableArray alloc] initWithCapacity:10];
-		cacheLock = [[NSLock alloc] init];
-	}
-	return self;
-}
 
 +(OSPRenderer*) newRendererForResource:(NSString*)resource
 {
-	return [[OSPRenderer alloc] initWithFile:resource];		
+    return [[OSPRenderer alloc] initWithFile:resource];
 }
 
-+(FMDatabase*) newCacheDataBaseForResource:(NSString*)resource
++ (FMDatabaseQueue*) newCacheDataBaseForResource:(NSString*)resource
 {
-	BOOL databaseExists = [[NSFileManager defaultManager] fileExistsAtPath:resource];
-
-	FMDatabase *_cacheDatabase = [[FMDatabase alloc] initWithPath:resource];
-
-	if (![_cacheDatabase open])
-	{
-		NSLog(@"cached database could not be opened!");
-		return nil;
-	}
-
-	if (!databaseExists)
-	{
-		[_cacheDatabase executeUpdate:@"create table OSPCachedTiles (cityId integer, x double, y double, zoom double, tileData blob)"];		
-	}
-
-	if ([_cacheDatabase hadError])
-	{
-		NSLog(@"%@", [_cacheDatabase lastErrorMessage]);
-		return nil;
-	}
-	
-	return _cacheDatabase;
+    
+    resource = [RMOSPTileSource getDBPath];
+    BOOL databaseExists = [[NSFileManager defaultManager] fileExistsAtPath:resource];
+    
+    __block FMDatabaseQueue *_cacheDatabase = [[FMDatabaseQueue alloc] initWithPath:resource];
+    
+    /*if (![_cacheDatabase open])
+    {
+        NSLog(@"cached database could not be opened!");
+        return nil;
+    }*/
+    
+    [_cacheDatabase inDatabase:^(FMDatabase *db) {
+    if (!databaseExists)
+    {
+        [db executeUpdate:@"CREATE TABLE OSPCachedTiles (building_id integer, floor integer, x double, y double, zoom double, tileData blob)"];
+        [db executeUpdate:@"CREATE INDEX osp_tile_index ON OSPCachedTiles (building_id, floor, x, y, zoom)"];
+    }
+    
+    if ([db hadError])
+    {
+        NSLog(@"%@", [db lastErrorMessage]);
+        _cacheDatabase = nil;
+        return;
+    }
+    }];
+    
+    return _cacheDatabase;
 }
 
-+(UIImage*) renderImageForTile:(RMTile)tile withRenderer:(OSPRenderer *)renderer andDatabase:(FMDatabase *)cacheDatabase shouldCache:(BOOL*)shouldCache
++(UIImage*) renderImageForTile:(RMTile)tile withRenderer:(OSPRenderer *)renderer andDatabase:(FMDatabase *)cacheDatabase building:(long)building_id floor:(int)currentFloor shouldCache:(BOOL*)shouldCache
 {
-//	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	UIImage *image;
-	
-	NSData *data = [cacheDatabase dataForQuery:@"select tileData from OSPCachedTiles where zoom = ? and x = ? and y = ?", 
-					[NSNumber numberWithFloat:tile.zoom], 
-					[NSNumber numberWithFloat:tile.x], 
-					[NSNumber numberWithFloat:tile.y]];
-	
-	BOOL _shouldCache = YES;
-	
-	if (data != nil)
-	{
-		NSLog(@"got from cache!");
-		UIImage *cachedImage = [UIImage imageWithData:data];
-		return cachedImage;
-	}
-	
-	RMLatLong latLon = [RMOSPTileSource tileToLatLon:tile];
-	
-	OSPMapArea mapArea = OSPMapAreaMake(OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(latLon.latitude, latLon.longitude)), tile.zoom);
-	
-	[renderer setMapArea:mapArea];
-	
-	image = [renderer imageForTileX:tile.x Y:tile.y zoom:tile.zoom];
-
-	_shouldCache = _shouldCache && (renderer.objectsNumber > kCacheThresh) && cacheDatabase != nil;
-	
-	if (shouldCache != nil)
-	{
-		*shouldCache = _shouldCache;
-	}
-	else
-	{
-		NSLog(@"instantly cached!");
-		[cacheDatabase beginTransaction];
-		[cacheDatabase executeUpdate:@"insert into OSPCachedTiles (x, y, zoom, tileData) values (?, ?, ?, ?)",
-		 [NSNumber numberWithInt:tile.x],
-		 [NSNumber numberWithInt:tile.y],
-		 [NSNumber numberWithInt:tile.zoom],
-		 (NSData*)UIImagePNGRepresentation(image)];
-		[cacheDatabase commit];
-		if ([cacheDatabase hadError])
-		{
-			NSLog(@"%@", [cacheDatabase lastErrorMessage]);
-		}
-	}
-	
-//	[pool release];
-	
-	return image;
+    //	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+    UIImage *image;
+    
+    //[imagesCache ]
+    
+    NSData *data = [cacheDatabase dataForQuery:@"SELECT tileData FROM OSPCachedTiles WHERE building_id = ? AND floor = ? AND zoom = ? AND x = ? and y = ?",
+                    [NSNumber numberWithLong:building_id],
+                    [NSNumber numberWithInt:currentFloor],
+                    [NSNumber numberWithFloat:tile.zoom],
+                    [NSNumber numberWithFloat:tile.x],
+                    [NSNumber numberWithFloat:tile.y]];
+    
+    if (data != nil)
+    {
+        return [UIImage imageWithData:data];
+    }
+    
+    RMLatLong latLon = [RMOSPTileSource tileToLatLon:tile];
+    OSPMapArea mapArea = OSPMapAreaMake(OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(latLon.latitude, latLon.longitude), tile.zoom, tile.x, tile.y), tile.zoom);
+    
+    BOOL _shouldCache = YES;
+    
+    [renderer setMapArea:mapArea];
+    
+    image = [renderer imageForTileX:tile.x Y:tile.y zoom:tile.zoom];
+    
+    _shouldCache = _shouldCache && (renderer.objectsNumber > kCacheThresh) && cacheDatabase != nil;
+    
+    if (_shouldCache == YES)
+    {
+        [cacheDatabase beginTransaction];
+        [cacheDatabase executeUpdate:@"insert into OSPCachedTiles (building_id, floor, x, y, zoom, tileData) values (?, ?, ?, ?, ?, ?)",
+         [NSNumber numberWithLong:building_id],
+         [NSNumber numberWithInt:currentFloor],
+         [NSNumber numberWithInt:tile.x],
+         [NSNumber numberWithInt:tile.y],
+         [NSNumber numberWithInt:tile.zoom],
+         (NSData*)UIImagePNGRepresentation(image)];
+        [cacheDatabase commit];
+        if ([cacheDatabase hadError])
+        {
+            NSLog(@"%@", [cacheDatabase lastErrorMessage]);
+        }
+    }
+    
+    //	[pool release];
+    
+    return image;
 }
 
--(RMTileImage *) tileImage: (RMTile) tile
+- (UIImage *)imageForTile:(RMTile)tile inCache:(RMTileCache *)tileCache
 {
-	runInBackground = NO;
-	RMTileImage *tileImage = [[[RMTileImage alloc] initWithTile:tile] autorelease];
-	
-	UIImage *image;
-	BOOL shouldCache;
-//	NSLog(@"%d, %d, %d", tile.x, tile.y, tile.zoom);
-	@try {
-		image = [RMOSPTileSource renderImageForTile:tile withRenderer:renderer andDatabase:cacheDatabase shouldCache:&shouldCache];
-		
-		if (shouldCache)
-		{
-			NSArray *tileCache = [NSArray arrayWithObjects:
-								  [NSNumber numberWithInt:tile.x],
-								  [NSNumber numberWithInt:tile.y],
-								  [NSNumber numberWithInt:tile.zoom],
-								  image, nil];
-			[cacheLock lock];			  
-			[imagesCache addObject:tileCache];
-			[cacheLock unlock];
-		}
-	}
-	@catch (NSException *exception) {
-		NSLog(@"Exception while creating image: %@", exception.reason);
-	}
-	
-	[tileImage updateImageUsingImage:image];
-	return tileImage;
-}
-
--(void) writeCacheIntoDisk
-{
-//	NSLog(@"wrote cache into disk");
-	[cacheLock lock];
-	for (NSMutableArray *array in imagesCache)
-	{
-		int x = [[array objectAtIndex:0] intValue];
-		int y = [[array objectAtIndex:1] intValue];
-		int zoom = [[array objectAtIndex:2] intValue];
-		UIImage *image = [array objectAtIndex:3];
-		[cacheDatabase beginTransaction];
-		[cacheDatabase executeUpdate:@"insert into OSPCachedTiles (x, y, zoom, tileData) values (?, ?, ?, ?)",
-		 [NSNumber numberWithInt:x],
-		 [NSNumber numberWithInt:y],
-		 [NSNumber numberWithInt:zoom],
-		 (NSData*)UIImagePNGRepresentation(image)];
-		[cacheDatabase commit];
-		if ([cacheDatabase hadError])
-		{
-			NSLog(@"Error while caching: %@", [cacheDatabase lastErrorMessage]);
-		}
-	}
-	[imagesCache removeAllObjects];
-	[cacheLock unlock];
-}
-
-+(void) renderAndCacheResource:(NSArray*)array
-{
-	return;
-	NSString *folder = [array objectAtIndex:0];
-	NSNumber *guideId = [array objectAtIndex:1];
-	CLLocation *loc = [array objectAtIndex:2];
-	[RMOSPTileSource initializeWithFolder:folder andId:[guideId intValue]];
-
-	NSString *resource = [NSString stringWithFormat:@"%@/%d.map", folder, guideId];
-	NSString *dbresource = [NSString stringWithFormat:@"%@/%dcache.sqlite3", folder, guideId];
-	OSPRenderer *renderer = [RMOSPTileSource newRendererForResource:resource];
-	FMDatabase *cacheDatabase = [RMOSPTileSource newCacheDataBaseForResource:dbresource];
-	
-	runInBackground = YES;
-	
-//	CLLocation *loc = [[CLLocation alloc] initWithLatitude:55.753507 longitude:37.621253];
-//	CLLocation *loc = [[CLLocation alloc] initWithLatitude:51.497975 longitude:-0.051901];
-
-	RMLatLong latLon = [loc coordinate];
-
-	int xCenter, yCenter;
-	int delta = 3;
-
-	for (int zoom = 11; zoom < 15; zoom++)
-	{
-		RMTile tile = [RMOSPTileSource latLonToTile:latLon onZoom:zoom];
-		xCenter = tile.x;
-		yCenter = tile.y;		
-		
-		for (int x = xCenter-delta; x < xCenter+delta; x++)
-		{
-			for (int y = yCenter-delta; y < yCenter+delta; y++)
-			{
-				if (runInBackground == NO) break;
-				NSData *data = [cacheDatabase dataForQuery:@"select tileData from OSPCachedTiles where zoom = ? and x =	 ? and y = ?", 
-								[NSNumber numberWithFloat:zoom], 
-								[NSNumber numberWithFloat:x], 
-								[NSNumber numberWithFloat:y]];
-				if (data != nil) continue;
-
-				RMTile currentTile = { .x = x, .y = y, .zoom = zoom };
-				RMLatLong currentLatLon = [RMOSPTileSource tileToLatLon:currentTile];
-				
-				OSPMapArea mapArea = OSPMapAreaMake(OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(currentLatLon.latitude, currentLatLon.longitude)), currentTile.zoom);
-
-				renderer.mapArea = mapArea;
-				[RMOSPTileSource renderImageForTile:currentTile withRenderer:renderer andDatabase:cacheDatabase shouldCache:nil];
-			}
-		}
-	}
-	
-//	[cacheDatabase close];
+    
+    runInBackground = NO;
+    //UIImage *tileImage = [RMTileImage missingTile];//[[RMTileImage alloc] initWithTile:tile];
+    __block UIImage *image  = [RMTileImage missingTile];
+    __block BOOL shouldCache = YES;
+    @try {
+        
+        NSString * key = [NSString stringWithFormat:@"%d%d%d%ld%d", tile.x, tile.y, tile.zoom, building_id, floorLevel];
+        image = [imagesCache get:key];
+        
+        if (image == nil) {
+            [cacheDatabase inDatabase:^(FMDatabase *db) {
+                image = [RMOSPTileSource renderImageForTile:tile withRenderer:renderer andDatabase:db building:building_id floor:floorLevel shouldCache:&shouldCache];
+            }];
+            
+            if (shouldCache)
+            {
+                [cacheLock lock];
+                [imagesCache put:key value:image];
+                [cacheLock unlock];
+            }
+        }
+    }
+    @catch (NSException *exception) {
+        NSLog(@"Exception while creating image: %@", exception.reason);
+    }
+    
+    //[tileImage updateImageUsingImage:image];
+    return image;
 }
 
 +(RMLatLong) tileToLatLon:(RMTile)tile
 {
-	RMProjectedRect planetRect = [[RMProjection googleProjection] planetBounds];
-	
-	double scale = 1 << tile.zoom;
-	double x = tile.x, y = tile.y;
-	double _x = (2*x+1)/(2*scale) * planetRect.size.width + planetRect.origin.easting;
-	double _y = planetRect.origin.northing - ((2*y+1)/(2*scale) - 1)*planetRect.size.height;
-	
-	RMProjectedPoint newPoint = RMMakeProjectedPoint(_x, _y);
-	RMLatLong currentLatLon = [[RMProjection googleProjection] pointToLatLong:newPoint];
-	
-	return currentLatLon;
+    RMProjectedRect planetRect = [[RMProjection googleProjection] planetBounds];
+    
+    double scale = 1 << tile.zoom;
+    double x = tile.x, y = tile.y;
+    double _x = (2*x+1)/(2*scale) * planetRect.size.width + planetRect.origin.x;
+    double _y = planetRect.origin.y - ((2*y+1)/(2*scale) - 1)*planetRect.size.height;
+    
+    RMProjectedPoint newPoint = RMProjectedPointMake(_x, _y);
+    RMLatLong currentLatLon = [[RMProjection googleProjection] projectedPointToCoordinate:newPoint];
+    
+    return currentLatLon;
 }
 
 +(RMTile) latLonToTile:(RMLatLong)latLon onZoom:(int)zoom
 {
-	RMProjectedRect planetRect = [[RMProjection googleProjection] planetBounds];
-	RMProjectedPoint center = [[RMProjection googleProjection] latLongToPoint:latLon];
-	
-	double x, y;
-	
-	x = ((center.easting-planetRect.origin.easting)*2*(1 << zoom)/planetRect.size.width-1)/2;
-	y = ((planetRect.origin.northing-center.northing)/planetRect.size.height+1)*2*(1 << zoom)/2;
-	
-	RMTile tile = { .x = x, .y = y, .zoom = zoom };
-	
-	return tile;
-}
-
-
-- (NSString *)constraints
-{
-    return nil;
-}
-
--(NSString *) tileURL: (RMTile) tile
-{
-	return nil;
-}
-
--(NSString *) tileFile: (RMTile) tile
-{
-	return nil;
-}
-
--(NSString *) tilePath
-{
-	return nil;
-}
-
--(id<RMMercatorToTileProjection>) mercatorToTileProjection
-{
-	return [[tileProjection retain] autorelease];
-}
-
--(RMProjection*) projection
-{
-	return [RMProjection googleProjection];
+    RMProjectedRect planetRect = [[RMProjection googleProjection] planetBounds];
+    RMProjectedPoint center = [[RMProjection googleProjection] coordinateToProjectedPoint:latLon];
+    
+    double x, y;
+    
+    x = ((center.x-planetRect.origin.x)*2*(1 << zoom)/planetRect.size.width-1)/2;
+    y = ((planetRect.origin.y-center.y)/planetRect.size.height+1)*2*(1 << zoom)/2;
+    
+    RMTile tile = { .x = x, .y = y, .zoom = zoom };
+    
+    return tile;
 }
 
 
 -(float) minZoom
 {
-	return kOSPDefaultMinTileZoom;
+    return kOSPDefaultMinTileZoom;
 }
 
 -(float) maxZoom
 {
-	return kOSPDefaultMaxTileZoom;
+    return kOSPDefaultMaxTileZoom;
 }
 
 
 -(void) setMinZoom:(NSUInteger) aMinZoom
 {
-	
+    
 }
 
 -(void) setMaxZoom:(NSUInteger) aMaxZoom
 {
-	
+    
 }
 
--(RMSphericalTrapezium) latitudeLongitudeBoundingBox
-{
-	return kOSPDefaultLatLonBoundingBox;
-}
-
-- (int)tileSideLength
-{
-	return tileProjection.tileSideLength;
-}
 
 -(void) didReceiveMemoryWarning
 {
-	
+    
 }
 
 -(NSString *)uniqueTilecacheKey
 {
-	return nil;//@"OSPTileSource";
+    return @"OSPTileCache";//@"OSPTileSource";
 }
 
 -(NSString *)shortName
 {
-	return nil;
+    return nil;
 }
 -(NSString *)longDescription
 {
-	return nil;
+    return nil;
 }
 -(NSString *)shortAttribution
 {
-	return nil;
+    return nil;
 }
 -(NSString *)longAttribution
 {
-	return nil;
+    return nil;
 }
 
 -(void)removeAllCachedImages
 {
-	
-}
-
--(void) dealloc
-{
-	[cacheDatabase close];
-	[cacheDatabase release];
-	[tileProjection release];
-	[imagesCache release];
-	[cacheLock release];
-	[renderer release];
-	[super dealloc];
+    [cacheLock lock];
+    [imagesCache evictAll];
+    [cacheLock unlock];
 }
 
 @end

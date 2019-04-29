@@ -7,58 +7,45 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "RMTileSource.h"
-#import "RMMapContents.h"
+#import "RMAbstractContagtTileSource.h"
+#import "RMLatLong.h"
+//#import "RMMapContents.h"
 
-#import "FMDatabase.h"
+#import "../../fmdb/FMDatabase.h"
+#import "../../fmdb/FMDatabaseQueue.h"
 
 //#import "OSPRenderer.h"
 
 #define kOSPDefaultTileSize 256
-#define kOSPDefaultMinTileZoom 2
-#define kOSPDefaultMaxTileZoom 17
-#define kOSPDefaultLatLonBoundingBox ((RMSphericalTrapezium){ .northeast = { .latitude =  90, .longitude =  180 }, \
-.southwest = { .latitude = -90, .longitude = -180 } })
+#define kOSPDefaultMinTileZoom 12
+#define kOSPDefaultMaxTileZoom 21
 
-@class OSPRenderer, FMDatabase, Guide, Showplace;
+@class OSPRenderer, cFMDatabase, Guide, Showplace;
 
-@interface RMOSPTileSource : NSObject <RMTileSource>//, OSPObjectsLoader>
+@interface RMOSPTileSource : RMAbstractContagtTileSource//, OSPObjectsLoader>
 {
-	RMMapContents *contents;
+	//RMMapContents *contents;
+    long building_id;
+    int floorLevel;
 }
 
-@property (nonatomic, retain) RMMapContents *contents;
+//@property (nonatomic, retain) RMMapContents *contents;
 
--(id) initWithMapFile:(NSString*)mapFile;
--(id) initWithMapFileInFolder:(NSString*)resource andId:(NSInteger)cityId;
-
-+(void) initializeWithFolder:(NSString*)folder andId:(NSInteger)cityId;
+-(id) initWithMapFile:(NSString*)mapFile andBuilding:(long)building_id andFloorlevel:(int) floorlevel;
 
 +(OSPRenderer*) newRendererForResource:(NSString*)resource;
-+(FMDatabase*) newCacheDataBaseForResource:(NSString*)resource;
++(FMDatabaseQueue*) newCacheDataBaseForResource:(NSString*)resource;
 
-+(UIImage*) renderImageForTile:(RMTile)tile withRenderer:(OSPRenderer*)renderer andDatabase:(FMDatabase*)cacheDatabase shouldCache:(BOOL*)shouldCache;
++(UIImage*) renderImageForTile:(RMTile)tile withRenderer:(OSPRenderer *)renderer andDatabase:(FMDatabase *)cacheDatabase building:(long)bid floor:(int)floor shouldCache:(BOOL*)shouldCache;
 
 +(RMLatLong) tileToLatLon:(RMTile)tile;
 +(RMTile) latLonToTile:(RMLatLong)latLon onZoom:(int)zoom;
-
--(void) writeCacheIntoDisk;
-
--(RMTileImage *) tileImage: (RMTile) tile;
-- (NSString *)constraints;
--(NSString *) tileURL: (RMTile) tile;
--(NSString *) tileFile: (RMTile) tile;
--(NSString *) tilePath;
--(id<RMMercatorToTileProjection>) mercatorToTileProjection;
--(RMProjection*) projection;
 
 -(float) minZoom;
 -(float) maxZoom;
 
 -(void) setMinZoom:(NSUInteger) aMinZoom;
 -(void) setMaxZoom:(NSUInteger) aMaxZoom;
-
--(RMSphericalTrapezium) latitudeLongitudeBoundingBox;
 
 -(void) didReceiveMemoryWarning;
 
@@ -70,7 +57,5 @@
 -(NSString *)longAttribution;
 
 -(void)removeAllCachedImages;
-
-+(void) renderAndCacheResource:(NSArray*)array;
 
 @end

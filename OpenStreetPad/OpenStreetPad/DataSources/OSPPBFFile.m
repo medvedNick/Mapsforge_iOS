@@ -13,7 +13,7 @@
 
 #include <libkern/OSByteOrder.h>
 
-#define NANO_DEGREE .000000001
+#define NANO_DEGREE 1 //0.000001
 
 @interface OSPPBFFile()
 

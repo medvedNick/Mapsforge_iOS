@@ -1,7 +1,7 @@
 //
 //  RMProjection.h
 //
-// Copyright (c) 2008-2009, Route-Me Contributors
+// Copyright (c) 2008-2013, Route-Me Contributors
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -29,43 +29,45 @@
 #import <CoreLocation/CoreLocation.h>
 
 #import "RMFoundation.h"
-#import "RMLatLong.h"
 
-/// Objective-C wrapper for PROJ4 map projection definitions.
+// Objective-C wrapper for PROJ4 map projection definitions.
 @interface RMProjection : NSObject
-{
-	/// This is actually a PROJ4 projPJ, but it is typed as void* so the proj_api doesn't have to be included
-	void*		internalProjection;
-	
-	/// the size of the earth, in projected units (meters, most often)
-	RMProjectedRect	planetBounds;
-	
-	/// hardcoded to YES in #initWithString:InBounds:
-	BOOL		projectionWrapsHorizontally;
-}
 
-@property (readonly) void* internalProjection;
-@property (readonly) RMProjectedRect planetBounds;
-@property (readwrite) BOOL projectionWrapsHorizontally;
+@property (nonatomic, readonly) void *internalProjection;
+@property (nonatomic, readonly) RMProjectedRect planetBounds;
+@property (nonatomic, assign)   BOOL projectionWrapsHorizontally;
 
-/// If #projectionWrapsHorizontally, returns #aPoint with its easting adjusted modulo Earth's diameter to be within projection's planetBounds. if !#projectionWrapsHorizontally, returns #aPoint unchanged.
-- (RMProjectedPoint) wrapPointHorizontally: (RMProjectedPoint) aPoint;
+// If #projectionWrapsHorizontally, returns #aPoint with its easting adjusted modulo Earth's diameter to be within projection's planetBounds. if !#projectionWrapsHorizontally, returns #aPoint unchanged.
+- (RMProjectedPoint)wrapPointHorizontally:(RMProjectedPoint)aPoint;
 
-/// applies #wrapPointHorizontally to aPoint, and then clamps northing (Y coordinate) to projection's planetBounds
-- (RMProjectedPoint) constrainPointToBounds: (RMProjectedPoint) aPoint;
+// applies #wrapPointHorizontally to aPoint, and then clamps northing (Y coordinate) to projection's planetBounds
+- (RMProjectedPoint)constrainPointToBounds:(RMProjectedPoint)aPoint;
 
-+ (RMProjection *) googleProjection;
-+ (RMProjection *) EPSGLatLong;
-+ (RMProjection *) OSGB;
++ (instancetype)googleProjection;
++ (instancetype)EPSGLatLong;
 
-/// anybody know what the InBounds: parameter means?
-- (id) initWithString: (NSString*)params InBounds: (RMProjectedRect) projBounds;
+- (id)initWithString:(NSString *)proj4String inBounds:(RMProjectedRect)projectedBounds;
 
-/// inverse project meters, return latitude/longitude
-/// \deprecated rename pending after 0.5
-- (RMLatLong)pointToLatLong:(RMProjectedPoint)aPoint;
-/// forward project latitude/longitude, return meters
-/// \deprecated rename pending after 0.5
-- (RMProjectedPoint)latLongToPoint:(RMLatLong)aLatLong;
+// inverse project meters, return latitude/longitude
+- (CLLocationCoordinate2D)projectedPointToCoordinate:(RMProjectedPoint)aPoint;
+
+// forward project latitude/longitude, return meters
+- (RMProjectedPoint)coordinateToProjectedPoint:(CLLocationCoordinate2D)aLatLong;
+
+#pragma mark - UTM conversions
+
++ (void)convertCoordinate:(CLLocationCoordinate2D)coordinate
+          toUTMZoneNumber:(int *)utmZoneNumber
+            utmZoneLetter:(NSString **)utmZoneLetter   // may be NULL
+     isNorthernHemisphere:(BOOL *)isNorthernHemisphere // may be NULL
+                  easting:(double *)easting
+                 northing:(double *)northing;
+
++ (void)convertUTMZoneNumber:(int)utmZoneNumber
+               utmZoneLetter:(NSString *)utmZoneLetter  // #utmZoneLetter will be used for calculations if not nil,
+        isNorthernHemisphere:(BOOL)isNorthernHemisphere // otherwise #isNorthernHemisphere
+                     easting:(double)easting
+                    northing:(double)northing
+                toCoordinate:(CLLocationCoordinate2D *)coordinate;
 
 @end

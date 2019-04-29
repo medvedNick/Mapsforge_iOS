@@ -42,10 +42,10 @@ int const MAXIMUM_BUFFER_SIZE = 2500000;
  * @throws IOException
  * if an error occurs while reading the file.
  */
-- (BOOL) readFromFile:(int)length {
+- (BOOL) readFromFile:(long)length {
   if (bufferData == nil || bufferData.length-bufferPosition < length) {
     if (length > MAXIMUM_BUFFER_SIZE) {
-		NSLog(@"invalid read length:%d", length);
+		NSLog(@"invalid read length:%ld", length);
       return NO;
     }
     bufferData = [[NSData alloc] init];
@@ -64,7 +64,7 @@ int const MAXIMUM_BUFFER_SIZE = 2500000;
   return YES;//[inputFile read:bufferData param1:0 param2:length] == length;
 }
 
-- (void) seekTo:(long long)offset
+- (void) seekTo:(long)offset
 {
     globalBufferPosition = offset;
     bufferPosition = 0;
@@ -122,17 +122,32 @@ int const MAXIMUM_BUFFER_SIZE = 2500000;
   int variableByteDecode = 0;
   char variableByteShift = 0;
 
-  while ((buffer[bufferPosition] & 0x80) != 0) {
+   while ((buffer[bufferPosition] & 0x80) != 0x0) {
     variableByteDecode |= (buffer[bufferPosition++] & 0x7f) << variableByteShift;
     variableByteShift += 7;
   }
 
-  if ((buffer[bufferPosition] & 0x40) != 0) {
+  if ((buffer[bufferPosition] & 0x40) != 0x0) {
     return -(variableByteDecode | ((buffer[bufferPosition++] & 0x3f) << variableByteShift));
   }
   return variableByteDecode | ((buffer[bufferPosition++] & 0x3f) << variableByteShift);
 }
 
+
+- (int) readLongerSignedInt {
+    int variableByteDecode = 0;
+    char variableByteShift = 0;
+    
+    while ((buffer[bufferPosition] & 0x80) != 0x0) {
+        variableByteDecode |= (buffer[bufferPosition++] & 0x7f) << variableByteShift;
+        variableByteShift += 7;
+    }
+    
+    if ((buffer[bufferPosition] & 0x40) != 0x0) {
+        return -(variableByteDecode | ((buffer[bufferPosition++] & 0x3f) << variableByteShift));
+    }
+    return variableByteDecode | ((buffer[bufferPosition++] & 0x3f) << variableByteShift);
+}
 
 /**
  * Converts a variable amount of bytes from the read buffer to an unsigned int.
@@ -171,7 +186,7 @@ int const MAXIMUM_BUFFER_SIZE = 2500000;
  * the length of the string in bytes.
  * @return the UTF-8 decoded string (may be null).
  */
-- (NSString *) readUTF8EncodedString:(int)stringLength {
+- (NSString *) readUTF8EncodedString:(long)stringLength {
   if (stringLength > 0 && bufferPosition + stringLength <= bufferData.length) {
     bufferPosition += stringLength;
     @try {
@@ -183,7 +198,7 @@ int const MAXIMUM_BUFFER_SIZE = 2500000;
       //@throw [[[IllegalStateException alloc] init:e] autorelease];
     }
   }
-  NSLog(@"invalid string length: %d", stringLength);
+  NSLog(@"invalid string length: %l", stringLength);
 //  [LOG warning:[@"invalid string length: " stringByAppendingString:stringLength]];
   return nil;
 }

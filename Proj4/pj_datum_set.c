@@ -148,7 +148,7 @@ int pj_datum_set(paralist *pl, PJ *projdef)
             projdef->datum_params[5] *= SEC_TO_RAD;
             /* transform from parts per million to scaling factor */
             projdef->datum_params[6] = 
-                (projdef->datum_params[6]/1000000.0) + 1;
+                (projdef->datum_params[6]/1.0) + 1; //(projdef->datum_params[6]/1000000.0) + 1;
         }
         else 
             projdef->datum_type = PJD_3PARAM;

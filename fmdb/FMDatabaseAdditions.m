@@ -1,6 +1,6 @@
 //
 //  FMDatabaseAdditions.m
-//  fmkit
+//  fmdb
 //
 //  Created by August Mueller on 10/30/05.
 //  Copyright 2005 Flying Meat Inc.. All rights reserved.
@@ -8,13 +8,18 @@
 
 #import "FMDatabase.h"
 #import "FMDatabaseAdditions.h"
+#import "TargetConditionals.h"
+
+@interface FMDatabase (PrivateStuff)
+- (FMResultSet *)executeQuery:(NSString *)sql withArgumentsInArray:(NSArray*)arrayArgs orDictionary:(NSDictionary *)dictionaryArgs orVAList:(va_list)args;
+@end
 
 @implementation FMDatabase (FMDatabaseAdditions)
 
 #define RETURN_RESULT_FOR_QUERY_WITH_SELECTOR(type, sel)             \
 va_list args;                                                        \
 va_start(args, query);                                               \
-FMResultSet *resultSet = [self executeQuery:query withArgumentsInArray:0x00 orVAList:args];   \
+FMResultSet *resultSet = [self executeQuery:query withArgumentsInArray:0x00 orDictionary:0x00 orVAList:args];   \
 va_end(args);                                                        \
 if (![resultSet next]) { return (type)0; }                           \
 type ret = [resultSet sel:0];                                        \
@@ -23,68 +28,54 @@ type ret = [resultSet sel:0];                                        \
 return ret;
 
 
-- (NSString*)stringForQuery:(NSString*)query, ...; {
+- (NSString*)stringForQuery:(NSString*)query, ... {
     RETURN_RESULT_FOR_QUERY_WITH_SELECTOR(NSString *, stringForColumnIndex);
 }
 
-- (int)intForQuery:(NSString*)query, ...; {
+- (int)intForQuery:(NSString*)query, ... {
     RETURN_RESULT_FOR_QUERY_WITH_SELECTOR(int, intForColumnIndex);
 }
 
-- (int)intForQuery:(NSString*)query withArgumentsInArray:(NSArray*)args {
-	FMResultSet *resultSet = [self executeQuery:query withArgumentsInArray:args];
-
-	if (![resultSet next]) { 
-		return 0; 
-	}                           
-	
-	NSInteger ret = [resultSet intForColumnIndex:0];                                        
-	
-	[resultSet close];                                                   
-	[resultSet setParentDB:nil];                                         
-	
-	return ret;
-}
-
-- (long)longForQuery:(NSString*)query, ...; {
+- (long)longForQuery:(NSString*)query, ... {
     RETURN_RESULT_FOR_QUERY_WITH_SELECTOR(long, longForColumnIndex);
 }
 
-- (BOOL)boolForQuery:(NSString*)query, ...; {
+- (BOOL)boolForQuery:(NSString*)query, ... {
     RETURN_RESULT_FOR_QUERY_WITH_SELECTOR(BOOL, boolForColumnIndex);
 }
 
-- (double)doubleForQuery:(NSString*)query, ...; {
+- (double)doubleForQuery:(NSString*)query, ... {
     RETURN_RESULT_FOR_QUERY_WITH_SELECTOR(double, doubleForColumnIndex);
 }
 
-- (NSData*)dataForQuery:(NSString*)query, ...; {
+- (NSData*)dataForQuery:(NSString*)query, ... {
     RETURN_RESULT_FOR_QUERY_WITH_SELECTOR(NSData *, dataForColumnIndex);
 }
 
-- (NSDate*)dateForQuery:(NSString*)query, ...; {
+- (NSDate*)dateForQuery:(NSString*)query, ... {
     RETURN_RESULT_FOR_QUERY_WITH_SELECTOR(NSDate *, dateForColumnIndex);
 }
 
 
-//check if table exist in database (patch from OZLB)
 - (BOOL)tableExists:(NSString*)tableName {
     
-    BOOL returnBool;
-    //lower case table name
     tableName = [tableName lowercaseString];
-    //search in sqlite_master table if table exists
+    
     FMResultSet *rs = [self executeQuery:@"select [sql] from sqlite_master where [type] = 'table' and lower(name) = ?", tableName];
+    
     //if at least one next exists, table exists
-    returnBool = [rs next];
+    BOOL returnBool = [rs next];
+    
     //close and free object
     [rs close];
     
     return returnBool;
 }
 
-//get table with list of tables: result colums: type[STRING], name[STRING],tbl_name[STRING],rootpage[INTEGER],sql[STRING]
-//check if table exist in database  (patch from OZLB)
+/*
+ get table with list of tables: result colums: type[STRING], name[STRING],tbl_name[STRING],rootpage[INTEGER],sql[STRING]
+ check if table exist in database  (patch from OZLB)
+*/
 - (FMResultSet*)getSchema {
     
     //result colums: type[STRING], name[STRING],tbl_name[STRING],rootpage[INTEGER],sql[STRING]
@@ -93,37 +84,141 @@ return ret;
     return rs;
 }
 
-//get table schema: result colums: cid[INTEGER], name,type [STRING], notnull[INTEGER], dflt_value[],pk[INTEGER]
+/* 
+ get table schema: result colums: cid[INTEGER], name,type [STRING], notnull[INTEGER], dflt_value[],pk[INTEGER]
+*/
 - (FMResultSet*)getTableSchema:(NSString*)tableName {
     
     //result colums: cid[INTEGER], name,type [STRING], notnull[INTEGER], dflt_value[],pk[INTEGER]
-    FMResultSet *rs = [self executeQuery:[NSString stringWithFormat: @"PRAGMA table_info(%@)", tableName]];
+    FMResultSet *rs = [self executeQuery:[NSString stringWithFormat: @"pragma table_info('%@')", tableName]];
     
     return rs;
 }
 
-
-//check if column exist in table
-- (BOOL)columnExists:(NSString*)tableName columnName:(NSString*)columnName {
+- (BOOL)columnExists:(NSString*)columnName inTableWithName:(NSString*)tableName {
     
     BOOL returnBool = NO;
-    //lower case table name
-    tableName = [tableName lowercaseString];
-    //lower case column name
+    
+    tableName  = [tableName lowercaseString];
     columnName = [columnName lowercaseString];
-    //get table schema
-    FMResultSet *rs = [self getTableSchema: tableName];
+    
+    FMResultSet *rs = [self getTableSchema:tableName];
+    
     //check if column is present in table schema
     while ([rs next]) {
-        if ([[[rs stringForColumn:@"name"] lowercaseString] isEqualToString: columnName]) {
+        if ([[[rs stringForColumn:@"name"] lowercaseString] isEqualToString:columnName]) {
             returnBool = YES;
             break;
         }
     }
-    //close and free object
+    
+    //If this is not done FMDatabase instance stays out of pool
     [rs close];
     
     return returnBool;
+}
+
+
+#if SQLITE_VERSION_NUMBER >= 3007017
+
+- (uint32_t)applicationID {
+    
+    uint32_t r = 0;
+    
+    FMResultSet *rs = [self executeQuery:@"pragma application_id"];
+    
+    if ([rs next]) {
+        r = (uint32_t)[rs longLongIntForColumnIndex:0];
+    }
+    
+    [rs close];
+    
+    return r;
+}
+
+- (void)setApplicationID:(uint32_t)appID {
+    NSString *query = [NSString stringWithFormat:@"pragma application_id=%d", appID];
+    FMResultSet *rs = [self executeQuery:query];
+    [rs next];
+    [rs close];
+}
+
+
+#if TARGET_OS_MAC && !TARGET_OS_IPHONE
+- (NSString*)applicationIDString {
+    NSString *s = NSFileTypeForHFSTypeCode([self applicationID]);
+    
+    assert([s length] == 6);
+    
+    s = [s substringWithRange:NSMakeRange(1, 4)];
+    
+    
+    return s;
+    
+}
+
+- (void)setApplicationIDString:(NSString*)s {
+    
+    if ([s length] != 4) {
+        NSLog(@"setApplicationIDString: string passed is not exactly 4 chars long. (was %ld)", [s length]);
+    }
+    
+    [self setApplicationID:NSHFSTypeCodeFromFileType([NSString stringWithFormat:@"'%@'", s])];
+}
+
+
+#endif
+
+#endif
+
+- (uint32_t)userVersion {
+    uint32_t r = 0;
+    
+    FMResultSet *rs = [self executeQuery:@"pragma user_version"];
+    
+    if ([rs next]) {
+        r = (uint32_t)[rs longLongIntForColumnIndex:0];
+    }
+    
+    [rs close];
+    return r;
+}
+
+- (void)setUserVersion:(uint32_t)version {
+    NSString *query = [NSString stringWithFormat:@"pragma user_version = %d", version];
+    FMResultSet *rs = [self executeQuery:query];
+    [rs next];
+    [rs close];
+}
+
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-implementations"
+
+- (BOOL)columnExists:(NSString*)tableName columnName:(NSString*)columnName __attribute__ ((deprecated)) {
+    return [self columnExists:columnName inTableWithName:tableName];
+}
+
+#pragma clang diagnostic pop
+
+
+- (BOOL)validateSQL:(NSString*)sql error:(NSError**)error {
+    sqlite3_stmt *pStmt = NULL;
+    BOOL validationSucceeded = YES;
+    
+    int rc = sqlite3_prepare_v2(_db, [sql UTF8String], -1, &pStmt, 0);
+    if (rc != SQLITE_OK) {
+        validationSucceeded = NO;
+        if (error) {
+            *error = [NSError errorWithDomain:NSCocoaErrorDomain
+                                         code:[self lastErrorCode]
+                                     userInfo:[NSDictionary dictionaryWithObject:[self lastErrorMessage]
+                                                                          forKey:NSLocalizedDescriptionKey]];
+        }
+    }
+    
+    sqlite3_finalize(pStmt);
+    
+    return validationSucceeded;
 }
 
 @end

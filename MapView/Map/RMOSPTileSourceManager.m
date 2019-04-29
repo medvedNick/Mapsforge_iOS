@@ -37,9 +37,8 @@
 		NSData *data = [NSMutableData dataWithContentsOfFile:[[NSBundle mainBundle] pathForResource:@"index" ofType:@""]];
 
 		NSKeyedUnarchiver *unarchiver = [[NSKeyedUnarchiver alloc] initForReadingWithData:data];
-		index = [[unarchiver decodeObjectForKey: @"tile"] retain];
+		index = [unarchiver decodeObjectForKey: @"tile"];
 		[unarchiver finishDecoding];
-		[unarchiver release];
 
 		cache = [[NSMutableArray alloc] init];
 	}

@@ -12,5 +12,5 @@
 
 - (id) init:(NSData *)randomAccessFile capacity:(int)capacity;
 - (void) destroy;
-- (long) getIndexEntry:(SubFileParameter *)subFileParameter blockNumber:(long)blockNumber;
+- (long long) getIndexEntry:(SubFileParameter *)subFileParameter blockNumber:(long)blockNumber;
 @end

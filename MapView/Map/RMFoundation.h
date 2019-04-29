@@ -1,7 +1,7 @@
 //
 //  RMFoundation.h
 //
-// Copyright (c) 2008-2009, Route-Me Contributors
+// Copyright (c) 2008-2013, Route-Me Contributors
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -25,12 +25,19 @@
 // ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
 // POSSIBILITY OF SUCH DAMAGE.
 
-#import <stdbool.h>
+#ifndef _RMFOUNDATION_H_
+#define _RMFOUNDATION_H_
+
+#include <stdbool.h>
+
+#if __OBJC__
+#import <CoreLocation/CoreLocation.h>
+#endif
 
 /*! \struct RMProjectedPoint 
  \brief coordinates, in projected meters, paralleling CGPoint */
 typedef struct {
-	double easting, northing;
+	double x, y;
 } RMProjectedPoint;
 
 /*! \struct RMProjectedSize 
@@ -46,16 +53,54 @@ typedef struct {
 	RMProjectedSize size;
 } RMProjectedRect;
 
-/// \brief The function checks whether two passed projected points are equal.
+#if __OBJC__
+/*! \struct RMSphericalTrapezium
+ \brief a rectangle, specified by two corner coordinates */
+typedef struct {
+	CLLocationCoordinate2D southWest;
+	CLLocationCoordinate2D northEast;
+} RMSphericalTrapezium;
+#endif
+
+#pragma mark -
+
+RMProjectedPoint RMScaleProjectedPointAboutPoint(RMProjectedPoint point, float factor, RMProjectedPoint pivot);
+RMProjectedRect  RMScaleProjectedRectAboutPoint(RMProjectedRect rect, float factor, RMProjectedPoint pivot);
+RMProjectedPoint RMTranslateProjectedPointBy(RMProjectedPoint point, RMProjectedSize delta);
+RMProjectedRect  RMTranslateProjectedRectBy(RMProjectedRect rect, RMProjectedSize delta);
+
+#pragma mark -
+
 bool RMProjectedPointEqualToProjectedPoint(RMProjectedPoint point1, RMProjectedPoint point2);
-/// \brief The function returs true, if passed rects intersect each other.
-bool RMProjectedRectInterectsProjectedRect(RMProjectedRect rect1, RMProjectedRect rect2);
 
-RMProjectedPoint RMScaleProjectedPointAboutPoint (RMProjectedPoint point, float factor, RMProjectedPoint pivot);
-RMProjectedRect  RMScaleProjectedRectAboutPoint(RMProjectedRect rect,   float factor, RMProjectedPoint pivot);
-RMProjectedPoint RMTranslateProjectedPointBy (RMProjectedPoint point, RMProjectedSize delta);
-RMProjectedRect  RMTranslateProjectedRectBy (RMProjectedRect rect,   RMProjectedSize delta);
+bool RMProjectedRectIntersectsProjectedRect(RMProjectedRect rect1, RMProjectedRect rect2);
+bool RMProjectedRectContainsProjectedRect(RMProjectedRect rect1, RMProjectedRect rect2);
+bool RMProjectedRectContainsProjectedPoint(RMProjectedRect rect, RMProjectedPoint point);
 
-RMProjectedPoint  RMMakeProjectedPoint (double easting, double northing);
-RMProjectedRect  RMMakeProjectedRect (double easting, double northing, double width, double height);
+bool RMProjectedSizeContainsProjectedSize(RMProjectedSize size1, RMProjectedSize size2);
 
+#pragma mark -
+
+// Union of two rectangles
+RMProjectedRect RMProjectedRectUnion(RMProjectedRect rect1, RMProjectedRect rect2);
+
+// Rect intersection
+RMProjectedRect RMProjectedRectIntersection(RMProjectedRect rect1, RMProjectedRect rect2);
+
+RMProjectedPoint RMProjectedPointMake(double x, double y);
+RMProjectedRect  RMProjectedRectMake(double x, double y, double width, double height);
+RMProjectedSize  RMProjectedSizeMake(double width, double heigth);
+
+RMProjectedRect RMProjectedRectZero();
+bool RMProjectedRectIsZero(RMProjectedRect rect);
+
+#pragma mark -
+
+double RMEuclideanDistanceBetweenProjectedPoints(RMProjectedPoint point1, RMProjectedPoint point2);
+
+#pragma mark -
+
+void RMLogProjectedPoint(RMProjectedPoint point);
+void RMLogProjectedRect(RMProjectedRect rect);
+
+#endif

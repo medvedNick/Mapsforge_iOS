@@ -13,15 +13,16 @@
 
 - (id) initWithInputFile:(NSData *)inputFile;
 - (Byte) readByte;
-- (BOOL) readFromFile:(int)length;
-- (void) seekTo:(long long)offset;
+- (BOOL) readFromFile:(long)length;
+- (void) seekTo:(long)offset;
 - (int) readInt;
 - (long long) readLong;
+- (int) readLongerSignedInt;
 - (int) readShort;
 - (int) readSignedInt;
 - (uint) readUnsignedInt;
 - (NSString *) readUTF8EncodedString;
-- (NSString *) readUTF8EncodedString:(int)stringLength;
+- (NSString *) readUTF8EncodedString:(long)stringLength;
 - (int) getBufferPosition;
 - (int) getBufferSize;
 - (void) setBufferPosition:(int)bufferPosition;

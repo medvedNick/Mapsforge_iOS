@@ -1,6 +1,24 @@
 Mapsforge_iOS
 =============
 
+Annotations
+=============
+In the original Mapsforge library for iOS by medvednick <medvednick@yandex.ru>, a mistake in the mercator projection caused an issue while showing offline maps at a high ground resolution.
+
+Rebased the project to the current development-Tree of the Mapbox-IOS-SDK for much better performance, new Annotation system and general error correction (https://github.com/mapbox/mapbox-ios-sdk).
+
+Added AES256 encryption support for map files.
+
+In this fork, the mercator projection error is fixed and a very minimalistic theme was applied.
+ 
+If you have questions regarding the changes, feel free to contagt me via email (stephan@contagt.com).
+
+Major thanks to medvednick for his expansive work on this port!
+
+
+Original Readme
+=============
+
 This is Objective-C analog for some part of Mapsforge library for Android, which you can find there: http://code.google.com/p/mapsforge/ 
 
 MapsforgeReader allows iOS applications to read compact .map files with vector maps. There is an example, which should be working without any settings.

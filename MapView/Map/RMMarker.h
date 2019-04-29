@@ -1,7 +1,7 @@
 //
 //  RMMarker.h
 //
-// Copyright (c) 2008-2009, Route-Me Contributors
+// Copyright (c) 2008-2013, Route-Me Contributors
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -28,69 +28,126 @@
 #import <UIKit/UIKit.h>
 #import "RMMapLayer.h"
 #import "RMFoundation.h"
-#ifdef DEBUG
-#import <CoreLocation/CoreLocation.h>
-#endif
 
-@class RMMarkerStyle;
+typedef enum : NSUInteger {
+    RMMarkerMapboxImageSizeSmall,
+    RMMarkerMapboxImageSizeMedium,
+    RMMarkerMapboxImageSizeLarge
+} RMMarkerMapboxImageSize;
 
-/// one marker drawn on the map. Note that RMMarker ultimately descends from CALayer, and has an image contents.
-/// RMMarker inherits "position" and "anchorPoint" from CALayer.
-@interface RMMarker : RMMapLayer <RMMovingMapLayer> {
-	/// expressed in projected meters. The anchorPoint of the image is plotted here. 
-	RMProjectedPoint projectedLocation;	
-	/// provided for storage of arbitrary user data
-	NSObject* data; 
-	
-	/// Text label, visible by default if it has content, but not required.
-	UIView *label;
-	UIColor *textForegroundColor;
-	UIColor *textBackgroundColor;
-	
-	BOOL enableDragging;
-	BOOL enableRotation;
+/** An RMMarker object is used for simple point annotations on a map view, represented as a single image. RMMarker objects do not change in size when the map view zooms in or out, but instead stay the same size to consistently represent a point on the map view. */
+@interface RMMarker : RMMapLayer
+{
+    // Text label, visible by default if it has content, but not required.
+    UIView  *label;
+    UIColor *textForegroundColor;
+    UIColor *textBackgroundColor;
 }
-@property (assign, nonatomic) RMProjectedPoint projectedLocation;
-@property (assign) BOOL enableDragging;
-@property (assign) BOOL enableRotation;
 
-@property (nonatomic, retain) NSObject* data;
-@property (nonatomic, retain) UIView* label;
-@property(nonatomic,retain) UIColor *textForegroundColor;
-@property(nonatomic,retain) UIColor *textBackgroundColor;
+/** @name Setting Label Properties */
 
-/// the font used for labels when another font is not explicitly requested; currently [UIFont systemFontOfSize:15]
+/** A custom label for the marker. The label is shown when first set. */
+@property (nonatomic, strong) UIView  *label;
+
+/** The marker object's label text foreground color. Defaults to black. */
+@property (nonatomic, strong) UIColor *textForegroundColor;
+
+/** The marker object's label text background color. Defaults to clear. */
+@property (nonatomic, strong) UIColor *textBackgroundColor;
+
+/** The font used for labels when another font is not explicitly requested. The default is the system font with size `15`. */
 + (UIFont *)defaultFont;
 
-/// returns RMMarker initialized with #image, and the default anchor point (0.5, 0.5)
-- (id) initWithUIImage: (UIImage*) image;
-/// \brief returns RMMarker initialized with provided image and anchorPoint. 
-/// #anchorPoint x and y range from 0 to 1, normalized to the width and height of image, 
-/// referenced to upper left corner, y increasing top to bottom. To put the image's upper right corner on the marker's 
-/// #projectedLocation, use an anchor point of (1.0, 0.0);
-- (id) initWithUIImage: (UIImage*) image anchorPoint: (CGPoint) anchorPoint;
+/** @name Creating Markers With Images */
 
-/// changes the labelView to a UILabel with supplied #text and default marker font, using existing text foreground/background color.
-- (void) changeLabelUsingText: (NSString*)text;
-/// changes the labelView to a UILabel with supplied #text and default marker font, positioning the text some weird way i don't understand yet. Uses existing text color/background color.
-- (void) changeLabelUsingText: (NSString*)text position:(CGPoint)position;
-/// changes the labelView to a UILabel with supplied #text and default marker font, changing this marker's text foreground/background colors for this and future text strings.
-- (void) changeLabelUsingText: (NSString*)text font:(UIFont*)font foregroundColor:(UIColor*)textColor backgroundColor:(UIColor*)backgroundColor;
-/// changes the labelView to a UILabel with supplied #text and default marker font, changing this marker's text foreground/background colors for this and future text strings; modifies position as in #changeLabelUsingText:position.
-- (void) changeLabelUsingText: (NSString*)text position:(CGPoint)position font:(UIFont*)font foregroundColor:(UIColor*)textColor backgroundColor:(UIColor*)backgroundColor;
+/** Initializes and returns a newly allocated marker object using the specified image.
+*   @param image An image to use for the marker. */
+- (id)initWithUIImage:(UIImage *)image;
 
-- (void) toggleLabel;
-- (void) showLabel;
-- (void) hideLabel;
+/** Initializes and returns a newly allocated marker object using the specified image and anchor point.
+*   @param image An image to use for the marker.
+*   @param anchorPoint A point representing a range from `0` to `1` in each of the height and width coordinate space, normalized to the size of the image, at which to place the image.
+*   @return An initialized marker object. */
+- (id)initWithUIImage:(UIImage *)image anchorPoint:(CGPoint)anchorPoint;
 
-- (void) replaceUIImage:(UIImage*)image;
-- (void) replaceUIImage:(UIImage*)image anchorPoint:(CGPoint)anchorPoint;
+/** @name Creating Markers Using Mapbox Images */
 
-//
-//Стас: добавил BOOL disclosure, чтобы можно было выбирать нужна ли нам кнопка в callout или нет.
-//
-- (void)showBallonWithTitle:(NSString *)title subtitle:(NSString *)subtitle disclosure:(BOOL)disclosure;
+/** Initializes and returns a newly allocated marker object using a red, medium-sized star pin image. */
+- (id)initWithMapboxMarkerImage;
 
-- (void) dealloc;
+/** Initializes and returns a newly allocated marker object using a red, medium-sized pin image and a given symbol name, e.g., `bus`.
+*   @param symbolName A symbol name from the [Maki](https://mapbox.com/maki/) icon set.
+*   @return An initialized RMMarker layer. */
+- (id)initWithMapboxMarkerImage:(NSString *)symbolName;
+
+/** Initializes and returns a newly allocated marker object using a medium-sized pin image, a given symbol name, e.g., `bus`, and a given color.
+*   @param symbolName A symbol name from the [Maki](https://mapbox.com/maki/) icon set.
+*   @param color A color for the marker.
+*   @return An initialized RMMarker layer. */
+- (id)initWithMapboxMarkerImage:(NSString *)symbolName tintColor:(UIColor *)color;
+
+/** Initializes and returns a newly allocated marker object using a pin image, a given symbol name, e.g., `bus`, a given color, and a given size. 
+*   @param symbolName A symbol name from the [Maki](https://mapbox.com/maki/) icon set.
+*   @param color A color for the marker.
+*   @param size A size for the marker.
+*   @return An initialized RMMarker layer. */
+- (id)initWithMapboxMarkerImage:(NSString *)symbolName tintColor:(UIColor *)color size:(RMMarkerMapboxImageSize)size;
+
+/** Initializes and returns a newly allocated marker object using a medium-sized pin image, a given symbol name, e.g., `bus`, and a given HTML hex color, e.g., `ff0000`.
+*   @param symbolName A symbol name from the [Maki](https://mapbox.com/maki/) icon set.
+*   @param colorHex A color for the marker specified as an HTML hex code.
+*   @return An initialized RMMarker layer. */
+- (id)initWithMapboxMarkerImage:(NSString *)symbolName tintColorHex:(NSString *)colorHex;
+
+/** Initializes and returns a newly allocated marker object using a pin image, a given symbol name, e.g., `bus`, a given HTML hex color, e.g., `ff0000`, and a given size, e.g., `large`.
+*   @param symbolName A symbol name from the [Maki](https://mapbox.com/maki/) icon set.
+*   @param colorHex A color for the marker specified as an HTML hex code.
+*   @param sizeString A size such as `small`, `medium`, or `large`.
+*   @return An initialized RMMarker layer. */
+- (id)initWithMapboxMarkerImage:(NSString *)symbolName tintColorHex:(NSString *)colorHex sizeString:(NSString *)sizeString;
+
+/** Clears the local cache of Mapbox Marker images. Images are cached locally upon first use so that if the application goes offline, markers can still be used. */
++ (void)clearCachedMapboxMarkers;
+
+/** @name Altering Labels */
+
+/** Changes the label to a UILabel with the supplied text and default marker font and using the existing text foreground and background colors. 
+*   @param text The text for the label. */
+- (void)changeLabelUsingText:(NSString *)text;
+
+// changes the labelView to a UILabel with supplied #text and default marker font, positioning the text some weird way i don't understand yet. Uses existing text color/background color.
+- (void)changeLabelUsingText:(NSString *)text position:(CGPoint)position;
+
+/** Changes the label to a UILabel with the supplied text and font and using the given text foreground and background colors.
+*   @param text The text for the label. 
+*   @param font A font to use for the label text. 
+*   @param textColor The color for the label text. 
+*   @param backgroundColor The color for the label background. */
+- (void)changeLabelUsingText:(NSString *)text font:(UIFont *)font foregroundColor:(UIColor *)textColor backgroundColor:(UIColor *)backgroundColor;
+
+// changes the labelView to a UILabel with supplied #text and default marker font, changing this marker's text foreground/background colors for this and future text strings; modifies position as in #changeLabelUsingText:position.
+- (void)changeLabelUsingText:(NSString *)text position:(CGPoint)position font:(UIFont *)font foregroundColor:(UIColor *)textColor backgroundColor:(UIColor *)backgroundColor;
+
+/** @name Showing and Hiding Labels */
+
+/** Toggle the display of the marker's label, if any. If hidden, show and if shown, hide. */
+- (void)toggleLabel;
+
+/** Show the marker's label, if any. */
+- (void)showLabel;
+
+/** Hide the marker's label, if any. */
+- (void)hideLabel;
+
+/** @name Altering Images */
+
+/** Replace the image for a marker. 
+*   @param image An image to use for the marker. */
+- (void)replaceUIImage:(UIImage *)image;
+
+/** Replace the image for a marker using a custom anchor point.
+*   @param image An image to use for the marker.
+*   @param anchorPoint A point representing a range from `0` to `1` in each of the height and width coordinate space, normalized to the size of the image, at which to place the image. */
+- (void)replaceUIImage:(UIImage *)image anchorPoint:(CGPoint)anchorPoint;
 
 @end

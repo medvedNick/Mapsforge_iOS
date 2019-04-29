@@ -1,7 +1,7 @@
 //
 //  RMConfiguration.h
 //
-// Copyright (c) 2008-2009, Route-Me Contributors
+// Copyright (c) 2008-2013, Route-Me Contributors
 // All rights reserved.
 //
 // Redistribution and use in source and binary forms, with or without
@@ -27,18 +27,63 @@
 
 #import <UIKit/UIKit.h>
 
+/** The RMConfiguration object is a shared instance of the configuration for the library. */
+@interface RMConfiguration : NSObject
 
-@interface RMConfiguration : NSObject {
+/** @name Accessing the Configuration */
 
-	id propList;
-	
-}
+/** Access the shared instance of the configuration.
+*   @return The shared configuration instance. */
++ (instancetype)sharedInstance;
 
-+ (RMConfiguration*) configuration;
+/** Access the shared instance of the configuration. 
+*   @return The shared configuration instance. */
++ (instancetype)configuration DEPRECATED_MSG_ATTRIBUTE("use +[RMConfiguration sharedInstance]");
 
-- (RMConfiguration*) initWithPath: (NSString*) path;
-- (void) dealloc;
+- (RMConfiguration *)initWithPath:(NSString *)path;
 
-- (NSDictionary*) cacheConfiguration;
+/** @name Authorizing Access */
+
+/** A Mapbox API access token. Obtain an access token on your [Mapbox account page](https://www.mapbox.com/account/apps/). */
+@property (nonatomic, retain) NSString *accessToken;
+
+/** @name Cache Configuration */
+
+/** Access the disk- and memory-based cache configuration. 
+*   @return A dictionary containing the cache configuration. */
+- (NSDictionary *)cacheConfiguration;
+
+/** @name Using a Custom User Agent */
+
+/** Access and change the global user agent for HTTP requests using the library.
+*
+*   If unset, defaults to `Mapbox iOS SDK` followed by generic hardware model and software version information.
+*
+*   Example: `MyMapApp/1.2` */
+@property (nonatomic, retain) NSString *userAgent;
+
+@end
+
+#pragma mark -
+
+@interface NSURLConnection (RMUserAgent)
+
++ (NSData *)sendBrandedSynchronousRequest:(NSURLRequest *)request returningResponse:(NSURLResponse **)response error:(NSError **)error;
+
+@end
+
+#pragma mark -
+
+@interface NSData (RMUserAgent)
+
++ (instancetype)brandedDataWithContentsOfURL:(NSURL *)aURL;
+
+@end
+
+#pragma mark -
+
+@interface NSString (RMUserAgent)
+
++ (instancetype)brandedStringWithContentsOfURL:(NSURL *)url encoding:(NSStringEncoding)enc error:(NSError **)error;
 
 @end

@@ -27,12 +27,12 @@
     }
 }
 
-- (void)setLocation:(CLLocationCoordinate2D)newLocation
+- (void)setLocation:(CLLocationCoordinate2D)newLocation zoomLevel:(short)zoomLevel tileX:(long)x tileY:(long)y
 {
     @synchronized(self)
     {
         location = newLocation;
-		[self setProjectedLocation:OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(location.latitude/1000000, location.longitude/1000000))];
+        [self setProjectedLocation:OSPCoordinate2DProjectLocation(newLocation, zoomLevel, x, y)];
     }
 }
 

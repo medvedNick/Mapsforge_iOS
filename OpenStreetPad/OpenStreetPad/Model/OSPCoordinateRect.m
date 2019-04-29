@@ -11,6 +11,7 @@
 #import "OSPMaths.h"
 
 #import "OSPValue.h"
+#import <math.h>
 
 NSArray *NSArrayOfTilesFromCoordinateRectWithinTile(OSPCoordinateRect r, double maxOverspill, OSPTile t);
 
@@ -19,11 +20,27 @@ inline OSPCoordinate2D OSPCoordinate2DMake(double x, double y)
     return (OSPCoordinate2D){.x = x, .y = y};
 }
 
-inline OSPCoordinate2D OSPCoordinate2DProjectLocation(CLLocationCoordinate2D l)
+inline double longitudeToPixelX(double longitude, short zoomLevel) {
+    Byte zoom_b  = (Byte) zoomLevel & 0xff;
+    long mapsize = ((long)256 << zoom_b);
+    return (longitude + 180) / 360 * mapsize;
+}
+
+inline double latitudeToPixelY(double latitude, short zoomLevel) {
+    double sinLatitude = sin(latitude * (M_PI / 180));
+    Byte zoom_b  = (Byte) zoomLevel & 0xff;
+    long mapsize = ((long)256 << zoom_b);
+    double pixelY = (0.5 - log((1 + sinLatitude) / (1 - sinLatitude)) / (4 * M_PI)) * mapsize;
+    return fmin(fmax(0, pixelY), ((long)256 << zoomLevel));
+}
+
+inline long tileToPixel(long tileNumber) {
+    return tileNumber * 256;
+}
+
+inline OSPCoordinate2D OSPCoordinate2DProjectLocation(CLLocationCoordinate2D l, short zoomLevel, long tileX, long tileY)
 {
-    double lonDegrees = l.longitude;
-    double latRadians = normalisedRadians(degreesToRadians(l.latitude));
-    return OSPCoordinate2DMake((lonDegrees + 180.0) / 360.0, 0.5 - (log(tan(latRadians) + 1.0 / cos(latRadians)) / M_PI) * 0.5);
+    return OSPCoordinate2DMake(longitudeToPixelX(l.longitude, zoomLevel) - tileToPixel(tileX),latitudeToPixelY(l.latitude, zoomLevel) - tileToPixel(tileY));
 }
 
 inline CLLocationCoordinate2D OSPCoordinate2DUnproject(OSPCoordinate2D l)

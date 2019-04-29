@@ -12,7 +12,7 @@
 
 @interface OSPAPIObjectReference : OSPAPIObject
 
-+ (id)apiObjectReferenceWithType:(OSPMemberType)type identity:(NSInteger)identity;
-- (id)initWithType:(OSPMemberType)type identity:(NSInteger)identity;
+//+ (id)apiObjectReferenceWithType:(OSPMemberType)type identity:(NSInteger)identity;
+//- (id)initWithType:(OSPMemberType)type identity:(NSInteger)identity;
 
 @end

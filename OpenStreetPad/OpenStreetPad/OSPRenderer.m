@@ -8,6 +8,8 @@
 
 #import "OSPRenderer.h"
 
+#import "OSPCoordinateRect.h"   //by me
+
 #import <QuartzCore/QuartzCore.h>
 #import <CoreText/CoreText.h>
 
@@ -46,6 +48,8 @@ void patternCallback(void *info, CGContextRef ctx);
 	CGFloat _scale;
 	CGFloat _zoom;
 	CGFloat _factor;
+    long _x;
+    long _y;
 }
 - (void)setupContext:(CGContextRef)ctx inRect:(CGRect)b atZoom:(float)zoom;
 
@@ -154,6 +158,8 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
 	@synchronized(self)
 	{
 		_zoom = zoom;
+        _x = x;
+        _y = y;
 		[names removeAllObjects];
 		mapLoader.mapArea = mapArea;
 		[mapLoader executeQueryForTileX:x Y:y Zoom:zoom];
@@ -165,37 +171,53 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
 	}
 }
 
+-(MapDatabase*)getMapDatabase {
+    return [mapLoader getMapDatabase];
+}
+
 - (UIImage *) renderImageAtZoom:(int)zoom
 {
-	int imageWidth = 384;
+	int imageWidth = 384; // 384
 	int layerWidth = 256;
 	UIGraphicsBeginImageContextWithOptions(CGSizeMake(imageWidth, imageWidth), 1, 1);
 	CGContextRef context = UIGraphicsGetCurrentContext();
-	
+    CGContextSetInterpolationQuality(context, kCGInterpolationNone); //TEST!
 	CGRect b = CGRectMake(0, 0, layerWidth, layerWidth);
 	[self setupContext:context inRect:b atZoom:zoom];
 	
 	NSArray *styledObjects = [[self stylesheet] styledObjects:mapLoader.mapObjects atZoom:zoom];
-//	NSLog(@"loaded: %d, styled: %d", mapLoader.mapObjects.count, styledObjects.count);
+	//NSLog(@"loaded: %d, styled: %d", mapLoader.mapObjects.count, styledObjects.count);
 	
 	switch (zoom) {
+		case 22:
+			_factor = 0.4;
+			break;
+		case 21:
+			_factor = 0.5;
+			break;
+		case 20:
+			_factor = 0.6;
+			break;
+		case 19:
+			_factor = 0.7;
+			break;
 		case 18:
-			_factor = 1;
+			_factor = 0.8;
 			break;
 		case 17:
 			_factor = 1;
 			break;
 		case 16:
-			_factor = 1.5;
+			_factor = 1;
 			break;
 		case 15:
-			_factor = 2;
+			_factor = 1;
 			break;
 		case 14:
-			_factor = 4;
+			_factor = 1.5;
 			break;
 		case 13:
-			_factor = 6;
+			_factor = 4;
 		case 12:
 			_factor = 8;
 		default:
@@ -318,7 +340,6 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
                            }]
                    forKey:layerNumber];
     }
-//    [layersCopy release];
     return layers;
 }
 
@@ -448,43 +469,32 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
     }
 }
 
-- (CGPathRef)newPathForWay:(OSPWay *)way
+- (CGPathRef)newPathForWay:(OSPWay *)way;
 {
-//    NSArray *nodes = [way nodeObjects];
-//    
-//    OSPNode *firstNode = [nodes objectAtIndex:0];
-//    OSPCoordinate2D l = [firstNode projectedLocation];
-//    
-//    CGMutablePathRef path = CGPathCreateMutable();
-//    CGPathMoveToPoint(path, NULL, l.x, l.y);
-//    for (OSPNode *node in [nodes subarrayWithRange:NSMakeRange(1, [nodes count] - 1)])
-//    {
-//        OSPCoordinate2D nl = [node projectedLocation];
-//        CGPathAddLineToPoint(path, NULL, nl.x, nl.y);
-//    }
 	CGMutablePathRef path = nil;
-	double NANODEG = 0.000001;
-
+    OSPCoordinate2D last_nl;
+    last_nl.x = 0;
+    last_nl.y = 0;
     for (int block = 0; block < way->cLength[0]; block++)
 	{
 		for (int node = 0; node < way->cLength[block+1]; node += 2)
 		{
-			float lat = way->cNodes[block][node+1] * NANODEG;
-			float lon = way->cNodes[block][node] * NANODEG;
-			
-			OSPCoordinate2D nl = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon));			
-			if (block == 0 && node == 0)
+			long double lat = (long double)way->cNodes[block][node+1];
+			long double lon = (long double)way->cNodes[block][node];
+            
+			OSPCoordinate2D nl = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(lat, lon), _zoom, _x, _y);
+            if (block == 0 && node == 0)
 			{
-				path = CGPathCreateMutable();
-				CGPathMoveToPoint(path, NULL, nl.x, nl.y);				
+                path = CGPathCreateMutable();
+				CGPathMoveToPoint(path, nil, nl.x, nl.y);
 			}
 			else
 			{
-				CGPathAddLineToPoint(path, NULL, nl.x, nl.y);
+				  CGPathAddLineToPoint(path, nil, nl.x, nl.y);
 			}
+            last_nl = nl;
 		}
 	}
-	
     return path;
 }
 
@@ -501,7 +511,6 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
     {
         CGPathRef path = [self newPathForWay:way];
         CGContextAddPath(ctx, path);
-		//CGContextClip(ctx);
 		
         CGContextSetLineWidth(ctx, ([width value]/* / _factor*/ + [casingWidth value]) * scale / _factor);
         UIColor *colour = [self colourWithColourSpecifierList:[style objectForKey:@"casing-color"] opacitySpecifierList:[style objectForKey:@"casing-opacity"]];
@@ -552,7 +561,6 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
     {
         CGPathRef path = [self newPathForWay:way];
         CGContextAddPath(ctx, path);
-		//CGContextClip(ctx);
         
         CGContextSetLineWidth(ctx, [width value] * scale / _factor);
         NSString *lineCapName = [[[[style objectForKey:@"linecap"] specifiers] objectAtIndex:0] stringValue];
@@ -680,7 +688,7 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
         }
         else if ([position isEqualToString:@"center"])
         {
-			OSPCoordinate2D c = way->labelPosition == nil ? [way projectedCentroid] : OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(way->labelPosition[1],way->labelPosition[0]));
+			OSPCoordinate2D c = way->labelPosition == nil ? [way projectedCentroid] : OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(way->labelPosition[1],way->labelPosition[0]), _zoom, _x, _y);
             CGPoint textPosition = CGPointMake(c.x, c.y);
             
             [self drawText:title atPoint:textPosition inContext:ctx withStyle:style scaleMultiplier:scale];
@@ -698,8 +706,7 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
     
     if (nil != title)
     {
-		CLLocationCoordinate2D q = node.location;
-        OSPCoordinate2D c = OSPCoordinate2DProjectLocation(CLLocationCoordinate2DMake(q.latitude/1000000, q.longitude/1000000));//[node projectedLocation];
+        OSPCoordinate2D c = [node projectedLocation];
         CGPoint textPosition = CGPointMake(c.x, c.y);
         
         [self drawText:title atPoint:textPosition inContext:ctx withStyle:style scaleMultiplier:scale];
@@ -868,8 +875,8 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
 		[names addObject:text];
 //		if (backwards) return;
         CFArrayRef runs = CTLineGetGlyphRuns(line);
-        int numRuns = CFArrayGetCount(runs);
-        for (int runNumber = 0; runNumber < numRuns; runNumber++)
+        long numRuns = CFArrayGetCount(runs);
+        for (long runNumber = 0; runNumber < numRuns; runNumber++)
         {
             CTRunRef run = CFArrayGetValueAtIndex(runs, runNumber);
 			CFDictionaryRef attrs = CTRunGetAttributes(run);
@@ -883,6 +890,9 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
             CFIndex numGlyphs = CTRunGetGlyphCount(run);
             const CGGlyph *glyphs = CTRunGetGlyphsPtr(run);
             const CGPoint *glyphOffsets = CTRunGetPositionsPtr(run);
+            
+            if (glyphOffsets == NULL) return;      // FAilcheck
+            
             OSPCoordinate2D *glyphPositions = malloc((numGlyphs + 1) * sizeof(OSPCoordinate2D));
             CGFloat *glyphAngles = malloc(numGlyphs * sizeof(CGFloat));
             
@@ -907,7 +917,7 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
                 
                 currentGlyphPosition = nextGlyphPosition;
             }
-            
+            @try {
             if (hasHalo)
             {
                 CGContextSetTextDrawingMode(ctx, kCGTextStroke);
@@ -931,7 +941,10 @@ CGLineJoin CGLineJoinFromNSString(NSString *s)
                 CGContextSetTextPosition(ctx, p.x, p.y);
                 CGContextShowGlyphs(ctx, &glyph, 1);
             }
-            
+            }
+            @catch (NSException * e) {
+                //Nothing
+            }
             free(glyphPositions);
             free(glyphAngles);
         }

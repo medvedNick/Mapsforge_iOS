@@ -11,18 +11,24 @@
 @interface OSPWay : OSPAPIObject
 {
 @public
-	int **cNodes;
+	long double **cNodes;
 	int *cLength;
 	float *labelPosition;
 	int nodesCount;
 	BOOL isArea;
 	NSString *name;
+    short zoomLevel;
+    long x;
+    long y;
 }
 
 @property (nonatomic, readwrite,retain/*strong*/) NSArray *nodes;
 @property (nonatomic, readwrite,retain/*strong*/) NSArray *nodeObjects;
 //@property (nonatomic, retain/*strong*/) NSString *area;
 @property (nonatomic, retain/*strong*/) NSString *name;
+@property (nonatomic) short zoomLevel;
+@property (nonatomic) long x;
+@property (nonatomic) long y;
 
 - (void)addNodeWithId:(NSInteger)nodeId;
 
