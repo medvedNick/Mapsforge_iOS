@@ -10,6 +10,7 @@
 #import "CPShiftReduceActionTable.h"
 #import "CPItem.h"
 #import "CPGrammarSymbol.h"
+#import "CPShiftReduceAction.h"
 
 @implementation CPShiftReduceActionTable
 

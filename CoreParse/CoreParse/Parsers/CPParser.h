@@ -45,7 +45,7 @@
 /**
  * Should return an object to replace a produced syntax tree with.
  * 
- * You should not return `nil` from this method.
+ * You should not return `nil` from this method.  If you do not wish to change the syntax tree, simply return the same value as you are passed.
  * 
  * @warning Note that it is not guarenteed that this method will be called in the same order as the structures appear in your input stream.
  * 
@@ -64,7 +64,7 @@
  *         the parse stack is unwound a step for the parent rule to deal with the error.
  * @bug Warning this method is deprecated, use -parser:didEncounterErrorOnInput:expecting: instead.
  */
-- (CPRecoveryAction *)parser:(CPParser *)parser didEncounterErrorOnInput:(CPTokenStream *)inputStream;
+- (CPRecoveryAction *)parser:(CPParser *)parser didEncounterErrorOnInput:(CPTokenStream *)inputStream __attribute__((deprecated("use -parser:didEncounterErrorOnInput:expecting: instead.")));
 
 /**
  * Called when the parser encounters a token for which it can not shift, reduce or accept.
@@ -79,6 +79,14 @@
 
 @end
 
+typedef struct
+{
+    unsigned int didProduceSyntaxTree:1;
+    unsigned int didEncounterErrorOnInput:1;
+    unsigned int didEncounterErrorOnInputExpecting:1;
+    
+} CPParserDelegateResponseCache;
+
 /**
  * The CPParser class allows you to parse token streams.
  *
@@ -87,6 +95,10 @@
  * @warning Note that CPParser is an abstract superclass.  Use one of its subclasses to construct your parser.
  */
 @interface CPParser : NSObject
+{
+@protected
+    CPParserDelegateResponseCache delegateRespondsTo;
+}
 
 ///---------------------------------------------------------------------------------------
 /// @name Creating and Initialising a Parser
@@ -115,7 +127,7 @@
 /**
  * The parser's delegate.
  */
-@property (readwrite,assign) id<CPParserDelegate> delegate;
+@property (readwrite,assign, nonatomic) id<CPParserDelegate> delegate;
 
 ///---------------------------------------------------------------------------------------
 /// @name Finding out about the parsed Grammar 

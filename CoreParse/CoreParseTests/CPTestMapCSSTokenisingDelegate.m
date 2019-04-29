@@ -50,15 +50,15 @@
     {
         inRange = YES;
     }
-    else if (inRange && ![token isKindOfClass:[CPNumberToken class]] && ![name isEqualToString:@"-"])
+    else if (inRange && ![token isNumberToken] && ![name isEqualToString:@"-"])
     {
         inRange = NO;
     }
-    else if (inRange && [token isKindOfClass:[CPNumberToken class]])
+    else if (inRange && [token isNumberToken])
     {
         return [[(CPNumberToken *)token number] floatValue] >= 0;
     }
-    else if ([token isKindOfClass:[CPKeywordToken class]])
+    else if ([token isKeywordToken])
     {
         return 0 == nestingDepth || [symbolsSet characterIsMember:[name characterAtIndex:0]] || [name isEqualToString:@"eval"] || [name isEqualToString:@"url"] || [name isEqualToString:@"set"] || [name isEqualToString:@"pt"] || [name isEqualToString:@"px"];
     }
@@ -66,34 +66,26 @@
     return YES;
 }
 
-- (NSArray *)tokeniser:(CPTokeniser *)tokeniser willProduceToken:(CPToken *)token
+- (void)tokeniser:(CPTokeniser *)tokeniser requestsToken:(CPToken *)token pushedOntoStream:(CPTokenStream *)stream
 {
-    NSString *name = [token name];
-    if ([token isKindOfClass:[CPWhiteSpaceToken class]])
+    if ([token isWhiteSpaceToken])
     {
         if (justTokenisedObject)
         {
-            return [NSArray arrayWithObject:token];
+            [stream pushToken:token];
         }
-        else
+    }
+    else
+    {
+        NSString *name = [token name];
+        justTokenisedObject = ([name isEqualToString:@"node"] || [name isEqualToString:@"way" ] || [name isEqualToString:@"relation"] ||
+                               [name isEqualToString:@"area"] || [name isEqualToString:@"line"] || [name isEqualToString:@"canvas"] || [name isEqualToString:@"*"]);
+        
+        if (![name isEqualToString:@"Comment"])
         {
-            return [NSArray array];
+            [stream pushToken:token];
         }
     }
-    
-    justTokenisedObject = NO;
-    if ([name isEqualToString:@"Comment"])
-    {
-        return [NSArray array];
-    }
-
-    if ([name isEqualToString:@"node"] || [name isEqualToString:@"way" ] || [name isEqualToString:@"relation"] ||
-        [name isEqualToString:@"area"] || [name isEqualToString:@"line"] || [name isEqualToString:@"canvas"] || [name isEqualToString:@"*"])
-    {
-        justTokenisedObject = YES;
-    }
-
-    return [NSArray arrayWithObject:token];
 }
 
 @end

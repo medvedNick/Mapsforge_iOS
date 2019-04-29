@@ -11,19 +11,29 @@
 #import "CPEOFToken.h"
 #import "CPErrorToken.h"
 
-@interface CPTokeniser ()
+typedef struct
 {
-    NSMutableArray *tokenRecognisers;
-}
+    unsigned int shouldConsumeToken:1;
+    unsigned int requestsPush:1;
+    unsigned int willProduceToken:1;
+    unsigned int didNotFindTokenOnInputPositionError:1;
+    unsigned int willFinish:1;
+    
+} CPTokeniserDelegateResponseCache;
+
+@interface CPTokeniser ()
 
 @property (readwrite, retain) NSMutableArray *tokenRecognisers;
 
 - (void)addToken:(CPToken *)tok toStream:(CPTokenStream *)stream;
-- (void)advanceLineNumber:(NSUInteger *)ln columnNumber:(NSUInteger *)cn withInput:(NSString *)input range:(NSRange)range;
+- (void)advanceLineNumber:(NSUInteger *)ln columnNumber:(NSUInteger *)cn withInput:(NSString *)input range:(CFRange)range;
 
 @end
 
 @implementation CPTokeniser
+{
+    CPTokeniserDelegateResponseCache delegateRespondsTo;
+}
 
 @synthesize tokenRecognisers;
 @synthesize delegate;
@@ -110,63 +120,75 @@
     
     while (currentTokenOffset < inputLength)
     {
-        BOOL recognised = NO;
-        for (id<CPTokenRecogniser> recogniser in recs)
+        @autoreleasepool
         {
-            NSUInteger lastTokenOffset = currentTokenOffset;
-            CPToken *tok = [recogniser recogniseTokenInString:input currentTokenPosition:&currentTokenOffset];
-            if (nil != tok)
+            BOOL recognised = NO;
+            for (id<CPTokenRecogniser> recogniser in recs)
             {
-                [tok setLineNumber:currentLineNumber];
-                [tok setColumnNumber:currentColumnNumber];
-                [tok setCharacterNumber:lastTokenOffset];
-                
-                if ([delegate respondsToSelector:@selector(tokeniser:shouldConsumeToken:)])
+                NSUInteger lastTokenOffset = currentTokenOffset;
+                CPToken *tok = [recogniser recogniseTokenInString:input currentTokenPosition:&currentTokenOffset];
+                if (nil != tok)
                 {
-                    if ([delegate tokeniser:self shouldConsumeToken:tok])
+                    [tok setLineNumber:currentLineNumber];
+                    [tok setColumnNumber:currentColumnNumber];
+                    [tok setCharacterNumber:lastTokenOffset];
+                    [tok setLength:currentTokenOffset - lastTokenOffset];
+                    
+                    if (delegateRespondsTo.shouldConsumeToken)
                     {
-                        [self addToken:tok toStream:stream];
-                        [self advanceLineNumber:&currentLineNumber columnNumber:&currentColumnNumber withInput:input range:NSMakeRange(lastTokenOffset, currentTokenOffset - lastTokenOffset)];
-                        recognised = YES;
-                        break;
+                        if ([delegate tokeniser:self shouldConsumeToken:tok])
+                        {
+                            [self addToken:tok toStream:stream];
+                            [self advanceLineNumber:&currentLineNumber columnNumber:&currentColumnNumber withInput:input range:CFRangeMake(lastTokenOffset, currentTokenOffset - lastTokenOffset)];
+                            recognised = YES;
+                            break;
+                        }
+                        else
+                        {
+                            currentTokenOffset = lastTokenOffset;
+                        }
                     }
                     else
                     {
-                        currentTokenOffset = lastTokenOffset;
+                        [self addToken:tok toStream:stream];
+                        [self advanceLineNumber:&currentLineNumber columnNumber:&currentColumnNumber withInput:input range:CFRangeMake(lastTokenOffset, currentTokenOffset - lastTokenOffset)];
+                        recognised = YES;
+                        break;
+                    }
+                }
+            }
+            
+            if (!recognised)
+            {
+                if (delegateRespondsTo.didNotFindTokenOnInputPositionError)
+                {
+                    NSString *err = nil;
+                    currentTokenOffset = [delegate tokeniser:self didNotFindTokenOnInput:input position:currentTokenOffset error:&err];
+                    [self addToken:[CPErrorToken errorWithMessage:err] toStream:stream];
+                    if (NSNotFound == currentTokenOffset)
+                    {
+                        break;
                     }
                 }
                 else
                 {
-                    [self addToken:tok toStream:stream];
-                    [self advanceLineNumber:&currentLineNumber columnNumber:&currentColumnNumber withInput:input range:NSMakeRange(lastTokenOffset, currentTokenOffset - lastTokenOffset)];
-                    recognised = YES;
+                    CPErrorToken *t = [CPErrorToken errorWithMessage:[NSString stringWithFormat:@"The tokeniser encountered an invalid input \"%@\", and could not handle it.  Implement -tokeniser:didNotFindTokenAtInputPosition:error: to make this do something more useful", [input substringWithRange:NSMakeRange(currentTokenOffset, MIN((NSUInteger)10, [input length] - currentTokenOffset))]]];
+                    [t setLineNumber:currentLineNumber];
+                    [t setColumnNumber:currentColumnNumber];
+                    [t setCharacterNumber:currentTokenOffset];
+                    [self addToken:t toStream:stream];
                     break;
                 }
-            }
-        }
-        
-        if (!recognised)
-        {
-            if ([delegate respondsToSelector:@selector(tokeniser:didNotFindTokenOnInput:position:error:)])
-            {
-                NSString *err = nil;
-                currentTokenOffset = [delegate tokeniser:self didNotFindTokenOnInput:input position:currentTokenOffset error:&err];
-                [self addToken:[CPErrorToken errorWithMessage:err] toStream:stream];
-                if (NSNotFound == currentTokenOffset)
-                {
-                    break;
-                }
-            }
-            else
-            {
-                [self addToken:[CPErrorToken errorWithMessage:[NSString stringWithFormat:@"The tokeniser encountered an invalid input \"%@\", and could not handle it.  Implement -tokeniser:didNotFindTokenAtInputPosition:error: to make this do something more useful", [input substringWithRange:NSMakeRange(currentTokenOffset, MIN((NSUInteger)10, [input length] - currentTokenOffset))]]]
-                                                     toStream:stream];
-                break;
             }
         }
     }
     if (inputLength <= currentTokenOffset)
     {
+        if (delegateRespondsTo.willFinish)
+        {
+            [delegate tokeniserWillFinish:self stream:stream];
+        }
+
         CPEOFToken *token = [CPEOFToken eof];
         [token setLineNumber:currentLineNumber];
         [token setColumnNumber:currentColumnNumber];
@@ -178,30 +200,42 @@
 
 - (void)addToken:(CPToken *)tok toStream:(CPTokenStream *)stream
 {
-    NSArray *toks;
-    if ([delegate respondsToSelector:@selector(tokeniser:willProduceToken:)])
+    if (delegateRespondsTo.requestsPush)
     {
-        toks = [delegate tokeniser:self willProduceToken:tok];
+        [delegate tokeniser:self requestsToken:tok pushedOntoStream:stream];
+    }
+    else if (delegateRespondsTo.willProduceToken)
+    {
+        [stream pushTokens:[delegate performSelector:@selector(tokeniser:willProduceToken:) withObject:self withObject:tok]];
+//        [stream pushTokens:[delegate tokeniser:self willProduceToken:tok]];
     }
     else
     {
-        toks = [NSArray arrayWithObject:tok];
+        [stream pushToken:tok];
     }
-    [stream pushTokens:toks];
 }
 
-- (void)advanceLineNumber:(NSUInteger *)ln columnNumber:(NSUInteger *)cn withInput:(NSString *)input range:(NSRange)range
+static CFCharacterSetRef newlineCharset = nil;
+
+- (void)advanceLineNumber:(NSUInteger *)ln columnNumber:(NSUInteger *)cn withInput:(NSString *)input range:(CFRange)range
 {
-    NSRange searchRange = range;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^
+    {
+        newlineCharset = (CFCharacterSetRef)[[NSCharacterSet characterSetWithCharactersInString:@"\n\r"] retain];
+    });
+    
+    CFRange searchRange = range;
     NSUInteger rangeEnd = range.location + range.length;
-    NSRange foundRange = [input rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"\n\r"] options:NSLiteralSearch range:searchRange];
+    CFRange foundRange;
+    BOOL found = CFStringFindCharacterFromSet((CFStringRef)input, newlineCharset, searchRange, 0L, &foundRange);
     NSUInteger lastNewLineLocation = NSNotFound;
-    while (foundRange.location != NSNotFound)
+    while (found)
     {
         *ln += foundRange.length;
         lastNewLineLocation = foundRange.location + foundRange.length;
-        searchRange = NSMakeRange(lastNewLineLocation, rangeEnd - lastNewLineLocation);
-        foundRange = [input rangeOfCharacterFromSet:[NSCharacterSet characterSetWithCharactersInString:@"\n\r"] options:NSLiteralSearch range:searchRange];
+        searchRange = CFRangeMake(lastNewLineLocation, rangeEnd - lastNewLineLocation);
+        found = CFStringFindCharacterFromSet((CFStringRef)input, newlineCharset, searchRange, 0L, &foundRange);
     }
     if (lastNewLineLocation != NSNotFound)
     {
@@ -210,6 +244,20 @@
     else
     {
         *cn += range.length;
+    }
+}
+
+- (void)setDelegate:(id<CPTokeniserDelegate>)aDelegate
+{
+    if (delegate != aDelegate) 
+    {
+        delegate = aDelegate;
+        
+        delegateRespondsTo.shouldConsumeToken = [delegate respondsToSelector:@selector(tokeniser:shouldConsumeToken:)];
+        delegateRespondsTo.requestsPush = [delegate respondsToSelector:@selector(tokeniser:requestsToken:pushedOntoStream:)];
+        delegateRespondsTo.willProduceToken = [delegate respondsToSelector:@selector(tokeniser:willProduceToken:)];
+        delegateRespondsTo.didNotFindTokenOnInputPositionError = [delegate respondsToSelector:@selector(tokeniser:didNotFindTokenOnInput:position:error:)];
+        delegateRespondsTo.willFinish = [delegate respondsToSelector:@selector(tokeniserWillFinish:stream:)];
     }
 }
 

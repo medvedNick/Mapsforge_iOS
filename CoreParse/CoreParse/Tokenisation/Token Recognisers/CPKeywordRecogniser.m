@@ -8,13 +8,6 @@
 
 #import "CPKeywordRecogniser.h"
 
-@interface CPKeywordRecogniser ()
-{
-    NSString *keyword;
-}
-
-@end
-
 @implementation CPKeywordRecogniser
 
 @synthesize keyword;
@@ -77,27 +70,26 @@
 
 - (void)dealloc
 {
-    [keyword release];
-    [invalidFollowingCharacters release];
+   [keyword release];
+   [invalidFollowingCharacters release];
     
     [super dealloc];
 }
 
 - (CPToken *)recogniseTokenInString:(NSString *)tokenString currentTokenPosition:(NSUInteger *)tokenPosition
 {
-    NSString *kw = [self keyword];
-    NSUInteger kwLength = [kw length];
+    NSUInteger kwLength = [keyword length];
     NSUInteger remainingChars = [tokenString length] - *tokenPosition;
     if (remainingChars >= kwLength)
     {
-        if ([[tokenString substringWithRange:NSMakeRange(*tokenPosition, kwLength)] isEqualToString:kw])
+        if (CFStringFindWithOptions((CFStringRef)tokenString, (CFStringRef)keyword, CFRangeMake(*tokenPosition, kwLength), kCFCompareAnchored, NULL))
         {
             if (remainingChars == kwLength ||
                 nil == invalidFollowingCharacters ||
-                [tokenString rangeOfCharacterFromSet:invalidFollowingCharacters options:0x0 range:NSMakeRange(*tokenPosition + kwLength, 1)].location == NSNotFound)
+                !CFStringFindCharacterFromSet((CFStringRef)tokenString, (CFCharacterSetRef)invalidFollowingCharacters, CFRangeMake(*tokenPosition + kwLength, 1), kCFCompareAnchored, NULL))
             {
                 *tokenPosition = *tokenPosition + kwLength;
-                return [CPKeywordToken tokenWithKeyword:kw];
+                return [CPKeywordToken tokenWithKeyword:keyword];
             }
         }
     }

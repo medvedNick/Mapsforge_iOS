@@ -7,12 +7,15 @@
 //
 
 #import "CPRule.h"
+#import "CPRule+Internal.h"
 
 #import "CPGrammarSymbol.h"
 
 @implementation CPRule
 {
     NSMutableArray *rightHandSide;
+    BOOL _shouldCollapse;
+    NSSet *_tagNames;
 }
 
 @synthesize name;
@@ -131,17 +134,57 @@
 
 - (NSUInteger)hash
 {
-    return ([name hash] << 16) + [self tag] ;
+    return [name hash] ^ [self tag];
+}
+
+- (BOOL)isRule
+{
+    return YES;
 }
 
 - (BOOL)isEqual:(id)object
 {
-    if ([object isKindOfClass:[CPRule class]])
+    return ([object isRule] &&
+            ((CPRule *)object)->tag == tag &&
+            [((CPRule *)object)->name isEqualToString:name] &&
+            [((CPRule *)object)->rightHandSide isEqualToArray:rightHandSide] &&
+            (_tagNames == nil || [((CPRule *)object)->_tagNames isEqualToSet:_tagNames]));
+}
+
+@end
+
+@implementation CPRule (Internal)
+
+- (BOOL)shouldCollapse
+{
+    return _shouldCollapse;
+}
+
+- (void)setShouldCollapse:(BOOL)shouldCollapse
+{
+    _shouldCollapse = shouldCollapse;
+}
+
+- (NSSet *)tagNames
+{
+    return [[_tagNames retain] autorelease];
+}
+
+- (void)setTagNames:(NSSet *)tagNames
+{
+    if (_tagNames != tagNames)
     {
-        CPRule *other = (CPRule *)object;
-        return [other tag] == tag && [[other name] isEqualToString:name] && [[other rightHandSideElements] isEqualToArray:rightHandSide];
+        [_tagNames release];
+        _tagNames = [tagNames copy];
     }
-    
+}
+
+@end
+
+@implementation NSObject (CPIsRule)
+
+- (BOOL)isRule
+{
     return NO;
 }
 

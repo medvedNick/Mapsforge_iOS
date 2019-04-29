@@ -167,9 +167,14 @@ typedef enum
     return type;
 }
 
+- (BOOL)isShiftReduceAction
+{
+    return YES;
+}
+
 - (BOOL)isEqual:(id)object
 {
-    if ([object isKindOfClass:[CPShiftReduceAction class]] && ((CPShiftReduceAction *)object)->type == type)
+    if ([object isShiftReduceAction] && ((CPShiftReduceAction *)object)->type == type)
     {
         CPShiftReduceAction *other = (CPShiftReduceAction *)object;
         switch (type)
@@ -178,6 +183,24 @@ typedef enum
                 return [other newState] == shift;
             case kActionTypeReduce:
                 return [other reductionRule] == reductionRule;
+            case kActionTypeAccept:
+                return YES;
+        }
+    }
+    
+    return NO;
+}
+
+- (BOOL)isEqualToShiftReduceAction:(CPShiftReduceAction *)object
+{
+    if (object != nil && object->type == type)
+    {
+        switch (type)
+        {
+            case kActionTypeShift:
+                return [object newState] == details.shift;
+            case kActionTypeReduce:
+                return [object reductionRule] == details.reductionRule;
             case kActionTypeAccept:
                 return YES;
         }
@@ -212,5 +235,13 @@ typedef enum
     }
 }
 
+@end
+
+@implementation NSObject(CPIsShiftReduceAction)
+
+- (BOOL)isShiftReduceAction
+{
+    return NO;
+}
 
 @end
